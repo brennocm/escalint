@@ -12,13 +12,14 @@ export const viewTitles: Record<View, string> = {
   exposure: 'Exposure',
   findings: 'Findings',
   fix: 'Fix plan',
+  detect: 'Detect',
   diff: 'Diff',
 };
 
 /** Searchable entries: views, principals (name and ARN), rules and paths. */
 export function candidates(ix: Indexes, pseudonyms: boolean): Candidate[] {
   const out: Candidate[] = [];
-  for (const v of ['overview', 'atlas', 'exposure', 'findings', 'fix'] as const) {
+  for (const v of ['overview', 'atlas', 'exposure', 'findings', 'fix', 'detect'] as const) {
     out.push({
       key: `view:${v}`,
       kind: 'view',

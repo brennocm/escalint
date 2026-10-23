@@ -11,7 +11,7 @@ interface Props {
   readonly onHelp: () => void;
 }
 
-const navViews: readonly View[] = ['overview', 'atlas', 'findings', 'exposure', 'fix'];
+const navViews: readonly View[] = ['overview', 'atlas', 'findings', 'exposure', 'fix', 'detect'];
 
 export function TopBar({ state, hasDiff, onSearch, onTheme, onPseudonyms, onHelp }: Props) {
   const current = state.route.view;

@@ -3,7 +3,10 @@ import { useEffect, useRef } from 'react';
 export const shortcuts: readonly (readonly [string, string])[] = [
   ['Ctrl/⌘ + K', 'Search principals, ARNs, rules, techniques and paths'],
   ['?', 'Show this list'],
-  ['g o / g a / g f / g e / g x', 'Go to Overview, Atlas, Findings, Exposure, Fix plan'],
+  [
+    'g o / g a / g f / g e / g x / g t',
+    'Go to Overview, Atlas, Findings, Exposure, Fix plan, Detect',
+  ],
   ['t', 'Toggle light / dark theme'],
   ['p', 'Toggle pseudonyms (hide names for screenshots)'],
   ['Escape', 'Close dialogs, clear the selection'],

@@ -10,6 +10,7 @@ export const views = [
   'exposure',
   'findings',
   'fix',
+  'detect',
   'diff',
 ] as const;
 export type View = (typeof views)[number];

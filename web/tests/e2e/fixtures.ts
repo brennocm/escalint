@@ -41,6 +41,7 @@ export function views(): { name: string; hash: string; heading: RegExp; body?: s
     { name: 'exposure', hash: '#/exposure', heading: /^Exposure$/ },
     { name: 'findings', hash: '#/findings', heading: /^Findings$/ },
     { name: 'fix', hash: '#/fix', heading: /^Fix plan$/ },
+    { name: 'detect', hash: '#/detect', heading: /^Detect$/ },
     { name: 'diff', hash: '#/diff', heading: /^Diff$/, body: diffed },
   ];
 }

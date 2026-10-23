@@ -28,5 +28,6 @@ export const viewComponents: Record<View, ViewComponent> = {
   exposure: named(() => import('./exposure/Exposure'), 'Exposure'),
   findings: named(() => import('./findings/Findings'), 'Findings'),
   fix: named(() => import('./fix/FixPlan'), 'FixPlan'),
+  detect: named(() => import('./detect/Detect'), 'Detect'),
   diff: named(() => import('./diff/Diff'), 'Diff'),
 };
