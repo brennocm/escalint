@@ -113,6 +113,7 @@ gen-docs: ## Regenerate docs/coverage.md from the rule registry
 gen-web-fixtures: ## Regenerate the analysis.json fixtures of the web tests
 	$(GO) run -tags noui ./cmd/escalint analyze examples/vulnerable-account/snapshot.json --config-file examples/vulnerable-account/.escalint.yaml --deterministic -o web/src/data/fixtures/vulnerable.analysis.json
 	$(GO) run -tags noui ./cmd/escalint analyze examples/hardened-account/snapshot.json --config-file examples/hardened-account/.escalint.yaml --deterministic -o web/src/data/fixtures/hardened.analysis.json
+	$(GO) run -tags noui ./cmd/escalint diff internal/rules/testdata/EL-PE-020/safe/snapshot.json internal/rules/testdata/EL-PE-020/vulnerable/snapshot.json -f analysis --fail-on none --deterministic -o web/src/data/fixtures/diff.analysis.json
 
 .PHONY: gen-contract
 gen-contract: ## Generate the TypeScript contract from the JSON Schema

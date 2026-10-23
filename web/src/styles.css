@@ -1250,3 +1250,22 @@ kbd {
   font-weight: 700;
   fill: var(--color-text);
 }
+
+/* ---- Diff ---------------------------------------------------------- */
+
+.diff__edge--removed,
+.diff__node--removed,
+.diff__ghost {
+  opacity: 0.4;
+}
+
+.diff__key {
+  display: inline-block;
+  width: 24px;
+  height: 0;
+  border-top: 3px solid var(--color-accent);
+}
+
+.diff__key--removed {
+  border-top: 2px dashed var(--color-text-muted);
+}
