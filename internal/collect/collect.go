@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -20,7 +21,6 @@ import (
 	orgtypes "github.com/aws/aws-sdk-go-v2/service/organizations/types"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	ststypes "github.com/aws/aws-sdk-go-v2/service/sts/types"
 
 	"github.com/brennocm/escalint/internal/arn"
 )
@@ -73,16 +73,19 @@ func Identity(ctx context.Context, s STSAPI) (account, partition string, err err
 	return account, partition, nil
 }
 
-// Assume returns short-lived credentials for a role (--assume-roles). The
-// session lasts 15 minutes, the minimum STS allows.
-func Assume(ctx context.Context, s STSAPI, roleARN string) (*ststypes.Credentials, error) {
-	out, err := s.AssumeRole(ctx, &sts.AssumeRoleInput{
-		RoleArn: aws.String(roleARN), RoleSessionName: aws.String("escalint-collect"), DurationSeconds: aws.Int32(900),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("sts:AssumeRole %s: %w", roleARN, err)
-	}
-	return out.Credentials, nil
+// AssumeSessionDuration is the length of each --assume-roles session, the
+// minimum STS allows.
+const AssumeSessionDuration = 15 * time.Minute
+
+// Assume returns credentials for a role (--assume-roles). Each session lasts
+// AssumeSessionDuration; the provider assumes the role again before a
+// session expires, so collecting a large account does not fail midway.
+// Nothing is called until the credentials are first used.
+func Assume(s STSAPI, roleARN string) aws.CredentialsProvider {
+	return aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(s, roleARN, func(o *stscreds.AssumeRoleOptions) {
+		o.RoleSessionName = "escalint-collect"
+		o.Duration = AssumeSessionDuration
+	}))
 }
 
 // ReadAccount collects one account.

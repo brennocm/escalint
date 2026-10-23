@@ -106,9 +106,16 @@ func TestErrorsPropagate(t *testing.T) {
 
 func TestAssumeAndResources(t *testing.T) {
 	s := &fakeSTS{}
-	creds, err := Assume(context.Background(), s, "arn:aws:iam::222222222222:role/escalint-collector")
-	if err != nil || creds == nil || s.assumed[0] != "arn:aws:iam::222222222222:role/escalint-collector" {
+	provider := Assume(s, "arn:aws:iam::222222222222:role/escalint-collector")
+	if len(s.assumed) != 0 {
+		t.Fatal("Assume called STS before the credentials were used")
+	}
+	creds, err := provider.Retrieve(context.Background())
+	if err != nil || creds.AccessKeyID != "ASIAEXAMPLE" || !creds.CanExpire || s.assumed[0] != "arn:aws:iam::222222222222:role/escalint-collector" {
 		t.Errorf("assume = %+v %v", creds, err)
+	}
+	if again, err := provider.Retrieve(context.Background()); err != nil || again.AccessKeyID != creds.AccessKeyID || len(s.assumed) != 1 {
+		t.Errorf("cached credentials not reused: %d calls, %v", len(s.assumed), err)
 	}
 	got, err := ParseResources([]string{"lambda", " EC2 ", ""})
 	if err != nil || !got["lambda"] || !got["ec2"] || got["codebuild"] {

@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -151,19 +150,24 @@ func runCollect(cmd *cobra.Command, f collectFlags) error {
 		return err
 	}
 	accounts := []*collect.Account{first}
+	seen := map[string]bool{account: true}
 	for _, roleARN := range roles {
-		creds, err := collect.Assume(ctx, base.STS, roleARN)
-		if err != nil {
-			return err
-		}
 		other := cfg.Copy()
-		other.Credentials = aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(
-			aws.ToString(creds.AccessKeyId), aws.ToString(creds.SecretAccessKey), aws.ToString(creds.SessionToken)))
+		other.Credentials = collect.Assume(base.STS, roleARN)
 		c := clientsFor(other, resources, regions, false)
 		acct, _, err := collect.Identity(ctx, c.STS)
 		if err != nil {
-			return err
+			return fmt.Errorf("--assume-roles %s: %w", roleARN, err)
 		}
+		if seen[acct] {
+			// A snapshot lists each account once (the loader rejects
+			// duplicates); the role list often includes the caller's account.
+			if !f.quiet {
+				fmt.Fprintf(cmd.ErrOrStderr(), "escalint: skipping %s: account %s is already collected\n", roleARN, acct)
+			}
+			continue
+		}
+		seen[acct] = true
 		if !f.quiet {
 			fmt.Fprintf(cmd.ErrOrStderr(), "escalint: collecting account %s through %s\n", acct, roleARN)
 		}

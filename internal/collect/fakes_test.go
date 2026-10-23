@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
@@ -37,7 +38,10 @@ func (f *fakeSTS) AssumeRole(_ context.Context, in *sts.AssumeRoleInput, _ ...fu
 	if aws.ToInt32(in.DurationSeconds) != 900 || aws.ToString(in.RoleSessionName) != "escalint-collect" {
 		return nil, errors.New("unexpected session parameters")
 	}
-	return &sts.AssumeRoleOutput{Credentials: &ststypes.Credentials{AccessKeyId: aws.String("ASIAEXAMPLE")}}, nil
+	return &sts.AssumeRoleOutput{Credentials: &ststypes.Credentials{
+		AccessKeyId: aws.String("ASIAEXAMPLE"), SecretAccessKey: aws.String("secret"), SessionToken: aws.String("token"),
+		Expiration: aws.Time(time.Now().Add(AssumeSessionDuration)),
+	}}, nil
 }
 
 type fakeIAM struct {

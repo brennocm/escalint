@@ -14,6 +14,11 @@ statement is enough for `escalint collect`; the optional statements enable
 `--org`, `--resources` and `--assume-roles`. A test keeps the policy in sync
 with the code.
 
+With `--assume-roles`, each role session lasts 15 minutes and is renewed
+automatically, so long collections do not stop when a session expires. A
+role whose account was already collected (for example the caller's own
+account) is skipped: a snapshot lists each account once.
+
 The resource inventory covers only the regions in `--regions` (default: the
 current region). escalint treats it as complete: a Lambda function, an
 instance or a CodeBuild project in a region that was not collected produces
