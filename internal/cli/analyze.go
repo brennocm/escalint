@@ -30,16 +30,26 @@ func newAnalyzeCommand() *cobra.Command {
 			if err := f.finish(l); err != nil {
 				return err
 			}
-			data, err := contract.Marshal(l.analysis)
-			if err != nil {
-				return err
-			}
-			return writeAll(cmd, out, data)
+			return writeAnalysis(cmd, out, l.analysis)
 		},
 	}
 	f.register(cmd)
 	cmd.Flags().StringVarP(&out, "output", "o", "", "write to a file (mode 0600) instead of stdout")
 	return cmd
+}
+
+// writeAnalysis streams the document to the output: on large accounts it is
+// gigabytes that need not be buffered first.
+func writeAnalysis(cmd *cobra.Command, path string, a *contract.Analysis) error {
+	o, err := openOutput(cmd, path)
+	if err != nil {
+		return err
+	}
+	werr := contract.Encode(o.w, a)
+	if cerr := o.close(werr != nil); werr == nil {
+		werr = cerr
+	}
+	return werr
 }
 
 func writeAll(cmd *cobra.Command, path string, data []byte) error {
@@ -190,11 +200,7 @@ func newDiffCommand() *cobra.Command {
 			}
 			switch format {
 			case "analysis":
-				data, err := contract.Marshal(after.analysis)
-				if err != nil {
-					return err
-				}
-				if err := writeAll(cmd, out, data); err != nil {
+				if err := writeAnalysis(cmd, out, after.analysis); err != nil {
 					return err
 				}
 			case "json":

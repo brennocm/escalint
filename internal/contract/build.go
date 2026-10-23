@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
+	"fmt"
+	"io"
 	"slices"
 	"sort"
 	"time"
@@ -318,15 +320,24 @@ func coverage(version string, findings []Finding, techniques map[string][]string
 // sorted map keys, HTML-sensitive characters escaped (so the document can
 // be embedded in the HTML report), and a final newline.
 func Marshal(a *Analysis) ([]byte, error) {
-	// Indenting while encoding, instead of json.Encoder's encode-then-indent,
-	// halves the peak memory on large accounts. The v1 options keep the
-	// output byte-identical, including the escaping of '<', '>' and '&'.
 	var buf bytes.Buffer
-	enc := jsontext.NewEncoder(&buf, jsontext.WithIndent("  "))
-	if err := jsonv2.MarshalEncode(enc, a, json.DefaultOptionsV1()); err != nil {
+	if err := Encode(&buf, a); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
+}
+
+// Encode writes the same bytes as Marshal to w as it encodes, so a large
+// analysis is never held in memory twice. Indenting while encoding, instead
+// of json.Encoder's encode-then-indent, also avoids a second copy; the v1
+// options keep the output byte-identical, including the escaping of '<',
+// '>' and '&'.
+func Encode(w io.Writer, a *Analysis) error {
+	enc := jsontext.NewEncoder(w, jsontext.WithIndent("  "))
+	if err := jsonv2.MarshalEncode(enc, a, json.DefaultOptionsV1()); err != nil {
+		return fmt.Errorf("encode analysis: %w", err)
+	}
+	return nil
 }
 
 func list[T any](s []T) []T {
