@@ -111,6 +111,8 @@ type Principal struct {
 
 // Resource is the target of the request.
 type Resource struct {
+	// ARN of the resource. Empty asks whether the action is possible on some
+	// resource (used to classify capabilities for blast radius).
 	ARN     string
 	Account string // owner account; empty when not tied to an account
 	Policy  *Policy

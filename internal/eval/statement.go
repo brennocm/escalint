@@ -129,7 +129,15 @@ func evalStatement(st *policy.Statement, req *Request, version string, pt Policy
 
 	var keys []string
 	resTri := triTrue
-	if st.Resource != nil || st.NotResource != nil {
+	if req.Resource.ARN == "" && (st.Resource != nil || st.NotResource != nil) {
+		// "Any resource" mode (Resource.ARN empty): is the action possible on
+		// some resource? An Allow counts if it names any resource; a Deny only
+		// removes the capability when it covers every resource.
+		resTri = anyResource(st)
+		if resTri == triFalse {
+			return stmtResult{applies: triFalse}
+		}
+	} else if st.Resource != nil || st.NotResource != nil {
 		list, neg := st.Resource, false
 		if st.NotResource != nil {
 			list, neg = st.NotResource, true
@@ -182,6 +190,27 @@ func evalStatement(st *policy.Statement, req *Request, version string, pt Policy
 		keys = append(keys, c.keys...)
 	}
 	return stmtResult{applies: applies, keys: dedupe(keys), grant: g}
+}
+
+func anyResource(st *policy.Statement) tri {
+	coversAll := func(list policy.StringList) bool {
+		for _, r := range list {
+			if r == "*" {
+				return true
+			}
+		}
+		return false
+	}
+	if st.Effect == policy.Allow {
+		if st.NotResource != nil && coversAll(st.NotResource) {
+			return triFalse // "everything except everything"
+		}
+		return triTrue
+	}
+	if st.Resource != nil && coversAll(st.Resource) {
+		return triTrue
+	}
+	return triFalse
 }
 
 func maxTri(a, b tri) tri {

@@ -264,3 +264,15 @@ func TestNewContext(t *testing.T) {
 		t.Error("WithPassedToService must copy, not modify")
 	}
 }
+
+func TestAnyResourceMode(t *testing.T) {
+	anyRes := &Resource{}
+	scoped := user(acct, "u", identity(t, `{"Statement":{"Effect":"Allow","Action":"s3:GetObject","Resource":"arn:aws:s3:::only-this/*"}}`))
+	want(t, ask(scoped, "s3:GetObject", anyRes), Allow)
+	partialDeny := user(acct, "u", identity(t, allowAll), identity(t, `{"Statement":{"Effect":"Deny","Action":"s3:GetObject","Resource":"arn:aws:s3:::secret/*"}}`))
+	want(t, ask(partialDeny, "s3:GetObject", anyRes), Allow)
+	fullDeny := user(acct, "u", identity(t, allowAll), identity(t, `{"Statement":{"Effect":"Deny","Action":"s3:GetObject","Resource":"*"}}`))
+	want(t, ask(fullDeny, "s3:GetObject", anyRes), ExplicitDeny)
+	nothing := user(acct, "u", identity(t, `{"Statement":{"Effect":"Allow","Action":"s3:GetObject","NotResource":"*"}}`))
+	want(t, ask(nothing, "s3:GetObject", anyRes), ImplicitDeny)
+}
