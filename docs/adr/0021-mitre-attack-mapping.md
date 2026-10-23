@@ -1,6 +1,6 @@
 # 0021 — MITRE ATT&CK mapping
 
-Status: Proposed (Phase 1E checkpoint)
+Status: Accepted
 
 ## Context
 
@@ -14,9 +14,11 @@ techniques lets a finding be triaged, reported and correlated in that language.
   bundle `enterprise-attack-20.0.json` (Enterprise ATT&CK **v20.0**), pinned by
   version and SHA-256 in `tools/gen-attack`.
 - **Extraction:** `tools/gen-attack` (run by `go generate`, never during a scan)
-  keeps only the techniques referenced by registered rules — ID, name, tactics,
-  version, `revoked`, `deprecated`, platforms — and writes
-  `internal/attack/data/attack.json` with the ATT&CK version. The binary embeds
+  verifies the bundle's SHA-256 and release, and keeps every **active IaaS
+  technique** (not revoked, not deprecated) with ID, name and tactics in
+  `internal/attack/data/attack.json`. Keeping all IaaS techniques (104 in
+  v20.0, 19 KB) rather than only the referenced ones lets
+  `escalint attack coverage` show what is not covered. The binary embeds
   that file; nothing is downloaded at runtime.
 - **Granularity: per rule.** A technique groups many escalation paths, so it is
   a rule label; edges, paths and findings inherit it. Paths carry the

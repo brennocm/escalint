@@ -1,6 +1,6 @@
 # 0022 — CloudTrail detection hints
 
-Status: Proposed (Phase 1E checkpoint)
+Status: Accepted
 
 ## Context
 
@@ -40,6 +40,20 @@ sometimes in different accounts, and some steps produce nothing.
   in the service's CloudTrail documentation; field paths not shown in an
   official sample stay `experimental` until a live validation run
   (opt-in, checkpoint before any real account) promotes them.
+
+## Implementation notes (Phase 6)
+
+- The reviewed overrides are **JSON** (`internal/detect/data/overrides.json`),
+  not YAML: the standard library reads JSON and a YAML parser would be the
+  only reason to add a dependency.
+- `tools/gen-detect` fails when an override names an operation that does not
+  authorize the action in the service reference, or an event whose name does
+  not start with the operation (version suffixes such as Lambda's
+  `CreateFunction20150331` are allowed). Actions the reference cannot confirm
+  (unauthenticated `sts:AssumeRoleWithWebIdentity` and `AssumeRoleWithSAML`)
+  carry a written `reference_gap` instead of skipping the check silently.
+- Visibility per step: **blind** when no management event exists, **partial**
+  when blind spots or data events are involved, **visible** otherwise.
 
 ## Out of scope (v1)
 
