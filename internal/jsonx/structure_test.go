@@ -51,11 +51,20 @@ func TestCheckTooDeepIsDetectable(t *testing.T) {
 }
 
 func TestJoinPath(t *testing.T) {
-	if got := JoinPath("", "a"); got != "a" {
-		t.Errorf("JoinPath(\"\", a) = %q", got)
+	tests := []struct{ parent, key, want string }{
+		{"", "a", "a"},
+		{"a[0]", "b", "a[0].b"},
+		{"Condition", "token.actions.githubusercontent.com:sub", "Condition.token.actions.githubusercontent.com:sub"},
+		{"Condition", "\x1b[2Jboom", `Condition["\x1b[2Jboom"]`},
+		{"x", "evil\u202eexe", `x["evil\u202eexe"]`},
+		{"x", "with space", `x["with space"]`},
+		{"x", "", `x[""]`},
+		{"", "a]b", `["a]b"]`},
 	}
-	if got := JoinPath("a[0]", "b"); got != "a[0].b" {
-		t.Errorf("JoinPath = %q", got)
+	for _, tc := range tests {
+		if got := JoinPath(tc.parent, tc.key); got != tc.want {
+			t.Errorf("JoinPath(%q, %q) = %q, want %q", tc.parent, tc.key, got, tc.want)
+		}
 	}
 }
 

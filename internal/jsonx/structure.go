@@ -113,10 +113,30 @@ func walkValue(dec *json.Decoder, path string, depth, maxDepth int) error {
 	return nil
 }
 
-// JoinPath appends an object key to a path.
+// JoinPath appends an object key to a path. Keys come from untrusted
+// documents and paths end up in terminal output, so a key with anything but
+// printable ASCII (or with characters that would make the path ambiguous) is
+// written as ["..."] with non-ASCII and control characters escaped. That
+// keeps ANSI escape sequences and bidirectional overrides out of messages.
 func JoinPath(parent, key string) string {
+	if !plainKey(key) {
+		return parent + "[" + strconv.QuoteToASCII(key) + "]"
+	}
 	if parent == "" {
 		return key
 	}
 	return parent + "." + key
+}
+
+func plainKey(key string) bool {
+	if key == "" {
+		return false
+	}
+	for i := 0; i < len(key); i++ {
+		c := key[i]
+		if c <= ' ' || c >= 0x7f || c == '"' || c == '[' || c == ']' {
+			return false
+		}
+	}
+	return true
 }
