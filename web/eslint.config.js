@@ -78,7 +78,10 @@ export default tseslint.config(
   {
     files: ['scripts/**/*.mjs'],
     ...tseslint.configs.disableTypeChecked,
-    languageOptions: { globals: { ...globals.node } },
+    languageOptions: {
+      globals: { ...globals.node },
+      parserOptions: { projectService: false, project: null },
+    },
   },
   {
     files: ['eslint.config.js'],
