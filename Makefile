@@ -72,12 +72,24 @@ vuln: ## govulncheck
 	$(GOVULNCHECK) -tags noui ./...
 
 .PHONY: fuzz
-fuzz: ## Long local fuzzing of every target
-	$(call not_yet,fuzz targets arrive in Phase 2)
+fuzz: ## Fuzz every target for FUZZTIME (default 5m)
+	$(MAKE) fuzz-run FUZZTIME=$${FUZZTIME:-5m}
 
 .PHONY: fuzz-smoke
-fuzz-smoke: ## 30 s per fuzz target
-	$(call not_yet,fuzz targets arrive in Phase 2)
+fuzz-smoke: ## Fuzz every target for 30 s
+	$(MAKE) fuzz-run FUZZTIME=30s
+
+# Go runs one fuzz target per invocation, so list them per package first.
+# Minimization is capped: with the default (60 s per input) the large
+# snapshot seeds stall the fuzzer at a handful of executions.
+.PHONY: fuzz-run
+fuzz-run:
+	@for pkg in $(GO_PKGS); do \
+	  for target in $$($(GO) test $(GO_TEST_FLAGS) -list '^Fuzz' $$pkg | grep '^Fuzz' || true); do \
+	    echo "==> $$pkg $$target ($(FUZZTIME))"; \
+	    $(GO) test $(GO_TEST_FLAGS) -run '^$$' -fuzz "^$$target\$$" -fuzztime $(FUZZTIME) -fuzzminimizetime 5s $$pkg || exit 1; \
+	  done; \
+	done
 
 .PHONY: golden-update
 golden-update: ## Rewrite golden files
