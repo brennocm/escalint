@@ -1,0 +1,19 @@
+# Flag validation happens before any AWS call.
+! exec escalint collect --resources s3
+stderr 'unknown resource type "s3"'
+! exec escalint collect --concurrency 99
+stderr 'concurrency must be 1..32'
+! exec escalint collect --assume-roles roles-bad.txt
+stderr 'roles-bad.txt:2: "arn:aws:s3:::bucket" is not a role ARN'
+! exec escalint collect --assume-roles empty.txt
+stderr 'lists no role ARNs'
+! exec escalint collect --assume-roles missing.txt
+stderr 'no such file'
+exec escalint collect --help
+stdout 'docs/collector-policy.json'
+
+-- roles-bad.txt --
+# accounts to collect
+arn:aws:s3:::bucket
+-- empty.txt --
+# nothing here

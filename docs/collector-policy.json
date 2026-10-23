@@ -1,0 +1,52 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EscalintCore",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountAuthorizationDetails",
+        "iam:GetLoginProfile",
+        "iam:GetOpenIDConnectProvider",
+        "iam:ListAccessKeys",
+        "iam:ListOpenIDConnectProviders",
+        "iam:ListSAMLProviders"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EscalintOrganizationOptional",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:DescribePolicy",
+        "organizations:ListAccountsForParent",
+        "organizations:ListOrganizationalUnitsForParent",
+        "organizations:ListPolicies",
+        "organizations:ListRoots",
+        "organizations:ListTargetsForPolicy"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EscalintResourcesOptional",
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:BatchGetProjects",
+        "codebuild:ListProjects",
+        "ec2:DescribeInstances",
+        "lambda:ListFunctions",
+        "ssm:DescribeInstanceInformation"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EscalintAssumeRolesOptional",
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": "arn:aws:iam::*:role/escalint-collector"
+    }
+  ]
+}
