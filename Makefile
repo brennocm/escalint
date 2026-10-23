@@ -216,7 +216,7 @@ demo-cli: ## Record the CLI demo (demo.tape) into docs/media/cli.gif with vhs
 demo-video: web-build ## Record the UI walkthrough (MP4 + GIF) and one screenshot per view and theme
 	cd $(WEB_DIR) && $(PNPM) media
 	ffmpeg -loglevel error -y -i $(MEDIA_DIR)/ui.webm -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -movflags +faststart -an $(MEDIA_DIR)/ui.mp4
-	ffmpeg -loglevel error -y -i $(MEDIA_DIR)/ui.webm -vf "fps=8,scale=880:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4" $(MEDIA_DIR)/ui.gif
+	ffmpeg -loglevel error -y -i $(MEDIA_DIR)/ui.webm -vf "fps=8,scale=880:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" $(MEDIA_DIR)/ui.gif
 	rm -rf $(MEDIA_DIR)/ui.webm $(MEDIA_DIR)/.video
 
 .PHONY: release-check
