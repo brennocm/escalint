@@ -402,3 +402,121 @@ Verified: standard GitHub-hosted runners are "free and unlimited on public repos
 [catalog]: https://docs.aws.amazon.com/service-authorization/latest/reference/service-reference.html
 [gh-billing]: https://docs.github.com/en/billing/concepts/product-billing/github-actions
 [gh-runners]: https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+
+---
+
+## 13. MITRE ATT&CK mapping (Phase 1E, ADR 0021)
+
+**Source:** `mitre-attack/attack-stix-data`, bundle `enterprise-attack/enterprise-attack-20.0.json`
+(Enterprise ATT&CK **v20.0**, released 2026-10-13; SHA-256
+`81113ba98afa2928f3dcff62022539f7ce30c315c32e14422f11ff95ce534352`).
+
+**Verification performed (2026-10-23)** for every technique used below:
+present in the v20.0 bundle, not `revoked`, not `x_mitre_deprecated`, `IaaS` in
+`x_mitre_platforms`, and the page `https://attack.mitre.org/techniques/<ID>/`
+returns 200 with no deprecation notice. Names and tactics come from the bundle,
+never typed by hand (v20 renamed tactics, e.g. *Stealth*, *Defense Impairment*).
+
+**Terms of use** ([terms](https://attack.mitre.org/resources/legal-and-branding/terms-of-use/),
+`LICENSE.txt` of the STIX repository): royalty-free license for research,
+development and commercial use; every copy must reproduce MITRE's copyright
+designation and the license. Required notice:
+
+> © 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation.
+
+"MITRE ATT&CK" and "ATT&CK" are registered trademarks of The MITRE Corporation.
+The notice and license go into `NOTICE`, `THIRD_PARTY_NOTICES.md` and the README
+when the extracted data is embedded (Phase 6).
+
+### 13.1 Techniques used
+
+| ID | Name (v20.0) | Tactics | Why it applies (official text) |
+| --- | --- | --- | --- |
+| T1098.003 | Additional Cloud Roles | Persistence, Privilege Escalation | "in AWS environments, an adversary … may be able to use the `CreatePolicyVersion` API … or the `AttachUserPolicy` API"; also "add roles to adversary-controlled accounts outside the victim tenant" |
+| T1098.001 | Additional Cloud Credentials | Persistence, Privilege Escalation | "use the `CreateAccessKey` API … `CreateLoginProfile` API … If the target account has different permissions … escalate their privileges" |
+| T1548.005 | Temporary Elevated Cloud Access | Privilege Escalation | "pass roles onto resources and services … In AWS, users with the `PassRole` permission can allow a service they create to assume a given role"; "configuring the resource to perform certain actions with the permissions it has been granted" |
+| T1078.004 | Cloud Accounts | Stealth, Persistence, Privilege Escalation, Initial Access | use of valid cloud identities (assumed roles, created keys) |
+| T1648 | Serverless Execution | Execution | "use the `IAM:PassRole` permission in AWS … to add Additional Cloud Roles to a serverless cloud function" |
+| T1651 | Cloud Administration Command | Execution | "Resources such as AWS Systems Manager … allow users to remotely run scripts in virtual machines" |
+| T1199 | Trusted Relationship | Initial Access | third-party / external providers granted access to cloud environments |
+
+Rejected candidates: **T1484.002 Trust Modification** (no IaaS platform in v20.0),
+**T1098.007** (Windows/macOS/Linux only), **T1555.006** (no v1 rule extracts
+secrets), **T1606.002 SAML Tokens** (forging tokens is not what EL-TR-006 detects).
+
+### 13.2 Rule → technique
+
+| Rule | Techniques |
+| --- | --- |
+| EL-PE-001…007 (self policy changes) | T1098.003 |
+| EL-PE-008 (AddUserToGroup) | T1098.003 |
+| EL-PE-009…012 (keys, login profile) | T1098.001, T1078.004 |
+| EL-PE-013 (UpdateAssumeRolePolicy) | T1098.003 |
+| EL-PE-014 (AssumeRole) | T1548.005, T1078.004 |
+| EL-PE-015…017 (modify + assume) | T1098.003, T1548.005 |
+| EL-PE-018, 019 (modify + create key) | T1098.003, T1098.001 |
+| EL-PE-020 (modify + rewrite trust) | T1098.003 |
+| EL-PE-021, 023…027 (new PassRole) | T1548.005 |
+| EL-PE-022 (PassRole + Lambda) | T1548.005, T1648 |
+| EL-PE-028 (Lambda update code) | T1648, T1548.005 |
+| EL-PE-029 (SSM SendCommand) | T1651, T1548.005 |
+| EL-PE-030 (CodeBuild StartBuild) | T1548.005 |
+| EL-TR-001 (trust `*`) | T1078.004 |
+| EL-TR-002, 003 (GitHub OIDC) | T1199, T1078.004 |
+| EL-TR-004, 005 (external / third party) | T1199 |
+| EL-TR-006 (generic OIDC/SAML) | T1199, T1078.004 |
+| EL-PARSE-001 | unmapped: parser diagnostic, not adversary behavior |
+
+---
+
+## 14. CloudTrail detection (Phase 1E, ADR 0022)
+
+### 14.1 Verified nuances
+
+| # | Nuance | Source |
+| --- | --- | --- |
+| C1 | `iam:PassRole` is a permission, not an API call: no CloudTrail event; look for the outer call (`RunInstances`, `CreateFunction20150331`…) with the role in `requestParameters` | [passrole] |
+| C2 | Lambda management `eventName`s carry version suffixes: `CreateFunction20150331`, `UpdateFunctionCode20150331v2`, `AddPermission20150331v2`, `CreateEventSourceMapping20150331`; the service reference lists them without suffix, so generated names need overrides | [lambda-ct] |
+| C3 | `CreateFunction` omits `Environment` and `ZipFile`; `UpdateFunctionCode` omits `ZipFile`: the malicious code itself is never in CloudTrail | [lambda-ct] |
+| C4 | Lambda `Invoke` is a **data event**; trails and event data stores do not log data events by default and Event history never shows them | [lambda-ct], [ct-concepts] |
+| C5 | IAM and STS-global-endpoint events are recorded in **us-east-1**; STS regional endpoints log in their own Region; Event history shows events where they occurred | [ct-concepts], [iam-ct] |
+| C6 | Cross-account `AssumeRole` is logged in **both** accounts: caller's account (`userIdentity` = the caller) and role owner's account (`userIdentity.type = AWSAccount`), linked by `sharedEventID` | [iam-ct] |
+| C7 | **Denied** cross-account `AssumeRole` is **not** logged in the target account | [iam-ct] |
+| C8 | `AssumeRole`, `AssumeRoleWithSAML`, `AssumeRoleWithWebIdentity` are `readOnly: true`; a trail that keeps only write management events misses every role assumption | [iam-ct] |
+| C9 | `AssumeRoleWithWebIdentity` / `WithSAML` are logged only in the role's account with `userIdentity.type` `WebIdentityUser` / `SAMLUser`; `responseElements.subjectFromWebIdentityToken` carries the OIDC `sub` (e.g. the GitHub repo/ref) | [iam-ct] |
+| C10 | Calls made later with the obtained role show only the role session (`AssumedRole`), not the original user; `sts:SourceIdentity` is the only way to keep attribution | [iam-ct] |
+| C11 | `ssm:SendCommand` is a management event; what the command does on the instance is not in CloudTrail; SSM data events (`RequestManagedInstanceRoleToken`, control channel) are off by default | [ssm-ct] |
+| C12 | CloudFormation logs only parameter **keys**, not values | [cfn-ct] |
+| C13 | Glue omits sensitive fields (e.g. `ConnectionProperties`) and logs `null` responses for many Get APIs | [glue-ct] |
+| C14 | EC2, ECS, SageMaker, CodeBuild control-plane calls are management events | [ec2-ct], [ecs-ct], [sm-ct], [cb-ct] |
+| C15 | Activity **inside** compute (code that runs, credential reads from instance metadata or the Lambda environment) generates no event; only subsequent API calls made with the role appear | inferred from C3, C10, C11 — `experimental` |
+
+### 14.2 Detection hints per edge kind
+
+| Edge kind | Events (eventSource / eventName) | Kind | Blind spots |
+| --- | --- | --- | --- |
+| assume | `sts` / `AssumeRole` | management, read-only | C7, C8, C10 |
+| trust (OIDC) | `sts` / `AssumeRoleWithWebIdentity` | management, read-only | C8; only in role account |
+| trust (SAML) | `sts` / `AssumeRoleWithSAML` | management, read-only | C8 |
+| credential | `iam` / `CreateAccessKey`, `DeleteAccessKey`, `CreateLoginProfile`, `UpdateLoginProfile`; then `signin` / `ConsoleLogin` | management | key use later appears as the victim user (C10) |
+| modify_permissions | `iam` / `CreatePolicyVersion`, `Put{User,Role,Group}Policy`, `Attach{User,Role,Group}Policy`, `AddUserToGroup` | management | — |
+| modify_trust | `iam` / `UpdateAssumeRolePolicy` | management | — |
+| passrole_compute | the compute call: `ec2` / `RunInstances`, `lambda` / `CreateFunction20150331` (+ `Invoke`), `cloudformation` / `CreateStack`, `codebuild` / `CreateProject` + `StartBuild`, `glue` / `CreateJob` + `StartJobRun`, `ecs` / `RegisterTaskDefinition` + `RunTask`, `sagemaker` / `CreateNotebookInstance` | management (+ data for Invoke) | C1, C3, C4, C12, C15 |
+| update_code | `lambda` / `UpdateFunctionCode20150331v2` (+ `Invoke`), `ssm` / `SendCommand`, `codebuild` / `StartBuild` | management (+ data) | C3, C4, C11, C15 |
+| member_of, admin | none (structural) | — | not exploitation steps |
+
+Status: **verified** = event source, name and category confirmed in the service's
+CloudTrail documentation (all rows above). **experimental** = key-field paths
+not shown in an official sample event (e.g. `requestParameters.iamInstanceProfile`
+for `RunInstances`, `requestParameters.serviceRole` for `CreateProject`) and C15.
+
+[lambda-ct]: https://docs.aws.amazon.com/lambda/latest/dg/logging-using-cloudtrail.html
+[ct-concepts]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html
+[iam-ct]: https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html
+[ssm-ct]: https://docs.aws.amazon.com/systems-manager/latest/userguide/monitoring-cloudtrail-logs.html
+[cfn-ct]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-api-logging-cloudtrail.html
+[glue-ct]: https://docs.aws.amazon.com/glue/latest/dg/monitor-cloudtrail.html
+[ec2-ct]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-with-cloudtrail.html
+[ecs-ct]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/logging-using-cloudtrail.html
+[sm-ct]: https://docs.aws.amazon.com/sagemaker/latest/dg/logging-using-cloudtrail.html
+[cb-ct]: https://docs.aws.amazon.com/codebuild/latest/userguide/cloudtrail.html
