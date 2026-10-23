@@ -27,7 +27,15 @@ If any probe is `Conditional` and none is denied, P is Tier 0 with `tier_conditi
 
 **Tier 1:** P has at least one enumerated path to a `tier0_sink`.
 **Tier 2:** no path, but P has an action annotated `IsPermissionManagement` in any
-service, or a sensitive-read witness on `*`.
+service, an *escalation primitive* (any action required by a registered rule,
+such as `iam:PassRole` or `iam:CreateAccessKey`), or a sensitive-read witness on
+`*`.
+
+> Amendment (Phase 3, 2026-10-23): the service reference annotates
+> `iam:PassRole` and `iam:CreateAccessKey` as Write, not permission management.
+> Annotations alone would leave holders of the most common escalation
+> primitives in Tier 3, so rule-required actions count for Tier 2 as well.
+
 **Tier 3:** everything else.
 
 **Blast radius** is a vector, never a single number:

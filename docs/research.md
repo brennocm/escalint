@@ -191,7 +191,7 @@ Rationale: controlling all of IAM's permission-management primitives on every en
 | `NotAction: iam:*` on `*` (PowerUserAccess) | not 0; Tier 1 if it can `iam:PassRole` + compute to an admin role, else 2 |
 | `iam:PutRolePolicy` on its own role only | Tier 1 (self-escalation edge to sink) |
 
-**Tier 1** = has an enumerated path to a `tier0_sink`. **Tier 2** = no such path but has `IsPermissionManagement` on any service (from the catalog) or a sensitive-read witness (`secretsmanager:GetSecretValue`, `kms:Decrypt`, `ssm:GetParameter*`, `s3:GetObject` on `*`). **Tier 3** = rest.
+**Tier 1** = has an enumerated path to a `tier0_sink`. **Tier 2** = no such path but has `IsPermissionManagement` on any service (from the catalog), an escalation primitive (any action required by a registered rule; needed because the service reference annotates `iam:PassRole` and `iam:CreateAccessKey` as Write), or a sensitive-read witness (`secretsmanager:GetSecretValue`, `kms:Decrypt`, `ssm:GetParameter*`, `s3:GetObject` on `*`). **Tier 3** = rest.
 
 ---
 
