@@ -219,6 +219,10 @@ func (g gen) expr(s *schema, indent string) (string, error) {
 				parts = append(parts, body)
 				continue
 			}
+			if s.AdditionalProperties == nil {
+				parts = append(parts, "Readonly<Record<string, unknown>>") // free-form JSON object
+				continue
+			}
 			vs, ok := s.AdditionalProperties.(map[string]any)
 			if !ok {
 				return "", errors.New("map objects need an additionalProperties schema")

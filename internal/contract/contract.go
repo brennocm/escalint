@@ -4,6 +4,8 @@
 // validates generated documents against it.
 package contract
 
+import "encoding/json"
+
 // SchemaVersion is the version of the contract these structs implement.
 const SchemaVersion = "1"
 
@@ -28,6 +30,18 @@ type Analysis struct {
 	Diff          *Diff          `json:"diff,omitempty"`
 	Groupings     []Grouping     `json:"groupings"`
 	Attack        AttackCoverage `json:"attack"`
+	// Policies are the documents cited by edge evidence, for the policy
+	// explainer. Empty when redacted (documents can hold identifiers that
+	// redaction cannot recognize, such as condition values).
+	Policies []PolicyDoc `json:"policies"`
+}
+
+// PolicyDoc is a policy document cited by evidence.
+type PolicyDoc struct {
+	Source   string          `json:"source"` // as in evidence[].policy
+	Name     string          `json:"name"`
+	Type     string          `json:"type"` // identity, boundary, trust
+	Document json.RawMessage `json:"document"`
 }
 
 // Generator identifies the escalint build.

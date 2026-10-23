@@ -271,6 +271,7 @@ func digitRun(s string, i int) int {
 // free text can reuse their pseudonyms.
 func (r *Redactor) Analysis(a *contract.Analysis) {
 	a.Snapshot.Redacted = true
+	a.Policies = []contract.PolicyDoc{}
 	for i, acct := range a.Snapshot.Accounts {
 		a.Snapshot.Accounts[i] = r.Account(acct)
 	}

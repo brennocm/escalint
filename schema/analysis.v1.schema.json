@@ -19,6 +19,7 @@
     "notes",
     "options",
     "paths",
+    "policies",
     "rules",
     "schema_version",
     "snapshot",
@@ -318,6 +319,13 @@
         }
       },
       "description": "ATT&CK techniques exhibited by the findings and paths."
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/policyDoc"
+      },
+      "description": "Documents of the policies cited by evidence (empty when redacted)."
     }
   },
   "$defs": {
@@ -1299,6 +1307,36 @@
               }
             }
           }
+        }
+      }
+    },
+    "policyDoc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document",
+        "name",
+        "source",
+        "type"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "identity",
+            "boundary",
+            "trust"
+          ]
+        },
+        "document": {
+          "type": "object",
+          "description": "Canonical JSON of the parsed document; statement order is preserved."
         }
       }
     }

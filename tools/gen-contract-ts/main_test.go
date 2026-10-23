@@ -33,15 +33,15 @@ func TestGeneratedContractUpToDate(t *testing.T) {
 
 func TestRejectsUnsupportedSchemas(t *testing.T) {
 	cases := map[string]string{
-		"unknown keyword":   `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"string","maxLength":3}}}`,
-		"open object":       `{"type":"object","properties":{"a":{"type":"string"}}}`,
-		"external ref":      `{"type":"object","additionalProperties":false,"properties":{"a":{"$ref":"other.json"}}}`,
-		"array no items":    `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"array"}}}`,
-		"number map":        `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"object","additionalProperties":{"type":"number"}}}}`,
-		"untyped":           `{"type":"object","additionalProperties":false,"properties":{"a":{}}}`,
-		"bad type list":     `{"type":"object","additionalProperties":false,"properties":{"a":{"type":[1]}}}`,
-		"unsupported type":  `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"tuple"}}}`,
-		"map without value": `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"object"}}}`,
+		"unknown keyword":  `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"string","maxLength":3}}}`,
+		"open object":      `{"type":"object","properties":{"a":{"type":"string"}}}`,
+		"external ref":     `{"type":"object","additionalProperties":false,"properties":{"a":{"$ref":"other.json"}}}`,
+		"array no items":   `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"array"}}}`,
+		"number map":       `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"object","additionalProperties":{"type":"number"}}}}`,
+		"untyped":          `{"type":"object","additionalProperties":false,"properties":{"a":{}}}`,
+		"bad type list":    `{"type":"object","additionalProperties":false,"properties":{"a":{"type":[1]}}}`,
+		"unsupported type": `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"tuple"}}}`,
+		"map closed":       `{"type":"object","additionalProperties":false,"properties":{"a":{"type":"object","additionalProperties":false}}}`,
 	}
 	for name, s := range cases {
 		if _, err := generate([]byte(s)); err == nil {

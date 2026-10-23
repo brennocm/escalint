@@ -3234,5 +3234,151 @@
         "paths": 0
       }
     ]
-  }
+  },
+  "policies": [
+    {
+      "source": "arn:aws:iam::111111111111:policy/DevLambda",
+      "name": "DevLambda",
+      "type": "identity",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "AllowPassRole",
+            "Effect": "Allow",
+            "Action": [
+              "iam:PassRole",
+              "lambda:CreateFunction",
+              "lambda:InvokeFunction"
+            ],
+            "Resource": [
+              "*"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject"
+            ],
+            "Resource": [
+              "arn:aws:s3:::example-bucket/a+b/*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "arn:aws:iam::aws:policy/AdministratorAccess",
+      "name": "AdministratorAccess",
+      "type": "identity",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "*"
+            ],
+            "Resource": [
+              "*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "inline:arn:aws:iam::111111111111:group/developers/update-code",
+      "name": "update-code",
+      "type": "identity",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "lambda:UpdateFunctionCode"
+            ],
+            "Resource": [
+              "*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "trust:arn:aws:iam::111111111111:role/AppDeployRole",
+      "name": "trust policy",
+      "type": "trust",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": [
+                "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRoleWithWebIdentity"
+            ],
+            "Condition": {
+              "StringEquals": {
+                "token.actions.githubusercontent.com:aud": [
+                  "sts.amazonaws.com"
+                ]
+              },
+              "StringLike": {
+                "token.actions.githubusercontent.com:sub": [
+                  "repo:example-org/*"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "source": "trust:arn:aws:iam::111111111111:role/LambdaExecAdmin",
+      "name": "trust policy",
+      "type": "trust",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "lambda.amazonaws.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRole"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "trust:arn:aws:iam::111111111111:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+      "name": "trust policy",
+      "type": "trust",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "autoscaling.amazonaws.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRole"
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

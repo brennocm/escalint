@@ -43,6 +43,8 @@ export interface Analysis {
     readonly min_severity: "" | "critical" | "high" | "medium" | "low" | "info";
   };
   readonly paths: readonly Path[];
+  /** Documents of the policies cited by evidence (empty when redacted). */
+  readonly policies: readonly PolicyDoc[];
   readonly rules: readonly Rule[];
   readonly schema_version: "1";
   readonly snapshot: {
@@ -218,6 +220,14 @@ export interface Path {
 }
 
 export type PathId = string;
+
+export interface PolicyDoc {
+  /** Canonical JSON of the parsed document; statement order is preserved. */
+  readonly document: Readonly<Record<string, unknown>>;
+  readonly name: string;
+  readonly source: string;
+  readonly type: "identity" | "boundary" | "trust";
+}
 
 export interface Rule {
   readonly attack: readonly Technique[];

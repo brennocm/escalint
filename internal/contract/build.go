@@ -12,6 +12,7 @@ import (
 	"github.com/brennocm/escalint/internal/buildinfo"
 	"github.com/brennocm/escalint/internal/detect"
 	"github.com/brennocm/escalint/internal/engine"
+	"github.com/brennocm/escalint/internal/eval"
 	"github.com/brennocm/escalint/internal/graph"
 	"github.com/brennocm/escalint/internal/rules"
 	"github.com/brennocm/escalint/internal/snapshot"
@@ -106,12 +107,61 @@ func Build(res *engine.Result, meta Meta) (*Analysis, error) {
 	a.Nodes, a.Edges, a.Paths, a.Findings = list(a.Nodes), list(a.Edges), list(a.Paths), list(a.Findings)
 	a.ChokePoints, a.Cycles, a.FixPlan = list(a.ChokePoints), list(a.Cycles), list(a.FixPlan)
 	a.Attack = coverage(att.Version, a.Findings, techniques, res.Paths, edgeAttack)
+	if a.Policies, err = citedPolicies(res); err != nil {
+		return nil, err
+	}
 	a.Stats = Stats{Nodes: len(a.Nodes), Edges: len(a.Edges), Paths: len(a.Paths), Findings: len(a.Findings)}
 	if !meta.Deterministic {
 		ms := meta.Duration.Milliseconds()
 		a.Stats.DurationMS = &ms
 	}
 	return a, nil
+}
+
+// citedPolicies collects the documents of every policy named by evidence.
+func citedPolicies(res *engine.Result) ([]PolicyDoc, error) {
+	cited := map[string]bool{}
+	for _, e := range res.Graph.Edges() {
+		for _, ev := range e.Evidence {
+			cited[ev.Policy] = true
+		}
+	}
+	found := map[string]PolicyDoc{}
+	add := func(p *eval.Policy, kind string) error {
+		if p == nil || p.Doc == nil || !cited[p.Source] {
+			return nil
+		}
+		if _, ok := found[p.Source]; ok {
+			return nil
+		}
+		doc, err := p.Doc.CanonicalJSON()
+		if err != nil {
+			return err
+		}
+		found[p.Source] = PolicyDoc{Source: p.Source, Name: p.Name, Type: kind, Document: doc}
+		return nil
+	}
+	for _, n := range res.Graph.Nodes() {
+		if pr := res.Env.Principal(n.ID); pr != nil {
+			for i := range pr.Identity {
+				if err := add(&pr.Identity[i], "identity"); err != nil {
+					return nil, err
+				}
+			}
+			if err := add(pr.Boundary, "boundary"); err != nil {
+				return nil, err
+			}
+		}
+		if err := add(res.Env.TrustPolicy(n.ID), "trust"); err != nil {
+			return nil, err
+		}
+	}
+	out := make([]PolicyDoc, 0, len(found))
+	for _, p := range found {
+		out = append(out, p)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Source < out[j].Source })
+	return out, nil
 }
 
 func snapshotInfo(res *engine.Result) SnapshotInfo {

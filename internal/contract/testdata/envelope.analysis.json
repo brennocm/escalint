@@ -3084,5 +3084,26 @@
         "paths": 0
       }
     ]
-  }
+  },
+  "policies": [
+    {
+      "source": "arn:aws:iam::aws:policy/AdministratorAccess",
+      "name": "AdministratorAccess",
+      "type": "identity",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "*"
+            ],
+            "Resource": [
+              "*"
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

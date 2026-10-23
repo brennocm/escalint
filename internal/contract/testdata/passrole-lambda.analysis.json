@@ -1777,5 +1777,49 @@
         "paths": 0
       }
     ]
-  }
+  },
+  "policies": [
+    {
+      "source": "inline:arn:aws:iam::111111111111:user/attacker/p",
+      "name": "p",
+      "type": "identity",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "iam:PassRole",
+              "lambda:CreateFunction",
+              "lambda:InvokeFunction"
+            ],
+            "Resource": [
+              "*"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "trust:arn:aws:iam::111111111111:role/runtime",
+      "name": "trust policy",
+      "type": "trust",
+      "document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "lambda.amazonaws.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRole"
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }
