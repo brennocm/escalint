@@ -13,11 +13,15 @@ browser, by every web page the user visits (CSRF, DNS rebinding).
 - **Bind** `127.0.0.1` on a random port by default. Another address needs
   `--listen` *and* `--allow-remote`, and prints a warning.
 - **Token:** 32 random bytes (base64url) in the first URL, printed on
-  stderr only. The first request exchanges it for a cookie
-  (`HttpOnly`, `SameSite=Strict`, path `/`, 12 hours) and redirects to `/`
-  so the token leaves the address bar and history. Comparisons are
-  constant-time. Without a valid cookie every request is 401. The cookie
-  is not `Secure` because the server speaks plain HTTP on loopback.
+  stderr only, accepted **once**. The first request exchanges it for a
+  cookie holding a separate random session value (`HttpOnly`,
+  `SameSite=Strict`, path `/`, 12 hours) and redirects to `/` so the token
+  leaves the address bar and history; a leaked URL opens nothing after
+  that (the browser that has the session is simply redirected).
+  Comparisons are constant-time. Without a valid cookie every request is
+  401. The cookie is not `Secure` because the server speaks plain HTTP on
+  loopback. Cookies are not scoped by port, so the browser also sends it
+  to other services on `127.0.0.1`; the value is useless to them.
 - **Host check:** only `127.0.0.1:<port>`, `localhost:<port>`,
   `[::1]:<port>` (or the explicit listen address) are accepted; anything
   else is 421, which defeats DNS rebinding.

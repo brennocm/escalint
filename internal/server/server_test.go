@@ -18,7 +18,9 @@ func handler() *Handler {
 		"assets/font.woff2": &fstest.MapFile{Data: []byte("x")},
 		"assets/blob.bin":   &fstest.MapFile{Data: []byte("x")},
 	}
-	return New(assets, []byte(`{"schema_version":"1"}`), "secret-token", []string{host, "localhost:43210"})
+	h := New(assets, []byte(`{"schema_version":"1"}`), "secret-token", []string{host, "localhost:43210"})
+	h.session = "session-value"
+	return h
 }
 
 func do(h http.Handler, method, target, hostHeader string, cookie *http.Cookie) *httptest.ResponseRecorder {
@@ -32,7 +34,7 @@ func do(h http.Handler, method, target, hostHeader string, cookie *http.Cookie) 
 	return w
 }
 
-var session = &http.Cookie{Name: CookieName, Value: "secret-token"}
+var session = &http.Cookie{Name: CookieName, Value: "session-value"}
 
 func TestAccessControl(t *testing.T) {
 	h := handler()
@@ -112,6 +114,21 @@ func TestTokenExchange(t *testing.T) {
 	ok := do(h, http.MethodGet, "/analysis.json", host, c)
 	if ok.Code != http.StatusOK || ok.Header().Get("Content-Type") != "application/json" || ok.Header().Get("Cache-Control") != "no-store" {
 		t.Errorf("analysis: %d %v", ok.Code, ok.Header())
+	}
+	if c.Value == "secret-token" {
+		t.Error("the cookie carries the URL token")
+	}
+	if again := do(h, http.MethodGet, "/?token=secret-token", host, nil); again.Code != http.StatusUnauthorized {
+		t.Errorf("token accepted twice: %d", again.Code)
+	}
+	if reopen := do(h, http.MethodGet, "/?token=secret-token", host, c); reopen.Code != http.StatusSeeOther {
+		t.Errorf("reopening the URL with a session: %d", reopen.Code)
+	}
+	if tokenAsCookie := do(h, http.MethodGet, "/", host, &http.Cookie{Name: CookieName, Value: "secret-token"}); tokenAsCookie.Code != http.StatusUnauthorized {
+		t.Errorf("the token works as a cookie: %d", tokenAsCookie.Code)
+	}
+	if fresh := New(nil, nil, "t", nil); len(fresh.session) < 26 || fresh.session == New(nil, nil, "t", nil).session {
+		t.Errorf("session value %q is not random", fresh.session)
 	}
 	asset := do(h, http.MethodGet, "/assets/app-1.js", host, c)
 	if !strings.HasPrefix(asset.Header().Get("Content-Type"), "text/javascript") || !strings.Contains(asset.Header().Get("Cache-Control"), "immutable") {

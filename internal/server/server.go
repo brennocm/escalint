@@ -1,8 +1,9 @@
 // Package server implements `escalint serve`: the embedded UI and one
 // analysis, read-only, on the loopback interface (ADR 0017). Controls:
-// random port, a random token in the first URL exchanged for an HttpOnly
-// SameSite=Strict cookie, a Host check against DNS rebinding, GET only,
-// a strict Content-Security-Policy and isolation headers.
+// random port, a one-time random token in the first URL exchanged for a
+// separate session value in an HttpOnly SameSite=Strict cookie, a Host
+// check against DNS rebinding, GET only, a strict Content-Security-Policy
+// and isolation headers.
 package server
 
 import (
@@ -16,6 +17,7 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -40,13 +42,19 @@ type Handler struct {
 	assets   fs.FS
 	analysis []byte
 	token    string
+	// session is the cookie value. It differs from the token, which is
+	// accepted once: a URL that leaks after use (shell history, a screen
+	// share) opens nothing.
+	session string
+	used    atomic.Bool
 	// allowedHosts are the Host header values accepted (host:port).
 	allowedHosts map[string]bool
 }
 
 // New builds the handler. hosts lists the accepted Host header values.
 func New(assets fs.FS, analysis []byte, token string, hosts []string) *Handler {
-	h := &Handler{assets: assets, analysis: analysis, token: token, allowedHosts: map[string]bool{}}
+	// crypto/rand.Text never fails (it crashes the program instead).
+	h := &Handler{assets: assets, analysis: analysis, token: token, session: rand.Text(), allowedHosts: map[string]bool{}}
 	for _, host := range hosts {
 		h.allowedHosts[strings.ToLower(host)] = true
 	}
@@ -80,8 +88,13 @@ func setSecurityHeaders(w http.ResponseWriter) {
 	h.Set("Cache-Control", "no-store")
 }
 
-func (h *Handler) validToken(candidate string) bool {
-	return candidate != "" && subtle.ConstantTimeCompare([]byte(candidate), []byte(h.token)) == 1
+func equal(candidate, secret string) bool {
+	return candidate != "" && subtle.ConstantTimeCompare([]byte(candidate), []byte(secret)) == 1
+}
+
+func (h *Handler) validSession(r *http.Request) bool {
+	c, err := r.Cookie(CookieName)
+	return err == nil && equal(c.Value, h.session)
 }
 
 // ServeHTTP enforces the controls in order: headers, Host, method, auth.
@@ -97,8 +110,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if t := r.URL.Query().Get("token"); t != "" {
-		if !h.validToken(t) {
-			http.Error(w, "invalid token", http.StatusUnauthorized)
+		if h.validSession(r) {
+			// The printed URL opened again in a browser that already has
+			// the session.
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		if !equal(t, h.token) || !h.used.CompareAndSwap(false, true) {
+			http.Error(w, "invalid or already used token: restart escalint serve for a new URL", http.StatusUnauthorized)
 			return
 		}
 		// Exchange the token for a cookie and drop it from the address bar
@@ -106,14 +125,13 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// #nosec G124 -- plain HTTP on loopback: a Secure cookie would not be
 		// sent back by every browser; HttpOnly and SameSite=Strict are set.
 		http.SetCookie(w, &http.Cookie{
-			Name: CookieName, Value: h.token, Path: "/", HttpOnly: true, SameSite: http.SameSiteStrictMode,
+			Name: CookieName, Value: h.session, Path: "/", HttpOnly: true, SameSite: http.SameSiteStrictMode,
 			Expires: time.Now().Add(12 * time.Hour),
 		})
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
-	c, err := r.Cookie(CookieName)
-	if err != nil || !h.validToken(c.Value) {
+	if !h.validSession(r) {
 		http.Error(w, "unauthorized: open the URL printed by escalint serve", http.StatusUnauthorized)
 		return
 	}
