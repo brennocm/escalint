@@ -96,7 +96,7 @@ func newScanCommand() *cobra.Command {
 			if fm == report.SARIF && l.source != "-" {
 				opts.SnapshotURI = sarifURI(l.source)
 				if l.redactor != nil {
-					opts.SnapshotURI = l.redactor.Text(opts.SnapshotURI)
+					opts.SnapshotURI = l.redactor.File(opts.SnapshotURI)
 				}
 			}
 			if err := render(cmd, out, l.analysis, fm, opts); err != nil {

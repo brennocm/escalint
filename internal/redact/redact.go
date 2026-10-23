@@ -320,14 +320,11 @@ func (r *Redactor) Analysis(a *contract.Analysis) {
 		r.diffItems(&a.Diff.Removed)
 	}
 	// Free text, after every structured identifier is known.
+	for i := range a.Edges {
+		r.edgeText(&a.Edges[i])
+	}
 	for i := range a.Findings {
-		f := &a.Findings[i]
-		f.Message = r.Text(f.Message)
-		f.Location.Path = r.Text(f.Location.Path)
-		if f.Suppressed != nil {
-			f.Suppressed.Reason = r.Text(f.Suppressed.Reason)
-			f.Suppressed.Source = r.Text(f.Suppressed.Source)
-		}
+		r.findingText(&a.Findings[i])
 	}
 	for i := range a.FixPlan {
 		a.FixPlan[i].Change = r.Text(a.FixPlan[i].Change)
@@ -340,13 +337,42 @@ func (r *Redactor) Analysis(a *contract.Analysis) {
 		s.ARN = r.Text(s.ARN)
 		s.Reason = r.Text(s.Reason)
 	}
-	if a.Diff != nil && a.Diff.Removed.Objects != nil {
-		for i := range a.Diff.Removed.Objects.Findings {
-			f := &a.Diff.Removed.Objects.Findings[i]
-			f.Message = r.Text(f.Message)
+	if a.Diff != nil {
+		for _, d := range []*contract.DiffItems{&a.Diff.Added, &a.Diff.Removed} {
+			if d.Objects == nil {
+				continue
+			}
+			for i := range d.Objects.Edges {
+				r.edgeText(&d.Objects.Edges[i])
+			}
+			for i := range d.Objects.Findings {
+				r.findingText(&d.Objects.Findings[i])
+			}
 		}
 	}
 	sortByID(a)
+}
+
+// findingText redacts the free text of a finding. Messages can quote names
+// that have no node (a group missing from the snapshot, EL-PARSE-002) and
+// GitHub subjects (EL-TR-002/003), which Text alone would not know.
+func (r *Redactor) findingText(f *contract.Finding) {
+	msg := r.GitHubSubjects(f.Message)
+	if strings.HasPrefix(f.RuleID, "EL-PARSE-") {
+		msg = r.quoted(msg)
+	}
+	f.Message = r.Text(msg)
+	f.Location.Path = r.Text(r.conditionKeysIn(f.Location.Path))
+	if f.Suppressed != nil {
+		f.Suppressed.Reason = r.Text(f.Suppressed.Reason)
+		f.Suppressed.Source = r.File(f.Suppressed.Source)
+	}
+}
+
+func (r *Redactor) edgeText(e *contract.Edge) {
+	for i, p := range e.PrerequisitesUnverified {
+		e.PrerequisitesUnverified[i] = r.Text(p)
+	}
 }
 
 func (r *Redactor) ids(list []string) {
@@ -392,6 +418,9 @@ func (r *Redactor) edge(e *contract.Edge) {
 	if e.Actor != nil {
 		v := r.ID(*e.Actor)
 		e.Actor = &v
+	}
+	for i, k := range e.ConditionsUnevaluated {
+		e.ConditionsUnevaluated[i] = r.ConditionKey(k)
 	}
 	for i := range e.Evidence {
 		ev := &e.Evidence[i]
@@ -442,6 +471,150 @@ func (r *Redactor) diffItems(d *contract.DiffItems) {
 	for i := range d.Objects.Findings {
 		r.finding(&d.Objects.Findings[i])
 	}
+}
+
+// ConditionKey pseudonymizes the identifying part of a condition key: the
+// tag name of aws:PrincipalTag/…, aws:ResourceTag/…, aws:RequestTag/… and
+// iam:ResourceTag/…, and the host of a private identity provider
+// ("oidc.eks.…/id/…:sub"). Global keys stay readable. The original is
+// remembered so messages that quote it are rewritten by Text.
+func (r *Redactor) ConditionKey(k string) string {
+	out := k
+	if prefix, tag, ok := strings.Cut(k, "/"); ok && strings.HasSuffix(strings.ToLower(prefix), "tag") && strings.Contains(prefix, ":") && !strings.Contains(prefix, ".") {
+		out = prefix + "/" + r.Name("tag", tag)
+	} else if host, claim, ok := cutLast(k, ":"); ok && strings.Contains(host, ".") && !publicHosts[host] {
+		out = r.Name("federated", host) + ":" + claim
+	}
+	return r.remember(k, out)
+}
+
+// conditionKeysIn redacts condition keys inside a policy JSON path such as
+// Statement[0].Condition.StringEquals["aws:principaltag/team"].
+func (r *Redactor) conditionKeysIn(path string) string {
+	var b strings.Builder
+	for {
+		i := strings.Index(path, `["`)
+		if i < 0 {
+			break
+		}
+		j := strings.Index(path[i+2:], `"]`)
+		if j < 0 {
+			break
+		}
+		b.WriteString(path[:i+2])
+		b.WriteString(r.ConditionKey(path[i+2 : i+2+j]))
+		path = path[i+2+j:]
+	}
+	b.WriteString(path)
+	return b.String()
+}
+
+// GitHubSubjects pseudonymizes the organization, repository and
+// environment of GitHub Actions subjects ("repo:org/repo:environment:prod")
+// in free text. Wildcards stay visible: they are what EL-TR-003 is about.
+func (r *Redactor) GitHubSubjects(s string) string {
+	const marker = "repo:"
+	var b strings.Builder
+	for {
+		i := strings.Index(s, marker)
+		if i < 0 || (i > 0 && identByte(s[i-1])) {
+			if i < 0 {
+				break
+			}
+			b.WriteString(s[:i+len(marker)])
+			s = s[i+len(marker):]
+			continue
+		}
+		end := i + len(marker)
+		for end < len(s) && s[end] != ' ' && s[end] != ',' && s[end] != '"' && s[end] != ';' && s[end] != ')' {
+			end++
+		}
+		b.WriteString(s[:i])
+		b.WriteString(marker + r.subject(s[i+len(marker):end]))
+		s = s[end:]
+	}
+	b.WriteString(s)
+	return b.String()
+}
+
+func (r *Redactor) subject(v string) string {
+	parts := strings.Split(v, ":")
+	keep := func(x string) bool { return x == "" || strings.ContainsAny(x, "*?") }
+	if org, repo, ok := strings.Cut(parts[0], "/"); ok {
+		if !keep(org) {
+			org = r.Name("github", org)
+		}
+		if !keep(repo) {
+			repo = r.Name("github", repo)
+		}
+		parts[0] = org + "/" + repo
+	} else if !keep(parts[0]) {
+		parts[0] = r.Name("github", parts[0])
+	}
+	for i := 1; i+1 < len(parts); i++ {
+		if parts[i] == "environment" && !keep(parts[i+1]) {
+			parts[i+1] = r.Name("github", parts[i+1])
+		}
+	}
+	return strings.Join(parts, ":")
+}
+
+// quoted pseudonymizes every double-quoted value in a diagnostic message:
+// names of missing groups or policies, fragments of a broken document.
+// Policy version IDs ("v3") are kept.
+func (r *Redactor) quoted(s string) string {
+	var b strings.Builder
+	for {
+		i := strings.IndexByte(s, '"')
+		if i < 0 {
+			break
+		}
+		j := strings.IndexByte(s[i+1:], '"')
+		if j < 0 {
+			break
+		}
+		v := s[i+1 : i+1+j]
+		if !versionID(v) && v != "" {
+			v = r.Name("ref", v)
+		}
+		b.WriteString(s[:i+1] + v + `"`)
+		s = s[i+2+j:]
+	}
+	b.WriteString(s)
+	return b.String()
+}
+
+func versionID(v string) bool {
+	if len(v) < 2 || v[0] != 'v' {
+		return false
+	}
+	for _, c := range v[1:] {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// File pseudonymizes a file path: only a conventional base name is kept
+// (".escalint.yaml", "snapshot.json"), anything else becomes a pseudonym.
+func (r *Redactor) File(p string) string {
+	if p == "" {
+		return p
+	}
+	base := p
+	if i := strings.LastIndexAny(p, `/\`); i >= 0 {
+		base = p[i+1:]
+	}
+	switch base {
+	case ".escalint.yaml", ".escalint.yml", "snapshot.json", "analysis.json":
+		return base
+	}
+	ext := ""
+	if i := strings.LastIndexByte(base, '.'); i > 0 {
+		ext = base[i:]
+	}
+	return r.Name("file", p) + ext
 }
 
 func cutLast(s, sep string) (before, after string, ok bool) {
