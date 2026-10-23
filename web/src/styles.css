@@ -1023,3 +1023,112 @@ kbd {
   gap: 8px;
   margin-bottom: 8px;
 }
+
+/* ---- Trace --------------------------------------------------------- */
+
+.trace__canvas {
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.trace__box {
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+  stroke-width: 1.5;
+}
+
+.trace__card {
+  cursor: pointer;
+  outline: none;
+}
+
+.trace__card:focus-visible .trace__box,
+.trace__card--selected .trace__box {
+  stroke: var(--color-focus);
+  stroke-width: 2.5;
+}
+
+.trace__name {
+  fill: var(--color-text);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.trace__meta,
+.trace__label {
+  fill: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.trace__hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.trace__hit:focus-visible {
+  stroke: var(--color-focus);
+  stroke-width: 2;
+}
+
+.trace__edge--selected .trace__label {
+  fill: var(--color-text);
+  font-weight: 700;
+}
+
+/* ---- Policy explainer ---------------------------------------------- */
+
+.explainer {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.explainer__trace li {
+  padding: 2px 0;
+  overflow-wrap: anywhere;
+}
+
+.explainer__policy h3 {
+  margin: 12px 0 4px;
+  font-size: 0.9rem;
+}
+
+.json {
+  margin: 0;
+  padding: 8px 0;
+  max-height: 420px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.json__line {
+  display: block;
+  padding: 0 12px;
+}
+
+.json__line--hit {
+  background: var(--color-surface-raised);
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+.json__key {
+  color: var(--color-accent);
+}
+.json__string {
+  color: var(--color-text);
+}
+.json__number,
+.json__literal {
+  color: var(--severity-medium);
+}
+.json__brace,
+.json__bracket,
+.json__colon,
+.json__comma {
+  color: var(--color-text-muted);
+}
