@@ -9,9 +9,7 @@
     "format": "envelope",
     "collected_at": "2026-10-01T00:00:00Z",
     "partition": "aws",
-    "accounts": [
-      "111111111111"
-    ],
+    "accounts": ["111111111111"],
     "redacted": false,
     "organization": null
   },
@@ -111,9 +109,7 @@
       "attack": [],
       "attack_unmapped_reason": "Configuration diagnostic about .escalint.yaml, not an adversary behavior.",
       "remediation": "Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
-      "references": [
-        "https://github.com/brennocm/escalint/blob/main/docs/configuration.md"
-      ]
+      "references": ["https://github.com/brennocm/escalint/blob/main/docs/configuration.md"]
     },
     {
       "id": "EL-PE-001",
@@ -122,12 +118,8 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-001"
-      ],
-      "required_actions": [
-        "iam:CreatePolicyVersion"
-      ],
+      "pathfinding_ids": ["iam-001"],
+      "required_actions": ["iam:CreatePolicyVersion"],
       "prerequisites": [
         "a customer managed policy is attached to the actor (directly or through a group)"
       ],
@@ -135,10 +127,7 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -156,23 +145,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-005"
-      ],
-      "required_actions": [
-        "iam:PutRolePolicy"
-      ],
-      "prerequisites": [
-        "the actor is a role allowed iam:PutRolePolicy on its own ARN"
-      ],
+      "pathfinding_ids": ["iam-005"],
+      "required_actions": ["iam:PutRolePolicy"],
+      "prerequisites": ["the actor is a role allowed iam:PutRolePolicy on its own ARN"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -190,23 +170,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-007"
-      ],
-      "required_actions": [
-        "iam:PutUserPolicy"
-      ],
-      "prerequisites": [
-        "the actor is a user allowed iam:PutUserPolicy on its own ARN"
-      ],
+      "pathfinding_ids": ["iam-007"],
+      "required_actions": ["iam:PutUserPolicy"],
+      "prerequisites": ["the actor is a user allowed iam:PutUserPolicy on its own ARN"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -224,23 +195,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-008"
-      ],
-      "required_actions": [
-        "iam:AttachUserPolicy"
-      ],
-      "prerequisites": [
-        "the actor is a user"
-      ],
+      "pathfinding_ids": ["iam-008"],
+      "required_actions": ["iam:AttachUserPolicy"],
+      "prerequisites": ["the actor is a user"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -258,23 +220,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-009"
-      ],
-      "required_actions": [
-        "iam:AttachRolePolicy"
-      ],
-      "prerequisites": [
-        "the actor is a role"
-      ],
+      "pathfinding_ids": ["iam-009"],
+      "required_actions": ["iam:AttachRolePolicy"],
+      "prerequisites": ["the actor is a role"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -292,23 +245,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-010"
-      ],
-      "required_actions": [
-        "iam:AttachGroupPolicy"
-      ],
-      "prerequisites": [
-        "the actor is a member of the group"
-      ],
+      "pathfinding_ids": ["iam-010"],
+      "required_actions": ["iam:AttachGroupPolicy"],
+      "prerequisites": ["the actor is a member of the group"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -326,23 +270,14 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-011"
-      ],
-      "required_actions": [
-        "iam:PutGroupPolicy"
-      ],
-      "prerequisites": [
-        "the actor is a member of the group"
-      ],
+      "pathfinding_ids": ["iam-011"],
+      "required_actions": ["iam:PutGroupPolicy"],
+      "prerequisites": ["the actor is a member of the group"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -360,23 +295,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-013"
-      ],
-      "required_actions": [
-        "iam:AddUserToGroup"
-      ],
-      "prerequisites": [
-        "the actor is a user that is not yet a member"
-      ],
+      "pathfinding_ids": ["iam-013"],
+      "required_actions": ["iam:AddUserToGroup"],
+      "prerequisites": ["the actor is a user that is not yet a member"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -394,34 +320,20 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": [
-        "iam-002"
-      ],
-      "required_actions": [
-        "iam:CreateAccessKey"
-      ],
-      "prerequisites": [
-        "the target user has fewer than 2 access keys"
-      ],
+      "pathfinding_ids": ["iam-002"],
+      "required_actions": ["iam:CreateAccessKey"],
+      "prerequisites": ["the target user has fewer than 2 access keys"],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -439,35 +351,20 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": [
-        "iam-003"
-      ],
-      "required_actions": [
-        "iam:CreateAccessKey",
-        "iam:DeleteAccessKey"
-      ],
-      "prerequisites": [
-        "the target is an IAM user"
-      ],
+      "pathfinding_ids": ["iam-003"],
+      "required_actions": ["iam:CreateAccessKey", "iam:DeleteAccessKey"],
+      "prerequisites": ["the target is an IAM user"],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -485,34 +382,20 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": [
-        "iam-004"
-      ],
-      "required_actions": [
-        "iam:CreateLoginProfile"
-      ],
-      "prerequisites": [
-        "the target user has no console password yet"
-      ],
+      "pathfinding_ids": ["iam-004"],
+      "required_actions": ["iam:CreateLoginProfile"],
+      "prerequisites": ["the target user has no console password yet"],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -530,12 +413,8 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": [
-        "iam-006"
-      ],
-      "required_actions": [
-        "iam:UpdateLoginProfile"
-      ],
+      "pathfinding_ids": ["iam-006"],
+      "required_actions": ["iam:UpdateLoginProfile"],
       "prerequisites": [
         "the target user has a console password",
         "MFA on the target may still block console use"
@@ -544,21 +423,13 @@
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -576,12 +447,8 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "modify_trust",
-      "pathfinding_ids": [
-        "iam-012"
-      ],
-      "required_actions": [
-        "iam:UpdateAssumeRolePolicy"
-      ],
+      "pathfinding_ids": ["iam-012"],
+      "required_actions": ["iam:UpdateAssumeRolePolicy"],
       "prerequisites": [
         "the target role is not service-linked",
         "the actor can assume the role once the trust names it"
@@ -590,10 +457,7 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -611,33 +475,20 @@
       "severity": "medium",
       "status": "stable",
       "edge_kind": "assume",
-      "pathfinding_ids": [
-        "sts-001"
-      ],
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
-      "prerequisites": [
-        "the role's trust policy accepts the actor (docs/research.md §2.4)"
-      ],
+      "pathfinding_ids": ["sts-001"],
+      "required_actions": ["sts:AssumeRole"],
+      "prerequisites": ["the role's trust policy accepts the actor (docs/research.md §2.4)"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -655,32 +506,20 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-014"
-      ],
-      "required_actions": [
-        "iam:AttachRolePolicy",
-        "sts:AssumeRole"
-      ],
-      "prerequisites": [
-        "the actor can already assume the role"
-      ],
+      "pathfinding_ids": ["iam-014"],
+      "required_actions": ["iam:AttachRolePolicy", "sts:AssumeRole"],
+      "prerequisites": ["the actor can already assume the role"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -698,13 +537,8 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-016"
-      ],
-      "required_actions": [
-        "iam:CreatePolicyVersion",
-        "sts:AssumeRole"
-      ],
+      "pathfinding_ids": ["iam-016"],
+      "required_actions": ["iam:CreatePolicyVersion", "sts:AssumeRole"],
       "prerequisites": [
         "a customer managed policy is attached to the role",
         "the actor can already assume the role"
@@ -713,18 +547,13 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -742,32 +571,20 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-017"
-      ],
-      "required_actions": [
-        "iam:PutRolePolicy",
-        "sts:AssumeRole"
-      ],
-      "prerequisites": [
-        "the actor can already assume the role"
-      ],
+      "pathfinding_ids": ["iam-017"],
+      "required_actions": ["iam:PutRolePolicy", "sts:AssumeRole"],
+      "prerequisites": ["the actor can already assume the role"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -785,33 +602,20 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-015"
-      ],
-      "required_actions": [
-        "iam:AttachUserPolicy",
-        "iam:CreateAccessKey"
-      ],
-      "prerequisites": [
-        "the actor can create credentials for the user"
-      ],
+      "pathfinding_ids": ["iam-015"],
+      "required_actions": ["iam:AttachUserPolicy", "iam:CreateAccessKey"],
+      "prerequisites": ["the actor can create credentials for the user"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         }
       ],
@@ -829,33 +633,20 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-018"
-      ],
-      "required_actions": [
-        "iam:PutUserPolicy",
-        "iam:CreateAccessKey"
-      ],
-      "prerequisites": [
-        "the actor can create credentials for the user"
-      ],
+      "pathfinding_ids": ["iam-018"],
+      "required_actions": ["iam:PutUserPolicy", "iam:CreateAccessKey"],
+      "prerequisites": ["the actor can create credentials for the user"],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         }
       ],
@@ -873,11 +664,7 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": [
-        "iam-019",
-        "iam-020",
-        "iam-021"
-      ],
+      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
       "required_actions": [
         "iam:AttachRolePolicy",
         "iam:CreatePolicyVersion",
@@ -891,10 +678,7 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": [
-            "Persistence",
-            "Privilege Escalation"
-          ],
+          "tactics": ["Persistence", "Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -912,24 +696,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "ec2:RunInstances"
-      ],
-      "prerequisites": [
-        "the role trusts ec2.amazonaws.com",
-        "the role is in an instance profile"
-      ],
+      "pathfinding_ids": ["ec2-001"],
+      "required_actions": ["iam:PassRole", "ec2:RunInstances"],
+      "prerequisites": ["the role trusts ec2.amazonaws.com", "the role is in an instance profile"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -948,32 +722,20 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "lambda-001"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "lambda:CreateFunction",
-        "lambda:InvokeFunction"
-      ],
-      "prerequisites": [
-        "the role trusts lambda.amazonaws.com"
-      ],
+      "pathfinding_ids": ["lambda-001"],
+      "required_actions": ["iam:PassRole", "lambda:CreateFunction", "lambda:InvokeFunction"],
+      "prerequisites": ["the role trusts lambda.amazonaws.com"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         },
         {
           "id": "T1648",
           "name": "Serverless Execution",
-          "tactics": [
-            "Execution"
-          ],
+          "tactics": ["Execution"],
           "url": "https://attack.mitre.org/techniques/T1648"
         }
       ],
@@ -991,23 +753,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "cloudformation-001"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "cloudformation:CreateStack"
-      ],
-      "prerequisites": [
-        "the role trusts cloudformation.amazonaws.com"
-      ],
+      "pathfinding_ids": ["cloudformation-001"],
+      "required_actions": ["iam:PassRole", "cloudformation:CreateStack"],
+      "prerequisites": ["the role trusts cloudformation.amazonaws.com"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -1025,24 +778,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "codebuild-001"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "codebuild:CreateProject",
-        "codebuild:StartBuild"
-      ],
-      "prerequisites": [
-        "the role trusts codebuild.amazonaws.com"
-      ],
+      "pathfinding_ids": ["codebuild-001"],
+      "required_actions": ["iam:PassRole", "codebuild:CreateProject", "codebuild:StartBuild"],
+      "prerequisites": ["the role trusts codebuild.amazonaws.com"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -1060,24 +803,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "glue-003"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "glue:CreateJob",
-        "glue:StartJobRun"
-      ],
-      "prerequisites": [
-        "the role trusts glue.amazonaws.com"
-      ],
+      "pathfinding_ids": ["glue-003"],
+      "required_actions": ["iam:PassRole", "glue:CreateJob", "glue:StartJobRun"],
+      "prerequisites": ["the role trusts glue.amazonaws.com"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -1095,23 +828,14 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": [
-        "sagemaker-001"
-      ],
-      "required_actions": [
-        "iam:PassRole",
-        "sagemaker:CreateNotebookInstance"
-      ],
-      "prerequisites": [
-        "the role trusts sagemaker.amazonaws.com"
-      ],
+      "pathfinding_ids": ["sagemaker-001"],
+      "required_actions": ["iam:PassRole", "sagemaker:CreateNotebookInstance"],
+      "prerequisites": ["the role trusts sagemaker.amazonaws.com"],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -1129,39 +853,26 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "update_code",
-      "pathfinding_ids": [
-        "lambda-004"
-      ],
-      "required_actions": [
-        "lambda:UpdateFunctionCode",
-        "lambda:InvokeFunction"
-      ],
-      "prerequisites": [
-        "a Lambda function runs with the role"
-      ],
+      "pathfinding_ids": ["lambda-004"],
+      "required_actions": ["lambda:UpdateFunctionCode", "lambda:InvokeFunction"],
+      "prerequisites": ["a Lambda function runs with the role"],
       "attack": [
         {
           "id": "T1648",
           "name": "Serverless Execution",
-          "tactics": [
-            "Execution"
-          ],
+          "tactics": ["Execution"],
           "url": "https://attack.mitre.org/techniques/T1648"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": [
-            "Privilege Escalation"
-          ],
+          "tactics": ["Privilege Escalation"],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
       "attack_unmapped_reason": null,
       "remediation": "Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.",
-      "references": [
-        "https://cwe.mitre.org/data/definitions/266.html"
-      ]
+      "references": ["https://cwe.mitre.org/data/definitions/266.html"]
     },
     {
       "id": "EL-TR-001",
@@ -1171,20 +882,13 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -1203,28 +907,19 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
+      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": [
-            "Initial Access"
-          ],
+          "tactics": ["Initial Access"],
           "url": "https://attack.mitre.org/techniques/T1199"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -1244,28 +939,19 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
+      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": [
-            "Initial Access"
-          ],
+          "tactics": ["Initial Access"],
           "url": "https://attack.mitre.org/techniques/T1199"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": [
-            "Initial Access",
-            "Persistence",
-            "Privilege Escalation",
-            "Stealth"
-          ],
+          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -1284,17 +970,13 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": [
-            "Initial Access"
-          ],
+          "tactics": ["Initial Access"],
           "url": "https://attack.mitre.org/techniques/T1199"
         }
       ],
@@ -1313,17 +995,13 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": [
-            "Initial Access"
-          ],
+          "tactics": ["Initial Access"],
           "url": "https://attack.mitre.org/techniques/T1199"
         }
       ],
@@ -1353,16 +1031,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1380,20 +1054,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1411,20 +1079,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1458,22 +1120,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
-          "write": [
-            "sts"
-          ],
-          "read": [
-            "s3"
-          ],
+          "permission_management": ["iam"],
+          "write": ["sts"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1493,16 +1147,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1521,19 +1171,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1551,20 +1195,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1582,20 +1220,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1614,20 +1246,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "cloudformation",
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["cloudformation", "iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1645,20 +1270,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1676,20 +1295,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1709,17 +1322,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "external_trust",
-        "no_boundary"
-      ],
+      "flags": ["external_trust", "no_boundary"],
       "group": null
     },
     {
@@ -1755,16 +1363,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1809,16 +1413,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1838,17 +1438,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "external_trust",
-        "no_boundary"
-      ],
+      "flags": ["external_trust", "no_boundary"],
       "group": null
     },
     {
@@ -1900,16 +1495,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1929,16 +1520,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -1973,19 +1560,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2035,20 +1616,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2068,16 +1643,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2096,20 +1667,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam",
-            "lambda"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam", "lambda"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2143,20 +1707,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2175,19 +1733,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2205,23 +1757,14 @@
         "reachable_principals": 8,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
-          "write": [
-            "ec2",
-            "sts"
-          ],
-          "read": [
-            "s3"
-          ],
+          "permission_management": ["iam"],
+          "write": ["ec2", "sts"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2241,16 +1784,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2269,19 +1808,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2301,16 +1834,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2330,16 +1859,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2357,22 +1882,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
-          "write": [
-            "sts"
-          ],
-          "read": [
-            "s3"
-          ],
+          "permission_management": ["iam"],
+          "write": ["sts"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2391,20 +1908,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "codebuild",
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["codebuild", "iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2438,22 +1948,14 @@
         "reachable_principals": 2,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
-          "write": [
-            "sts"
-          ],
-          "read": [
-            "s3"
-          ],
+          "permission_management": ["iam"],
+          "write": ["sts"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2487,20 +1989,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2519,19 +2015,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "sts"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["sts"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2551,16 +2041,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2580,16 +2066,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2609,16 +2091,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2636,20 +2114,14 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2669,16 +2141,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2698,17 +2166,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "external_trust",
-        "no_boundary"
-      ],
+      "flags": ["external_trust", "no_boundary"],
       "group": null
     },
     {
@@ -2728,16 +2191,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2756,20 +2215,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "glue",
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["glue", "iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2789,16 +2241,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2818,16 +2266,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2846,19 +2290,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "lambda"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["lambda"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2894,17 +2332,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "external_trust",
-        "no_boundary"
-      ],
+      "flags": ["external_trust", "no_boundary"],
       "group": null
     },
     {
@@ -2949,16 +2382,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -2978,16 +2407,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -3007,16 +2432,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -3034,20 +2455,14 @@
         "reachable_principals": 2,
         "reaches_tier0": false,
         "capabilities": {
-          "permission_management": [
-            "iam"
-          ],
+          "permission_management": ["iam"],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -3066,19 +2481,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -3098,17 +2507,12 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": [
-            "s3"
-          ],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "external_trust",
-        "no_boundary"
-      ],
+      "flags": ["external_trust", "no_boundary"],
       "group": null
     },
     {
@@ -3127,20 +2531,13 @@
         "reaches_tier0": false,
         "capabilities": {
           "permission_management": [],
-          "write": [
-            "iam",
-            "sagemaker"
-          ],
-          "read": [
-            "s3"
-          ],
+          "write": ["iam", "sagemaker"],
+          "read": ["s3"],
           "list": []
         }
       },
       "last_used": null,
-      "flags": [
-        "no_boundary"
-      ],
+      "flags": ["no_boundary"],
       "group": null
     },
     {
@@ -3175,17 +2572,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_a1ed24a82d878005",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "conditional",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -3212,9 +2602,7 @@
       ],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -3244,16 +2632,10 @@
       "from": "n_74430d9c3da23904",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_74430d9c3da23904",
@@ -3269,10 +2651,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3305,16 +2684,10 @@
       "from": "n_be0407e00eca3e17",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_be0407e00eca3e17",
@@ -3330,10 +2703,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3366,16 +2736,10 @@
       "from": "n_852843fd1bd8f0b0",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_852843fd1bd8f0b0",
@@ -3391,10 +2755,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3427,22 +2788,10 @@
       "from": "n_5ca214324cf27b59",
       "to": "n_ead0ec6ff5e0c408",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-015",
-        "EL-PE-016",
-        "EL-PE-017"
-      ],
-      "pathfinding_ids": [
-        "iam-014",
-        "iam-016",
-        "iam-017"
-      ],
+      "rule_ids": ["EL-PE-015", "EL-PE-016", "EL-PE-017"],
+      "pathfinding_ids": ["iam-014", "iam-016", "iam-017"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachRolePolicy",
-        "iam:CreatePolicyVersion",
-        "iam:PutRolePolicy"
-      ],
+      "required_actions": ["iam:AttachRolePolicy", "iam:CreatePolicyVersion", "iam:PutRolePolicy"],
       "evidence": [
         {
           "principal": "n_5ca214324cf27b59",
@@ -3476,10 +2825,7 @@
       "prerequisites_unverified": [],
       "latent": true,
       "actor": null,
-      "attack": [
-        "T1098.003",
-        "T1548.005"
-      ],
+      "attack": ["T1098.003", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3531,16 +2877,10 @@
       "from": "n_2034f1f4f74f1500",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_2034f1f4f74f1500",
@@ -3556,10 +2896,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3592,16 +2929,10 @@
       "from": "n_af2a19690eb31f99",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_af2a19690eb31f99",
@@ -3617,10 +2948,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3656,9 +2984,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_7c16540c78f354be",
@@ -3707,16 +3033,10 @@
       "from": "n_ae3c6e515ab43894",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ae3c6e515ab43894",
@@ -3732,10 +3052,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3768,18 +3085,10 @@
       "from": "n_1c6c327c7dae6c7e",
       "to": "n_8e5711fd45dcfd39",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-020"
-      ],
-      "pathfinding_ids": [
-        "iam-019",
-        "iam-020",
-        "iam-021"
-      ],
+      "rule_ids": ["EL-PE-020"],
+      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachRolePolicy"
-      ],
+      "required_actions": ["iam:AttachRolePolicy"],
       "evidence": [
         {
           "principal": "n_1c6c327c7dae6c7e",
@@ -3795,9 +3104,7 @@
       "prerequisites_unverified": [],
       "latent": true,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -3824,16 +3131,10 @@
       "from": "n_8ed7c9053782bc68",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_8ed7c9053782bc68",
@@ -3849,10 +3150,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3885,16 +3183,10 @@
       "from": "n_345122b9d2616ed4",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_345122b9d2616ed4",
@@ -3910,10 +3202,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -3946,16 +3235,10 @@
       "from": "n_d0e420f49b96af32",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_d0e420f49b96af32",
@@ -3971,10 +3254,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4007,17 +3287,10 @@
       "from": "n_3a2d383c69f32747",
       "to": "n_7c16540c78f354be",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-023"
-      ],
-      "pathfinding_ids": [
-        "cloudformation-001"
-      ],
+      "rule_ids": ["EL-PE-023"],
+      "pathfinding_ids": ["cloudformation-001"],
       "status": "allowed",
-      "required_actions": [
-        "cloudformation:CreateStack",
-        "iam:PassRole"
-      ],
+      "required_actions": ["cloudformation:CreateStack", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_3a2d383c69f32747",
@@ -4042,9 +3315,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -4076,16 +3347,10 @@
       "from": "n_0e310b3575570e0e",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-005"
-      ],
-      "pathfinding_ids": [
-        "iam-009"
-      ],
+      "rule_ids": ["EL-PE-005"],
+      "pathfinding_ids": ["iam-009"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachRolePolicy"
-      ],
+      "required_actions": ["iam:AttachRolePolicy"],
       "evidence": [
         {
           "principal": "n_0e310b3575570e0e",
@@ -4101,9 +3366,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -4130,17 +3393,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_ead0ec6ff5e0c408",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "conditional",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -4167,9 +3423,7 @@
       ],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -4199,16 +3453,10 @@
       "from": "n_52944f514b8d42fe",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_52944f514b8d42fe",
@@ -4224,10 +3472,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4263,9 +3508,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a1ed24a82d878005",
@@ -4317,9 +3560,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_2034f1f4f74f1500",
@@ -4368,16 +3609,10 @@
       "from": "n_721e1181b9f02849",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_721e1181b9f02849",
@@ -4393,10 +3628,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4429,16 +3661,10 @@
       "from": "n_ead0ec6ff5e0c408",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ead0ec6ff5e0c408",
@@ -4454,10 +3680,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4490,18 +3713,10 @@
       "from": "n_721e1181b9f02849",
       "to": "n_50322ab43701cf91",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-022"
-      ],
-      "pathfinding_ids": [
-        "lambda-001"
-      ],
+      "rule_ids": ["EL-PE-022"],
+      "pathfinding_ids": ["lambda-001"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PassRole",
-        "lambda:CreateFunction",
-        "lambda:InvokeFunction"
-      ],
+      "required_actions": ["iam:PassRole", "lambda:CreateFunction", "lambda:InvokeFunction"],
       "evidence": [
         {
           "principal": "n_721e1181b9f02849",
@@ -4535,10 +3750,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005",
-        "T1648"
-      ],
+      "attack": ["T1548.005", "T1648"],
       "detection": {
         "events": [
           {
@@ -4557,10 +3769,7 @@
             "source": "lambda.amazonaws.com",
             "name": "Invoke",
             "kind": "data",
-            "key_fields": [
-              "userIdentity.arn",
-              "resources.ARN"
-            ],
+            "key_fields": ["userIdentity.arn", "resources.ARN"],
             "region": "the Region of the call",
             "notes": "Data event: not logged unless the trail enables Lambda data events."
           }
@@ -4581,16 +3790,10 @@
       "from": "n_ae6d8317628bf55e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ae6d8317628bf55e",
@@ -4606,10 +3809,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4642,16 +3842,10 @@
       "from": "n_9174bbf3016b33f2",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_9174bbf3016b33f2",
@@ -4667,10 +3861,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4703,16 +3894,10 @@
       "from": "n_0e310b3575570e0e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_0e310b3575570e0e",
@@ -4728,10 +3913,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4764,16 +3946,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -4789,10 +3965,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -4828,9 +4001,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_4a6563173a86fb7d",
@@ -4879,18 +4050,10 @@
       "from": "n_9174bbf3016b33f2",
       "to": "n_c35420abdb853029",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-024"
-      ],
-      "pathfinding_ids": [
-        "codebuild-001"
-      ],
+      "rule_ids": ["EL-PE-024"],
+      "pathfinding_ids": ["codebuild-001"],
       "status": "allowed",
-      "required_actions": [
-        "codebuild:CreateProject",
-        "codebuild:StartBuild",
-        "iam:PassRole"
-      ],
+      "required_actions": ["codebuild:CreateProject", "codebuild:StartBuild", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_9174bbf3016b33f2",
@@ -4924,9 +4087,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -4972,9 +4133,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_0e310b3575570e0e",
@@ -5023,16 +4182,10 @@
       "from": "n_a1ed24a82d878005",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a1ed24a82d878005",
@@ -5048,10 +4201,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5084,19 +4234,10 @@
       "from": "n_5ca214324cf27b59",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-020"
-      ],
-      "pathfinding_ids": [
-        "iam-019",
-        "iam-020",
-        "iam-021"
-      ],
+      "rule_ids": ["EL-PE-020"],
+      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachRolePolicy",
-        "iam:UpdateAssumeRolePolicy"
-      ],
+      "required_actions": ["iam:AttachRolePolicy", "iam:UpdateAssumeRolePolicy"],
       "evidence": [
         {
           "principal": "n_5ca214324cf27b59",
@@ -5130,9 +4271,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": "n_5ca214324cf27b59",
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -5171,17 +4310,10 @@
       "from": "n_1c6c327c7dae6c7e",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-015"
-      ],
-      "pathfinding_ids": [
-        "iam-014"
-      ],
+      "rule_ids": ["EL-PE-015"],
+      "pathfinding_ids": ["iam-014"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachRolePolicy",
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["iam:AttachRolePolicy", "sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_1c6c327c7dae6c7e",
@@ -5215,10 +4347,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": "n_1c6c327c7dae6c7e",
-      "attack": [
-        "T1098.003",
-        "T1548.005"
-      ],
+      "attack": ["T1098.003", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5262,16 +4391,10 @@
       "from": "n_567d3896473db3c9",
       "to": "n_438ca5ed81441284",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-009"
-      ],
-      "pathfinding_ids": [
-        "iam-002"
-      ],
+      "rule_ids": ["EL-PE-009"],
+      "pathfinding_ids": ["iam-002"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateAccessKey"
-      ],
+      "required_actions": ["iam:CreateAccessKey"],
       "evidence": [
         {
           "principal": "n_567d3896473db3c9",
@@ -5287,10 +4410,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
@@ -5306,9 +4426,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -5319,16 +4437,10 @@
       "from": "n_a1ed24a82d878005",
       "to": "n_bbb6e3ab8e9a85b1",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a1ed24a82d878005",
@@ -5353,10 +4465,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5412,16 +4521,10 @@
       "from": "n_c35420abdb853029",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_c35420abdb853029",
@@ -5437,10 +4540,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5476,9 +4576,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_b19c3b5ab565e24e",
@@ -5527,16 +4625,10 @@
       "from": "n_35b9f849db35837e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_35b9f849db35837e",
@@ -5552,10 +4644,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5588,16 +4677,10 @@
       "from": "n_567d3896473db3c9",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_567d3896473db3c9",
@@ -5613,10 +4696,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5649,16 +4729,10 @@
       "from": "n_1c6c327c7dae6c7e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_1c6c327c7dae6c7e",
@@ -5674,10 +4748,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5710,16 +4781,10 @@
       "from": "n_3f8bfee5ae59b33a",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_3f8bfee5ae59b33a",
@@ -5735,10 +4800,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5771,16 +4833,10 @@
       "from": "n_3a2d383c69f32747",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_3a2d383c69f32747",
@@ -5796,10 +4852,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5832,17 +4885,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_4a6563173a86fb7d",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "conditional",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -5869,9 +4915,7 @@
       ],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -5901,16 +4945,10 @@
       "from": "n_8ed7c9053782bc68",
       "to": "n_af2a19690eb31f99",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_8ed7c9053782bc68",
@@ -5935,10 +4973,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -5971,16 +5006,10 @@
       "from": "n_87a6b4b35557a4e1",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_87a6b4b35557a4e1",
@@ -5996,10 +5025,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6032,16 +5058,10 @@
       "from": "n_6a6f06acfbb82385",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "conditional",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_6a6f06acfbb82385",
@@ -6053,16 +5073,11 @@
           "stage": "resource"
         }
       ],
-      "conditions_unevaluated": [
-        "escalint:unknown-policy"
-      ],
+      "conditions_unevaluated": ["escalint:unknown-policy"],
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6095,16 +5110,10 @@
       "from": "n_4a6563173a86fb7d",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_4a6563173a86fb7d",
@@ -6120,10 +5129,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6156,16 +5162,10 @@
       "from": "n_ae6d8317628bf55e",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-002"
-      ],
-      "pathfinding_ids": [
-        "iam-005"
-      ],
+      "rule_ids": ["EL-PE-002"],
+      "pathfinding_ids": ["iam-005"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PutRolePolicy"
-      ],
+      "required_actions": ["iam:PutRolePolicy"],
       "evidence": [
         {
           "principal": "n_ae6d8317628bf55e",
@@ -6181,9 +5181,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -6211,16 +5209,10 @@
       "from": "n_fd09b99ed0e75db5",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_fd09b99ed0e75db5",
@@ -6236,10 +5228,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6272,17 +5261,10 @@
       "from": "n_d0e420f49b96af32",
       "to": "n_50322ab43701cf91",
       "kind": "update_code",
-      "rule_ids": [
-        "EL-PE-028"
-      ],
-      "pathfinding_ids": [
-        "lambda-004"
-      ],
+      "rule_ids": ["EL-PE-028"],
+      "pathfinding_ids": ["lambda-004"],
       "status": "allowed",
-      "required_actions": [
-        "lambda:InvokeFunction",
-        "lambda:UpdateFunctionCode"
-      ],
+      "required_actions": ["lambda:InvokeFunction", "lambda:UpdateFunctionCode"],
       "evidence": [
         {
           "principal": "n_d0e420f49b96af32",
@@ -6307,20 +5289,14 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005",
-        "T1648"
-      ],
+      "attack": ["T1548.005", "T1648"],
       "detection": {
         "events": [
           {
             "source": "lambda.amazonaws.com",
             "name": "Invoke",
             "kind": "data",
-            "key_fields": [
-              "userIdentity.arn",
-              "resources.ARN"
-            ],
+            "key_fields": ["userIdentity.arn", "resources.ARN"],
             "region": "the Region of the call",
             "notes": "Data event: not logged unless the trail enables Lambda data events."
           },
@@ -6328,10 +5304,7 @@
             "source": "lambda.amazonaws.com",
             "name": "UpdateFunctionCode20150331v2",
             "kind": "management",
-            "key_fields": [
-              "userIdentity.arn",
-              "requestParameters.functionName"
-            ],
+            "key_fields": ["userIdentity.arn", "requestParameters.functionName"],
             "region": "the Region of the call",
             "notes": "The event name carries a version suffix; ZipFile is omitted from the log."
           }
@@ -6351,16 +5324,10 @@
       "from": "n_8e5711fd45dcfd39",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_8e5711fd45dcfd39",
@@ -6376,10 +5343,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6412,16 +5376,10 @@
       "from": "n_eabdc695b85b6a34",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_eabdc695b85b6a34",
@@ -6437,10 +5395,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6473,16 +5428,10 @@
       "from": "n_5ca214324cf27b59",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_5ca214324cf27b59",
@@ -6498,10 +5447,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6534,16 +5480,10 @@
       "from": "n_3b13f27d08fd791b",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-004"
-      ],
-      "pathfinding_ids": [
-        "iam-008"
-      ],
+      "rule_ids": ["EL-PE-004"],
+      "pathfinding_ids": ["iam-008"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachUserPolicy"
-      ],
+      "required_actions": ["iam:AttachUserPolicy"],
       "evidence": [
         {
           "principal": "n_3b13f27d08fd791b",
@@ -6559,9 +5499,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -6588,19 +5526,10 @@
       "from": "n_74430d9c3da23904",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-004",
-        "EL-PE-018"
-      ],
-      "pathfinding_ids": [
-        "iam-008",
-        "iam-015"
-      ],
+      "rule_ids": ["EL-PE-004", "EL-PE-018"],
+      "pathfinding_ids": ["iam-008", "iam-015"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachUserPolicy",
-        "iam:CreateAccessKey"
-      ],
+      "required_actions": ["iam:AttachUserPolicy", "iam:CreateAccessKey"],
       "evidence": [
         {
           "principal": "n_74430d9c3da23904",
@@ -6625,10 +5554,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.001",
-        "T1098.003"
-      ],
+      "attack": ["T1098.001", "T1098.003"],
       "detection": {
         "events": [
           {
@@ -6656,9 +5582,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -6672,9 +5596,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ae6d8317628bf55e",
@@ -6723,16 +5645,10 @@
       "from": "n_fb93291410e28ee6",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_fb93291410e28ee6",
@@ -6748,10 +5664,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6784,16 +5697,10 @@
       "from": "n_f13b7adedc9a0e23",
       "to": "n_4a6563173a86fb7d",
       "kind": "modify_trust",
-      "rule_ids": [
-        "EL-PE-013"
-      ],
-      "pathfinding_ids": [
-        "iam-012"
-      ],
+      "rule_ids": ["EL-PE-013"],
+      "pathfinding_ids": ["iam-012"],
       "status": "allowed",
-      "required_actions": [
-        "iam:UpdateAssumeRolePolicy"
-      ],
+      "required_actions": ["iam:UpdateAssumeRolePolicy"],
       "evidence": [
         {
           "principal": "n_f13b7adedc9a0e23",
@@ -6818,9 +5725,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -6847,19 +5752,10 @@
       "from": "n_f2e430f779a3e73d",
       "to": "n_eabdc695b85b6a34",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-009",
-        "EL-PE-010"
-      ],
-      "pathfinding_ids": [
-        "iam-002",
-        "iam-003"
-      ],
+      "rule_ids": ["EL-PE-009", "EL-PE-010"],
+      "pathfinding_ids": ["iam-002", "iam-003"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateAccessKey",
-        "iam:DeleteAccessKey"
-      ],
+      "required_actions": ["iam:CreateAccessKey", "iam:DeleteAccessKey"],
       "evidence": [
         {
           "principal": "n_f2e430f779a3e73d",
@@ -6884,10 +5780,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
@@ -6915,9 +5808,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -6928,16 +5819,10 @@
       "from": "n_22e615084d916e4a",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_22e615084d916e4a",
@@ -6953,10 +5838,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -6989,16 +5871,10 @@
       "from": "n_35b9f849db35837e",
       "to": "n_c7c97fcc44c5c7cb",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-009"
-      ],
-      "pathfinding_ids": [
-        "iam-002"
-      ],
+      "rule_ids": ["EL-PE-009"],
+      "pathfinding_ids": ["iam-002"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateAccessKey"
-      ],
+      "required_actions": ["iam:CreateAccessKey"],
       "evidence": [
         {
           "principal": "n_35b9f849db35837e",
@@ -7014,10 +5890,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
@@ -7033,9 +5906,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -7049,9 +5920,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "conditional",
-      "required_actions": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
+      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
       "evidence": [
         {
           "principal": "n_3f8bfee5ae59b33a",
@@ -7101,17 +5970,10 @@
       "from": "n_9b8918277bc89e3b",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-017"
-      ],
-      "pathfinding_ids": [
-        "iam-017"
-      ],
+      "rule_ids": ["EL-PE-017"],
+      "pathfinding_ids": ["iam-017"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PutRolePolicy",
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["iam:PutRolePolicy", "sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_9b8918277bc89e3b",
@@ -7145,10 +6007,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": "n_9b8918277bc89e3b",
-      "attack": [
-        "T1098.003",
-        "T1548.005"
-      ],
+      "attack": ["T1098.003", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7193,16 +6052,10 @@
       "from": "n_50322ab43701cf91",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_50322ab43701cf91",
@@ -7218,10 +6071,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7254,16 +6104,10 @@
       "from": "n_9b8918277bc89e3b",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_9b8918277bc89e3b",
@@ -7279,10 +6123,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7338,17 +6179,10 @@
       "from": "n_fd09b99ed0e75db5",
       "to": "n_ae3c6e515ab43894",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-027"
-      ],
-      "pathfinding_ids": [
-        "sagemaker-001"
-      ],
+      "rule_ids": ["EL-PE-027"],
+      "pathfinding_ids": ["sagemaker-001"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PassRole",
-        "sagemaker:CreateNotebookInstance"
-      ],
+      "required_actions": ["iam:PassRole", "sagemaker:CreateNotebookInstance"],
       "evidence": [
         {
           "principal": "n_fd09b99ed0e75db5",
@@ -7373,9 +6207,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -7405,18 +6237,10 @@
       "from": "n_8ed7c9053782bc68",
       "to": "n_af2a19690eb31f99",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-020"
-      ],
-      "pathfinding_ids": [
-        "iam-019",
-        "iam-020",
-        "iam-021"
-      ],
+      "rule_ids": ["EL-PE-020"],
+      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreatePolicyVersion"
-      ],
+      "required_actions": ["iam:CreatePolicyVersion"],
       "evidence": [
         {
           "principal": "n_8ed7c9053782bc68",
@@ -7432,9 +6256,7 @@
       "prerequisites_unverified": [],
       "latent": true,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -7461,16 +6283,10 @@
       "from": "n_7c16540c78f354be",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_7c16540c78f354be",
@@ -7486,10 +6302,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7522,16 +6335,10 @@
       "from": "n_74430d9c3da23904",
       "to": "n_dfdd815105b8d7a7",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-009"
-      ],
-      "pathfinding_ids": [
-        "iam-002"
-      ],
+      "rule_ids": ["EL-PE-009"],
+      "pathfinding_ids": ["iam-002"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateAccessKey"
-      ],
+      "required_actions": ["iam:CreateAccessKey"],
       "evidence": [
         {
           "principal": "n_74430d9c3da23904",
@@ -7547,10 +6354,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
@@ -7566,9 +6370,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -7579,16 +6381,10 @@
       "from": "n_a6dc4eeb9f818988",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a6dc4eeb9f818988",
@@ -7604,10 +6400,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7640,16 +6433,10 @@
       "from": "n_dfdd815105b8d7a7",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_dfdd815105b8d7a7",
@@ -7665,10 +6452,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7704,9 +6488,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_fb93291410e28ee6",
@@ -7758,9 +6540,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "conditional",
-      "required_actions": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
+      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
       "evidence": [
         {
           "principal": "n_4c407dc6f610ea20",
@@ -7772,9 +6552,7 @@
           "stage": "resource"
         }
       ],
-      "conditions_unevaluated": [
-        "token.actions.githubusercontent.com:aud"
-      ],
+      "conditions_unevaluated": ["token.actions.githubusercontent.com:aud"],
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
@@ -7809,19 +6587,10 @@
       "from": "n_35b9f849db35837e",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-003",
-        "EL-PE-019"
-      ],
-      "pathfinding_ids": [
-        "iam-007",
-        "iam-018"
-      ],
+      "rule_ids": ["EL-PE-003", "EL-PE-019"],
+      "pathfinding_ids": ["iam-007", "iam-018"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateAccessKey",
-        "iam:PutUserPolicy"
-      ],
+      "required_actions": ["iam:CreateAccessKey", "iam:PutUserPolicy"],
       "evidence": [
         {
           "principal": "n_35b9f849db35837e",
@@ -7846,10 +6615,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.001",
-        "T1098.003"
-      ],
+      "attack": ["T1098.001", "T1098.003"],
       "detection": {
         "events": [
           {
@@ -7878,9 +6644,7 @@
             "notes": ""
           }
         ],
-        "blind_spots": [
-          "Use of the new key later appears as the target user, not as the caller."
-        ],
+        "blind_spots": ["Use of the new key later appears as the target user, not as the caller."],
         "requires_data_events": false,
         "status": "verified",
         "visibility": "partial"
@@ -7891,16 +6655,10 @@
       "from": "n_f13b7adedc9a0e23",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_f13b7adedc9a0e23",
@@ -7916,10 +6674,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -7952,16 +6707,10 @@
       "from": "n_bbb6e3ab8e9a85b1",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_bbb6e3ab8e9a85b1",
@@ -7977,10 +6726,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8013,16 +6759,10 @@
       "from": "n_5ca214324cf27b59",
       "to": "n_ead0ec6ff5e0c408",
       "kind": "modify_trust",
-      "rule_ids": [
-        "EL-PE-013"
-      ],
-      "pathfinding_ids": [
-        "iam-012"
-      ],
+      "rule_ids": ["EL-PE-013"],
+      "pathfinding_ids": ["iam-012"],
       "status": "allowed",
-      "required_actions": [
-        "iam:UpdateAssumeRolePolicy"
-      ],
+      "required_actions": ["iam:UpdateAssumeRolePolicy"],
       "evidence": [
         {
           "principal": "n_5ca214324cf27b59",
@@ -8047,9 +6787,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -8076,16 +6814,10 @@
       "from": "n_852843fd1bd8f0b0",
       "to": "n_87a6b4b35557a4e1",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-012"
-      ],
-      "pathfinding_ids": [
-        "iam-006"
-      ],
+      "rule_ids": ["EL-PE-012"],
+      "pathfinding_ids": ["iam-006"],
       "status": "allowed",
-      "required_actions": [
-        "iam:UpdateLoginProfile"
-      ],
+      "required_actions": ["iam:UpdateLoginProfile"],
       "evidence": [
         {
           "principal": "n_852843fd1bd8f0b0",
@@ -8101,20 +6833,14 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
             "source": "iam.amazonaws.com",
             "name": "UpdateLoginProfile",
             "kind": "management",
-            "key_fields": [
-              "userIdentity.arn",
-              "requestParameters.userName"
-            ],
+            "key_fields": ["userIdentity.arn", "requestParameters.userName"],
             "region": "IAM events are recorded in us-east-1 (global service).",
             "notes": ""
           },
@@ -8142,16 +6868,10 @@
       "from": "n_b19c3b5ab565e24e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_b19c3b5ab565e24e",
@@ -8167,10 +6887,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8203,16 +6920,10 @@
       "from": "n_78bce3ace720c562",
       "to": "n_4671d61f39936d97",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-008"
-      ],
-      "pathfinding_ids": [
-        "iam-013"
-      ],
+      "rule_ids": ["EL-PE-008"],
+      "pathfinding_ids": ["iam-013"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AddUserToGroup"
-      ],
+      "required_actions": ["iam:AddUserToGroup"],
       "evidence": [
         {
           "principal": "n_78bce3ace720c562",
@@ -8228,9 +6939,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -8257,16 +6966,10 @@
       "from": "n_1c6c327c7dae6c7e",
       "to": "n_8e5711fd45dcfd39",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_1c6c327c7dae6c7e",
@@ -8291,10 +6994,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8327,16 +7027,10 @@
       "from": "n_3c30b03944ddd7bb",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_3c30b03944ddd7bb",
@@ -8352,10 +7046,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8388,16 +7079,10 @@
       "from": "n_a10cdce085ef9a35",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-007"
-      ],
-      "pathfinding_ids": [
-        "iam-011"
-      ],
+      "rule_ids": ["EL-PE-007"],
+      "pathfinding_ids": ["iam-011"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PutGroupPolicy"
-      ],
+      "required_actions": ["iam:PutGroupPolicy"],
       "evidence": [
         {
           "principal": "n_a10cdce085ef9a35",
@@ -8413,9 +7098,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -8446,9 +7129,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ead0ec6ff5e0c408",
@@ -8497,16 +7178,10 @@
       "from": "n_345122b9d2616ed4",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-003"
-      ],
-      "pathfinding_ids": [
-        "iam-007"
-      ],
+      "rule_ids": ["EL-PE-003"],
+      "pathfinding_ids": ["iam-007"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PutUserPolicy"
-      ],
+      "required_actions": ["iam:PutUserPolicy"],
       "evidence": [
         {
           "principal": "n_345122b9d2616ed4",
@@ -8522,9 +7197,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -8552,16 +7225,10 @@
       "from": "n_aa5669746f32ba1e",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_aa5669746f32ba1e",
@@ -8577,10 +7244,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8613,17 +7277,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_0e310b3575570e0e",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "conditional",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -8650,9 +7307,7 @@
       ],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -8682,16 +7337,10 @@
       "from": "n_c7c97fcc44c5c7cb",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_c7c97fcc44c5c7cb",
@@ -8707,10 +7356,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8743,16 +7389,10 @@
       "from": "n_78bce3ace720c562",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_78bce3ace720c562",
@@ -8768,10 +7408,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8807,9 +7444,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_50322ab43701cf91",
@@ -8858,17 +7493,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_ae6d8317628bf55e",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "conditional",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -8895,9 +7523,7 @@
       ],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -8927,16 +7553,10 @@
       "from": "n_f2e430f779a3e73d",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_f2e430f779a3e73d",
@@ -8952,10 +7572,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -8988,17 +7605,10 @@
       "from": "n_8ed7c9053782bc68",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-016"
-      ],
-      "pathfinding_ids": [
-        "iam-016"
-      ],
+      "rule_ids": ["EL-PE-016"],
+      "pathfinding_ids": ["iam-016"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreatePolicyVersion",
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["iam:CreatePolicyVersion", "sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_8ed7c9053782bc68",
@@ -9032,10 +7642,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": "n_8ed7c9053782bc68",
-      "attack": [
-        "T1098.003",
-        "T1548.005"
-      ],
+      "attack": ["T1098.003", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9079,17 +7686,10 @@
       "from": "n_79eb82b99c508cd0",
       "to": "n_2034f1f4f74f1500",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-021"
-      ],
-      "pathfinding_ids": [
-        "ec2-001"
-      ],
+      "rule_ids": ["EL-PE-021"],
+      "pathfinding_ids": ["ec2-001"],
       "status": "allowed",
-      "required_actions": [
-        "ec2:RunInstances",
-        "iam:PassRole"
-      ],
+      "required_actions": ["ec2:RunInstances", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_79eb82b99c508cd0",
@@ -9114,9 +7714,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
@@ -9146,18 +7744,10 @@
       "from": "n_be0407e00eca3e17",
       "to": "n_52944f514b8d42fe",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-025"
-      ],
-      "pathfinding_ids": [
-        "glue-003"
-      ],
+      "rule_ids": ["EL-PE-025"],
+      "pathfinding_ids": ["glue-003"],
       "status": "allowed",
-      "required_actions": [
-        "glue:CreateJob",
-        "glue:StartJobRun",
-        "iam:PassRole"
-      ],
+      "required_actions": ["glue:CreateJob", "glue:StartJobRun", "iam:PassRole"],
       "evidence": [
         {
           "principal": "n_be0407e00eca3e17",
@@ -9191,20 +7781,14 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005"
-      ],
+      "attack": ["T1548.005"],
       "detection": {
         "events": [
           {
             "source": "glue.amazonaws.com",
             "name": "CreateJob",
             "kind": "management",
-            "key_fields": [
-              "userIdentity.arn",
-              "requestParameters.name",
-              "requestParameters.role"
-            ],
+            "key_fields": ["userIdentity.arn", "requestParameters.name", "requestParameters.role"],
             "region": "the Region of the call",
             "notes": ""
           },
@@ -9212,10 +7796,7 @@
             "source": "glue.amazonaws.com",
             "name": "StartJobRun",
             "kind": "management",
-            "key_fields": [
-              "userIdentity.arn",
-              "requestParameters.jobName"
-            ],
+            "key_fields": ["userIdentity.arn", "requestParameters.jobName"],
             "region": "the Region of the call",
             "notes": ""
           }
@@ -9234,18 +7815,10 @@
       "from": "n_721e1181b9f02849",
       "to": "n_a6dc4eeb9f818988",
       "kind": "passrole_compute",
-      "rule_ids": [
-        "EL-PE-022"
-      ],
-      "pathfinding_ids": [
-        "lambda-001"
-      ],
+      "rule_ids": ["EL-PE-022"],
+      "pathfinding_ids": ["lambda-001"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PassRole",
-        "lambda:CreateFunction",
-        "lambda:InvokeFunction"
-      ],
+      "required_actions": ["iam:PassRole", "lambda:CreateFunction", "lambda:InvokeFunction"],
       "evidence": [
         {
           "principal": "n_721e1181b9f02849",
@@ -9279,10 +7852,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1548.005",
-        "T1648"
-      ],
+      "attack": ["T1548.005", "T1648"],
       "detection": {
         "events": [
           {
@@ -9301,10 +7871,7 @@
             "source": "lambda.amazonaws.com",
             "name": "Invoke",
             "kind": "data",
-            "key_fields": [
-              "userIdentity.arn",
-              "resources.ARN"
-            ],
+            "key_fields": ["userIdentity.arn", "resources.ARN"],
             "region": "the Region of the call",
             "notes": "Data event: not logged unless the trail enables Lambda data events."
           }
@@ -9325,18 +7892,10 @@
       "from": "n_9b8918277bc89e3b",
       "to": "n_0d3fd385122b3f60",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-020"
-      ],
-      "pathfinding_ids": [
-        "iam-019",
-        "iam-020",
-        "iam-021"
-      ],
+      "rule_ids": ["EL-PE-020"],
+      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
       "status": "allowed",
-      "required_actions": [
-        "iam:PutRolePolicy"
-      ],
+      "required_actions": ["iam:PutRolePolicy"],
       "evidence": [
         {
           "principal": "n_9b8918277bc89e3b",
@@ -9352,9 +7911,7 @@
       "prerequisites_unverified": [],
       "latent": true,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -9382,16 +7939,10 @@
       "from": "n_9b8918277bc89e3b",
       "to": "n_0d3fd385122b3f60",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_9b8918277bc89e3b",
@@ -9416,10 +7967,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9455,9 +8003,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a6dc4eeb9f818988",
@@ -9509,9 +8055,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_ae3c6e515ab43894",
@@ -9560,16 +8104,10 @@
       "from": "n_4c407dc6f610ea20",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_4c407dc6f610ea20",
@@ -9585,10 +8123,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9621,16 +8156,10 @@
       "from": "n_22e615084d916e4a",
       "to": "n_aa5669746f32ba1e",
       "kind": "credential",
-      "rule_ids": [
-        "EL-PE-011"
-      ],
-      "pathfinding_ids": [
-        "iam-004"
-      ],
+      "rule_ids": ["EL-PE-011"],
+      "pathfinding_ids": ["iam-004"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreateLoginProfile"
-      ],
+      "required_actions": ["iam:CreateLoginProfile"],
       "evidence": [
         {
           "principal": "n_22e615084d916e4a",
@@ -9646,20 +8175,14 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1098.001"
-      ],
+      "attack": ["T1078.004", "T1098.001"],
       "detection": {
         "events": [
           {
             "source": "iam.amazonaws.com",
             "name": "CreateLoginProfile",
             "kind": "management",
-            "key_fields": [
-              "userIdentity.arn",
-              "requestParameters.userName"
-            ],
+            "key_fields": ["userIdentity.arn", "requestParameters.userName"],
             "region": "IAM events are recorded in us-east-1 (global service).",
             "notes": ""
           },
@@ -9690,9 +8213,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_52944f514b8d42fe",
@@ -9746,9 +8267,7 @@
       "status": "conditional",
       "required_actions": [],
       "evidence": [],
-      "conditions_unevaluated": [
-        "escalint:unknown-policy"
-      ],
+      "conditions_unevaluated": ["escalint:unknown-policy"],
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
@@ -9766,16 +8285,10 @@
       "from": "n_a10cdce085ef9a35",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_a10cdce085ef9a35",
@@ -9791,10 +8304,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9827,16 +8337,10 @@
       "from": "n_16f76c2e39de85a5",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_16f76c2e39de85a5",
@@ -9852,10 +8356,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9888,16 +8389,10 @@
       "from": "n_0d3fd385122b3f60",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_0d3fd385122b3f60",
@@ -9913,10 +8408,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -9949,16 +8441,10 @@
       "from": "n_3c30b03944ddd7bb",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-001"
-      ],
-      "pathfinding_ids": [
-        "iam-001"
-      ],
+      "rule_ids": ["EL-PE-001"],
+      "pathfinding_ids": ["iam-001"],
       "status": "allowed",
-      "required_actions": [
-        "iam:CreatePolicyVersion"
-      ],
+      "required_actions": ["iam:CreatePolicyVersion"],
       "evidence": [
         {
           "principal": "n_3c30b03944ddd7bb",
@@ -9974,9 +8460,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -10003,16 +8487,10 @@
       "from": "n_16f76c2e39de85a5",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": [
-        "EL-PE-006"
-      ],
-      "pathfinding_ids": [
-        "iam-010"
-      ],
+      "rule_ids": ["EL-PE-006"],
+      "pathfinding_ids": ["iam-010"],
       "status": "allowed",
-      "required_actions": [
-        "iam:AttachGroupPolicy"
-      ],
+      "required_actions": ["iam:AttachGroupPolicy"],
       "evidence": [
         {
           "principal": "n_16f76c2e39de85a5",
@@ -10028,9 +8506,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1098.003"
-      ],
+      "attack": ["T1098.003"],
       "detection": {
         "events": [
           {
@@ -10060,9 +8536,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_c35420abdb853029",
@@ -10111,16 +8585,10 @@
       "from": "n_3b13f27d08fd791b",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_3b13f27d08fd791b",
@@ -10136,10 +8604,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -10172,16 +8637,10 @@
       "from": "n_438ca5ed81441284",
       "to": "n_d69037a17b27439e",
       "kind": "assume",
-      "rule_ids": [
-        "EL-PE-014"
-      ],
-      "pathfinding_ids": [
-        "sts-001"
-      ],
+      "rule_ids": ["EL-PE-014"],
+      "pathfinding_ids": ["sts-001"],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_438ca5ed81441284",
@@ -10197,10 +8656,7 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": [
-        "T1078.004",
-        "T1548.005"
-      ],
+      "attack": ["T1078.004", "T1548.005"],
       "detection": {
         "events": [
           {
@@ -10236,9 +8692,7 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": [
-        "sts:AssumeRole"
-      ],
+      "required_actions": ["sts:AssumeRole"],
       "evidence": [
         {
           "principal": "n_d69037a17b27439e",
@@ -10288,13 +8742,8 @@
       "id": "p_37100d903b800ce0",
       "source": "n_0e310b3575570e0e",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_20a5da8af219f407"
-      ],
-      "nodes": [
-        "n_0e310b3575570e0e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_20a5da8af219f407"],
+      "nodes": ["n_0e310b3575570e0e", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10303,13 +8752,8 @@
       "id": "p_12dfb2677704ea93",
       "source": "n_16f76c2e39de85a5",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_edac59c8cf429425"
-      ],
-      "nodes": [
-        "n_16f76c2e39de85a5",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_edac59c8cf429425"],
+      "nodes": ["n_16f76c2e39de85a5", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10318,13 +8762,8 @@
       "id": "p_7b654bba543eb2f8",
       "source": "n_1c6c327c7dae6c7e",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_3d51e8e9dd1363be"
-      ],
-      "nodes": [
-        "n_1c6c327c7dae6c7e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_3d51e8e9dd1363be"],
+      "nodes": ["n_1c6c327c7dae6c7e", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10333,13 +8772,8 @@
       "id": "p_79dd5b20c16b1389",
       "source": "n_345122b9d2616ed4",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_c2c98bff3c0a3624"
-      ],
-      "nodes": [
-        "n_345122b9d2616ed4",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_c2c98bff3c0a3624"],
+      "nodes": ["n_345122b9d2616ed4", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10348,13 +8782,8 @@
       "id": "p_63ca0bf990db1a72",
       "source": "n_35b9f849db35837e",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_a04f316450aff7c9"
-      ],
-      "nodes": [
-        "n_35b9f849db35837e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_a04f316450aff7c9"],
+      "nodes": ["n_35b9f849db35837e", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10363,13 +8792,8 @@
       "id": "p_cd86a978f5c29010",
       "source": "n_3b13f27d08fd791b",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_65779d7a903fe169"
-      ],
-      "nodes": [
-        "n_3b13f27d08fd791b",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_65779d7a903fe169"],
+      "nodes": ["n_3b13f27d08fd791b", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10378,13 +8802,8 @@
       "id": "p_e8ca228fef76fa57",
       "source": "n_3c30b03944ddd7bb",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_e7cb569b4b2f2375"
-      ],
-      "nodes": [
-        "n_3c30b03944ddd7bb",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_e7cb569b4b2f2375"],
+      "nodes": ["n_3c30b03944ddd7bb", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10393,13 +8812,8 @@
       "id": "p_b9a4a7ffad226883",
       "source": "n_5ca214324cf27b59",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_3cc33f1dad4a8452"
-      ],
-      "nodes": [
-        "n_5ca214324cf27b59",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_3cc33f1dad4a8452"],
+      "nodes": ["n_5ca214324cf27b59", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10408,13 +8822,8 @@
       "id": "p_402aa69a601750a2",
       "source": "n_74430d9c3da23904",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_69af0855573dbcd0"
-      ],
-      "nodes": [
-        "n_74430d9c3da23904",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_69af0855573dbcd0"],
+      "nodes": ["n_74430d9c3da23904", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10423,15 +8832,8 @@
       "id": "p_58f32943741ef56f",
       "source": "n_79eb82b99c508cd0",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_c7de83c04fb3ecd7",
-        "e_20a5da8af219f407"
-      ],
-      "nodes": [
-        "n_79eb82b99c508cd0",
-        "n_0e310b3575570e0e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_c7de83c04fb3ecd7", "e_20a5da8af219f407"],
+      "nodes": ["n_79eb82b99c508cd0", "n_0e310b3575570e0e", "n_d175b3293ae2fde2"],
       "length": 2,
       "status": "conditional",
       "severity": "high"
@@ -10440,15 +8842,8 @@
       "id": "p_fbc1a275ee2caf54",
       "source": "n_79eb82b99c508cd0",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_cbf014f70ede83c6",
-        "e_5bede33e958a0b66"
-      ],
-      "nodes": [
-        "n_79eb82b99c508cd0",
-        "n_ae6d8317628bf55e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_cbf014f70ede83c6", "e_5bede33e958a0b66"],
+      "nodes": ["n_79eb82b99c508cd0", "n_ae6d8317628bf55e", "n_d175b3293ae2fde2"],
       "length": 2,
       "status": "conditional",
       "severity": "high"
@@ -10457,13 +8852,8 @@
       "id": "p_b688172a4c6a5cf3",
       "source": "n_8ed7c9053782bc68",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_cf0c795864ffb03e"
-      ],
-      "nodes": [
-        "n_8ed7c9053782bc68",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_cf0c795864ffb03e"],
+      "nodes": ["n_8ed7c9053782bc68", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10472,13 +8862,8 @@
       "id": "p_72c9b0f31855619d",
       "source": "n_9b8918277bc89e3b",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_811453c7a8aa05d2"
-      ],
-      "nodes": [
-        "n_9b8918277bc89e3b",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_811453c7a8aa05d2"],
+      "nodes": ["n_9b8918277bc89e3b", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10487,13 +8872,8 @@
       "id": "p_7fe16533cf6e8119",
       "source": "n_a10cdce085ef9a35",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_bfb14e05ce53197f"
-      ],
-      "nodes": [
-        "n_a10cdce085ef9a35",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_bfb14e05ce53197f"],
+      "nodes": ["n_a10cdce085ef9a35", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -10502,13 +8882,8 @@
       "id": "p_a9433adab2c37415",
       "source": "n_ae6d8317628bf55e",
       "target": "n_d175b3293ae2fde2",
-      "edges": [
-        "e_5bede33e958a0b66"
-      ],
-      "nodes": [
-        "n_ae6d8317628bf55e",
-        "n_d175b3293ae2fde2"
-      ],
+      "edges": ["e_5bede33e958a0b66"],
+      "nodes": ["n_ae6d8317628bf55e", "n_d175b3293ae2fde2"],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -12827,119 +11202,91 @@
       "edge_id": "e_20a5da8af219f407",
       "change": "Remove iam:AttachRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:role/pe005-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:role/pe005-attacker/p#0",
-      "paths_cut": [
-        "p_37100d903b800ce0",
-        "p_58f32943741ef56f"
-      ]
+      "paths_cut": ["p_37100d903b800ce0", "p_58f32943741ef56f"]
     },
     {
       "order": 2,
       "edge_id": "e_5bede33e958a0b66",
       "change": "Remove iam:PutRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:role/pe002-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:role/pe002-attacker/p#0",
-      "paths_cut": [
-        "p_a9433adab2c37415",
-        "p_fbc1a275ee2caf54"
-      ]
+      "paths_cut": ["p_a9433adab2c37415", "p_fbc1a275ee2caf54"]
     },
     {
       "order": 3,
       "edge_id": "e_3cc33f1dad4a8452",
       "change": "Remove iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe020-attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/pe020-victim-role",
       "target": "inline:arn:aws:iam::111111111111:user/pe020-attacker/p#0",
-      "paths_cut": [
-        "p_b9a4a7ffad226883"
-      ]
+      "paths_cut": ["p_b9a4a7ffad226883"]
     },
     {
       "order": 4,
       "edge_id": "e_3d51e8e9dd1363be",
       "change": "Remove iam:AttachRolePolicy, sts:AssumeRole from statement #0 of inline:arn:aws:iam::111111111111:user/pe015-attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/pe015-victim-role",
       "target": "inline:arn:aws:iam::111111111111:user/pe015-attacker/p#0",
-      "paths_cut": [
-        "p_7b654bba543eb2f8"
-      ]
+      "paths_cut": ["p_7b654bba543eb2f8"]
     },
     {
       "order": 5,
       "edge_id": "e_65779d7a903fe169",
       "change": "Remove iam:AttachUserPolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe004-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe004-attacker/p#0",
-      "paths_cut": [
-        "p_cd86a978f5c29010"
-      ]
+      "paths_cut": ["p_cd86a978f5c29010"]
     },
     {
       "order": 6,
       "edge_id": "e_69af0855573dbcd0",
       "change": "Remove iam:AttachUserPolicy, iam:CreateAccessKey from statement #0 of inline:arn:aws:iam::111111111111:user/pe018-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe018-attacker/p#0",
-      "paths_cut": [
-        "p_402aa69a601750a2"
-      ]
+      "paths_cut": ["p_402aa69a601750a2"]
     },
     {
       "order": 7,
       "edge_id": "e_811453c7a8aa05d2",
       "change": "Remove iam:PutRolePolicy, sts:AssumeRole from statement #0 of inline:arn:aws:iam::111111111111:user/pe017-attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/pe017-victim-role",
       "target": "inline:arn:aws:iam::111111111111:user/pe017-attacker/p#0",
-      "paths_cut": [
-        "p_72c9b0f31855619d"
-      ]
+      "paths_cut": ["p_72c9b0f31855619d"]
     },
     {
       "order": 8,
       "edge_id": "e_a04f316450aff7c9",
       "change": "Remove iam:CreateAccessKey, iam:PutUserPolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe019-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe019-attacker/p#0",
-      "paths_cut": [
-        "p_63ca0bf990db1a72"
-      ]
+      "paths_cut": ["p_63ca0bf990db1a72"]
     },
     {
       "order": 9,
       "edge_id": "e_bfb14e05ce53197f",
       "change": "Remove iam:PutGroupPolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe007-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe007-attacker/p#0",
-      "paths_cut": [
-        "p_7fe16533cf6e8119"
-      ]
+      "paths_cut": ["p_7fe16533cf6e8119"]
     },
     {
       "order": 10,
       "edge_id": "e_c2c98bff3c0a3624",
       "change": "Remove iam:PutUserPolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe003-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe003-attacker/p#0",
-      "paths_cut": [
-        "p_79dd5b20c16b1389"
-      ]
+      "paths_cut": ["p_79dd5b20c16b1389"]
     },
     {
       "order": 11,
       "edge_id": "e_cf0c795864ffb03e",
       "change": "Remove iam:CreatePolicyVersion, sts:AssumeRole from statement #0 of inline:arn:aws:iam::111111111111:user/pe016-attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/pe016-victim-role",
       "target": "inline:arn:aws:iam::111111111111:user/pe016-attacker/p#0",
-      "paths_cut": [
-        "p_b688172a4c6a5cf3"
-      ]
+      "paths_cut": ["p_b688172a4c6a5cf3"]
     },
     {
       "order": 12,
       "edge_id": "e_e7cb569b4b2f2375",
       "change": "Remove iam:CreatePolicyVersion from statement #0 of inline:arn:aws:iam::111111111111:user/pe001-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe001-attacker/p#0",
-      "paths_cut": [
-        "p_e8ca228fef76fa57"
-      ]
+      "paths_cut": ["p_e8ca228fef76fa57"]
     },
     {
       "order": 13,
       "edge_id": "e_edac59c8cf429425",
       "change": "Remove iam:AttachGroupPolicy from statement #0 of inline:arn:aws:iam::111111111111:user/pe006-attacker/p",
       "target": "inline:arn:aws:iam::111111111111:user/pe006-attacker/p#0",
-      "paths_cut": [
-        "p_12dfb2677704ea93"
-      ]
+      "paths_cut": ["p_12dfb2677704ea93"]
     }
   ],
   "notes": [],
@@ -12995,9 +11342,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PutRolePolicy"
-            ],
+            "Action": ["iam:PutRolePolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe002-S3Only",
               "arn:aws:iam::111111111111:role/pe002-attacker"
@@ -13015,9 +11360,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AttachRolePolicy"
-            ],
+            "Action": ["iam:AttachRolePolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe005-S3Only",
               "arn:aws:iam::111111111111:role/pe005-attacker"
@@ -13035,9 +11378,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "sts:AssumeRole"
-            ],
+            "Action": ["sts:AssumeRole"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe014-S3Only",
               "arn:aws:iam::111111111111:role/pe014-attacker",
@@ -13056,9 +11397,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:CreatePolicyVersion"
-            ],
+            "Action": ["iam:CreatePolicyVersion"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe001-AppPolicy-attacker",
               "arn:aws:iam::111111111111:policy/pe001-S3Only",
@@ -13077,9 +11416,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PutUserPolicy"
-            ],
+            "Action": ["iam:PutUserPolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe003-S3Only",
               "arn:aws:iam::111111111111:user/pe003-attacker"
@@ -13097,9 +11434,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AttachUserPolicy"
-            ],
+            "Action": ["iam:AttachUserPolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe004-S3Only",
               "arn:aws:iam::111111111111:user/pe004-attacker"
@@ -13117,9 +11452,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AttachGroupPolicy"
-            ],
+            "Action": ["iam:AttachGroupPolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:group/pe006-devs",
               "arn:aws:iam::111111111111:policy/pe006-S3Only",
@@ -13138,9 +11471,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PutGroupPolicy"
-            ],
+            "Action": ["iam:PutGroupPolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:group/pe007-devs",
               "arn:aws:iam::111111111111:policy/pe007-S3Only",
@@ -13159,9 +11490,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AddUserToGroup"
-            ],
+            "Action": ["iam:AddUserToGroup"],
             "Resource": [
               "arn:aws:iam::111111111111:group/pe008-admins",
               "arn:aws:iam::111111111111:policy/pe008-S3Only",
@@ -13180,9 +11509,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:CreateAccessKey"
-            ],
+            "Action": ["iam:CreateAccessKey"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe009-S3Only",
               "arn:aws:iam::111111111111:user/pe009-attacker",
@@ -13201,10 +11528,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:CreateAccessKey",
-              "iam:DeleteAccessKey"
-            ],
+            "Action": ["iam:CreateAccessKey", "iam:DeleteAccessKey"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe010-S3Only",
               "arn:aws:iam::111111111111:user/pe010-attacker",
@@ -13223,9 +11547,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:CreateLoginProfile"
-            ],
+            "Action": ["iam:CreateLoginProfile"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe011-S3Only",
               "arn:aws:iam::111111111111:user/pe011-attacker",
@@ -13244,9 +11566,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:UpdateLoginProfile"
-            ],
+            "Action": ["iam:UpdateLoginProfile"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe012-S3Only",
               "arn:aws:iam::111111111111:user/pe012-attacker",
@@ -13265,9 +11585,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:UpdateAssumeRolePolicy"
-            ],
+            "Action": ["iam:UpdateAssumeRolePolicy"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe013-S3Only",
               "arn:aws:iam::111111111111:role/pe013-victim-role",
@@ -13286,10 +11604,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AttachRolePolicy",
-              "sts:AssumeRole"
-            ],
+            "Action": ["iam:AttachRolePolicy", "sts:AssumeRole"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe015-S3Only",
               "arn:aws:iam::111111111111:policy/pe015-VictimPolicy",
@@ -13309,10 +11624,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:CreatePolicyVersion",
-              "sts:AssumeRole"
-            ],
+            "Action": ["iam:CreatePolicyVersion", "sts:AssumeRole"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe016-S3Only",
               "arn:aws:iam::111111111111:policy/pe016-VictimPolicy",
@@ -13332,10 +11644,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PutRolePolicy",
-              "sts:AssumeRole"
-            ],
+            "Action": ["iam:PutRolePolicy", "sts:AssumeRole"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe017-S3Only",
               "arn:aws:iam::111111111111:policy/pe017-VictimPolicy",
@@ -13355,10 +11664,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:AttachUserPolicy",
-              "iam:CreateAccessKey"
-            ],
+            "Action": ["iam:AttachUserPolicy", "iam:CreateAccessKey"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe018-S3Only",
               "arn:aws:iam::111111111111:user/pe018-attacker",
@@ -13377,10 +11683,7 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PutUserPolicy",
-              "iam:CreateAccessKey"
-            ],
+            "Action": ["iam:PutUserPolicy", "iam:CreateAccessKey"],
             "Resource": [
               "arn:aws:iam::111111111111:policy/pe019-S3Only",
               "arn:aws:iam::111111111111:user/pe019-attacker",
@@ -13424,13 +11727,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "ec2:RunInstances"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "ec2:RunInstances"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13444,14 +11742,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "lambda:CreateFunction",
-              "lambda:InvokeFunction"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "lambda:CreateFunction", "lambda:InvokeFunction"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13465,13 +11757,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "cloudformation:CreateStack"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "cloudformation:CreateStack"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13485,14 +11772,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "codebuild:CreateProject",
-              "codebuild:StartBuild"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "codebuild:CreateProject", "codebuild:StartBuild"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13506,14 +11787,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "glue:CreateJob",
-              "glue:StartJobRun"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "glue:CreateJob", "glue:StartJobRun"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13527,13 +11802,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "iam:PassRole",
-              "sagemaker:CreateNotebookInstance"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["iam:PassRole", "sagemaker:CreateNotebookInstance"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13547,13 +11817,8 @@
         "Statement": [
           {
             "Effect": "Allow",
-            "Action": [
-              "lambda:UpdateFunctionCode",
-              "lambda:InvokeFunction"
-            ],
-            "Resource": [
-              "*"
-            ]
+            "Action": ["lambda:UpdateFunctionCode", "lambda:InvokeFunction"],
+            "Resource": ["*"]
           }
         ]
       }
@@ -13568,13 +11833,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13589,13 +11850,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13610,13 +11867,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13631,13 +11884,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13652,13 +11901,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::111111111111:role/pe014-attacker"
-              ]
+              "AWS": ["arn:aws:iam::111111111111:role/pe014-attacker"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13673,13 +11918,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::111111111111:user/pe015-attacker"
-              ]
+              "AWS": ["arn:aws:iam::111111111111:user/pe015-attacker"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13694,13 +11935,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::111111111111:user/pe016-attacker"
-              ]
+              "AWS": ["arn:aws:iam::111111111111:user/pe016-attacker"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13715,13 +11952,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::111111111111:user/pe017-attacker"
-              ]
+              "AWS": ["arn:aws:iam::111111111111:user/pe017-attacker"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13736,13 +11969,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13757,13 +11986,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "ec2.amazonaws.com"
-              ]
+              "Service": ["ec2.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13778,13 +12003,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "lambda.amazonaws.com"
-              ]
+              "Service": ["lambda.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13799,13 +12020,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "cloudformation.amazonaws.com"
-              ]
+              "Service": ["cloudformation.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13820,13 +12037,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "codebuild.amazonaws.com"
-              ]
+              "Service": ["codebuild.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13841,13 +12054,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "glue.amazonaws.com"
-              ]
+              "Service": ["glue.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13862,13 +12071,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "sagemaker.amazonaws.com"
-              ]
+              "Service": ["sagemaker.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13883,13 +12088,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": [
-                "lambda.amazonaws.com"
-              ]
+              "Service": ["lambda.amazonaws.com"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13904,13 +12105,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "*"
-              ]
+              "AWS": ["*"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -13929,14 +12126,10 @@
                 "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
               ]
             },
-            "Action": [
-              "sts:AssumeRoleWithWebIdentity"
-            ],
+            "Action": ["sts:AssumeRoleWithWebIdentity"],
             "Condition": {
               "StringEquals": {
-                "token.actions.githubusercontent.com:aud": [
-                  "sts.amazonaws.com"
-                ]
+                "token.actions.githubusercontent.com:aud": ["sts.amazonaws.com"]
               }
             }
           }
@@ -13957,19 +12150,13 @@
                 "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
               ]
             },
-            "Action": [
-              "sts:AssumeRoleWithWebIdentity"
-            ],
+            "Action": ["sts:AssumeRoleWithWebIdentity"],
             "Condition": {
               "StringEquals": {
-                "token.actions.githubusercontent.com:aud": [
-                  "sts.amazonaws.com"
-                ]
+                "token.actions.githubusercontent.com:aud": ["sts.amazonaws.com"]
               },
               "StringLike": {
-                "token.actions.githubusercontent.com:sub": [
-                  "repo:example-org/*"
-                ]
+                "token.actions.githubusercontent.com:sub": ["repo:example-org/*"]
               }
             }
           }
@@ -13986,13 +12173,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::999999999999:root"
-              ]
+              "AWS": ["arn:aws:iam::999999999999:root"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
@@ -14007,13 +12190,9 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::222222222222:root"
-              ]
+              "AWS": ["arn:aws:iam::222222222222:root"]
             },
-            "Action": [
-              "sts:AssumeRole"
-            ]
+            "Action": ["sts:AssumeRole"]
           }
         ]
       }
