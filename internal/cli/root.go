@@ -7,6 +7,8 @@ import (
 	"io"
 
 	"github.com/spf13/cobra"
+
+	"github.com/brennocm/escalint/internal/termsafe"
 )
 
 // Exit codes shared by every command (see README "Exit codes").
@@ -40,7 +42,9 @@ func Execute(args []string, stdout, stderr io.Writer) int {
 		if errors.As(err, &codeErr) {
 			return codeErr.Code
 		}
-		fmt.Fprintf(stderr, "escalint: %v\n", err)
+		// Errors can quote snapshot content; never let it reach the
+		// terminal raw.
+		fmt.Fprintf(stderr, "escalint: %s\n", termsafe.Line(err.Error()))
 		return ExitError
 	}
 	return ExitOK

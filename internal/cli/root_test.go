@@ -38,6 +38,20 @@ func TestExecute(t *testing.T) {
 	}
 }
 
+func TestErrorsAreSanitizedForTheTerminal(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	code := Execute([]string{"\x1b[2Jevil"}, &stdout, &stderr)
+	if code != ExitError {
+		t.Fatalf("exit code = %d", code)
+	}
+	if strings.ContainsRune(stderr.String(), '\x1b') {
+		t.Fatalf("raw escape sequence reached stderr: %q", stderr.String())
+	}
+	if !strings.Contains(stderr.String(), `\x1b[2Jevil`) {
+		t.Errorf("stderr = %q, want the escaped name", stderr.String())
+	}
+}
+
 func TestCodeErrorSetsExitCode(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 	root := NewRootCommand(&stdout, &stderr)
