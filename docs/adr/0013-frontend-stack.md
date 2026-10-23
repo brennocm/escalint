@@ -13,6 +13,9 @@ self-contained HTML report and widens the supply-chain surface.
 - **Runtime dependencies (budget):** `react`, `react-dom`, `sigma`,
   `graphology`, `graphology-layout-forceatlas2`, `elkjs`. Anything else needs a
   new ADR. Phase 1 only uses `react` and `react-dom` (19.3.1).
+  *Amended by ADR 0014:* the UI shipped with `react` and `react-dom` only;
+  `sigma`, `graphology`, ForceAtlas2 and `elkjs` were replaced by an own
+  WebGL2 renderer, a Barnes–Hut force layout and a layered layout.
 - **Language:** TypeScript **6.0.x** with `strict`, `noUncheckedIndexedAccess`,
   `exactOptionalPropertyTypes`, `noImplicitOverride`.
   TypeScript 7 (the native port) is the current `latest`, but

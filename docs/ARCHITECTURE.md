@@ -31,6 +31,17 @@ flowchart LR
 | `internal/rules` | escalation, trust and parse rules; explicit registry |
 | `internal/engine` | runs rules and analyses; findings (critical on a path to Tier 0), fix plan changes, rule selection |
 | `internal/termsafe` | safe terminal output |
+| `internal/attack`, `internal/detect` | embedded ATT&CK techniques and CloudTrail events per action (ADR 0021, 0022) |
+| `internal/contract` | builds and encodes `analysis.json` (schema in `schema/`, ADR 0003) |
+| `internal/redact` | per-run HMAC pseudonyms for `--redact` (ADR 0010) |
+| `internal/config`, `internal/suppress` | `.escalint.yaml`; suppressions with reasons and expiry, groupings |
+| `internal/diff` | compares two analyses by stable ID |
+| `internal/report` | text, JSON, SARIF (ADR 0011), DOT and Mermaid writers |
+| `internal/server` | `escalint serve` (ADR 0017) |
+| `internal/htmlreport` | the single-file report with a hash-based CSP (ADR 0018) |
+| `internal/collect` | read-only AWS collector (ADR 0020) |
+| `internal/synth` | synthetic snapshots for tests, benchmarks and the demo |
+| `internal/cli` | cobra commands; exit codes 0 / 1 / 2 |
 
 ## Analyses
 
@@ -59,11 +70,11 @@ finding ID; identical results collapse.
 
 ## Performance
 
-`go test -bench BenchmarkRun ./internal/engine/` runs the whole engine on
-synthetic accounts (`internal/synth`, 10% of principals with a planted
-escalation primitive on wildcard resources, a dense worst case). On a
-4-core laptop: 2,000 principals in about 0.3 s, 20,000 in about 10 s.
-Rules pre-filter candidates by action and resource before calling the
+`make bench-cli` times `analyze` and `scan` on synthetic accounts of 1k,
+10k and 50k principals and reports peak memory; results are in
+[benchmarks.md](benchmarks.md) (50,000 principals: about 28 s and 1.3 GB on
+a 4-core laptop). `go test -bench BenchmarkRun ./internal/engine/` runs the
+engine alone. Rules pre-filter candidates by action and resource before calling the
 evaluator, composite rules only look at the actor's neighbors, and the
 graph sorts adjacency lists lazily per node.
 
@@ -81,4 +92,44 @@ graph sorts adjacency lists lazily per node.
 
 Rendering layers are described in ADR 0014, layout determinism in ADR 0015,
 visual tests in ADR 0019. Performance budgets are checked by
-`make web-perf` on a synthetic analysis of 10,000 principals.
+`make web-perf` on synthetic analyses of 10,000 and 50,000 principals.
+
+## Distribution
+
+GoReleaser builds the release binaries (UI embedded), archives, SBOMs, the
+signed checksum file and the signed multi-arch image; `action.yml` is a
+composite GitHub Action that builds from its own source (ADR 0026). The
+GitHub Pages demo is the same UI with synthetic datasets (`make demo`).
+README media is regenerated with `make demo-media`.
+
+## Adding a rule
+
+1. Confirm the path and its prerequisites in the AWS documentation and on
+   pathfinding.cloud; add or update its row in `docs/research.md` §7.
+2. Create `internal/rules/el_pe_NNN.go` (or a trust rule in `trust.go`) with
+   its metadata: ID, pathfinding.cloud IDs, category, severity, edge kind,
+   required actions, prerequisites, ATT&CK techniques, status.
+3. Register it in `internal/rules/registry.go` (explicit, no `init`).
+4. Add fixtures under `internal/rules/testdata/<ID>/vulnerable/` and
+   `.../safe/`; the harness also checks deny, boundary, SCP and conditional
+   variants and multiple occurrences.
+5. Write `docs/rules/<ID>.md` (description, why it matters, attack chain,
+   vulnerable and fixed policy, references); it is embedded for `rules explain`.
+6. Make `examples/vulnerable-account` trigger it and keep
+   `examples/hardened-account` clean; run `make gen-docs` (coverage and the
+   README table) and `make gen` if CloudTrail or ATT&CK data changed.
+
+## Adding a view
+
+1. A route in `web/src/state/route.ts` with all its state in the URL.
+2. Pure logic (layout, scales, selectors) in `web/src/layout`,
+   `web/src/data` or the view's `model.ts`, with unit tests.
+3. The component in `web/src/views/<view>/`, colors only from design tokens.
+4. An equivalent table or list, keyboard navigation, `aria-live` for
+   selection changes, `prefers-reduced-motion` respected.
+5. Component test, E2E and axe in both themes (`tests/e2e/fixtures.ts`
+   `views()`), visual baselines (`make web-visual-update` in the Playwright
+   container).
+6. SVG or PNG export if the view is graphical (`web/src/views/export.ts`).
+7. Document it here and in `docs/design.md`; register it in
+   `web/src/views/registry.tsx`.

@@ -158,8 +158,25 @@ loading (skeleton, no spinners on data that arrives in < 300 ms) and error
 The `#/design` page renders static mockups of Overview, Trace, Reach and
 Exposure from a hand-drawn sample of `examples/vulnerable-account`
 (`web/src/design/mock/vulnerableAccount.ts`). They fix the visual language, not
-the layouts: Trace will be positioned by ELK, Reach by the custom radial layout
-and Exposure drawn on Canvas.
+the layouts: in the shipped views Trace uses a layered layout by hop count,
+Reach the custom radial layout and Exposure a Canvas matrix (ADR 0014).
 
 Regenerate the checkpoint screenshots with `pnpm design:screenshots`
 (`SCREENSHOT_DIR` sets the output folder).
+
+## Final views
+
+Captured from the production build on `examples/vulnerable-account` by
+`make demo-video` (1280×800, reduced motion); the README shows all of them.
+
+| View | Light | Dark |
+| --- | --- | --- |
+| Overview | ![Overview view, light theme](media/views/overview-light.png) | ![Overview view, dark theme](media/views/overview-dark.png) |
+| Atlas | ![Atlas view, light theme](media/views/atlas-light.png) | ![Atlas view, dark theme](media/views/atlas-dark.png) |
+| Trace | ![Trace view, light theme](media/views/trace-light.png) | ![Trace view, dark theme](media/views/trace-dark.png) |
+| Reach | ![Reach view, light theme](media/views/reach-light.png) | ![Reach view, dark theme](media/views/reach-dark.png) |
+| Exposure | ![Exposure view, light theme](media/views/exposure-light.png) | ![Exposure view, dark theme](media/views/exposure-dark.png) |
+| Findings | ![Findings view, light theme](media/views/findings-light.png) | ![Findings view, dark theme](media/views/findings-dark.png) |
+| Fix plan | ![Fix view, light theme](media/views/fix-light.png) | ![Fix view, dark theme](media/views/fix-dark.png) |
+| Detect | ![Detect view, light theme](media/views/detect-light.png) | ![Detect view, dark theme](media/views/detect-dark.png) |
+| Diff | ![Diff view, light theme](media/views/diff-light.png) | ![Diff view, dark theme](media/views/diff-dark.png) |
