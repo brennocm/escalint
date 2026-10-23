@@ -123,6 +123,9 @@ func decodeAnalysis(data []byte) (*contract.Analysis, error) {
 	if a.SchemaVersion != contract.SchemaVersion {
 		return nil, fmt.Errorf("%w %q (this escalint reads %q)", ErrSchemaVersion, a.SchemaVersion, contract.SchemaVersion)
 	}
+	if err := contract.ValidateIdentifiers(&a); err != nil {
+		return nil, err
+	}
 	return &a, nil
 }
 
