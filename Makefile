@@ -91,6 +91,22 @@ fuzz-run:
 	  done; \
 	done
 
+# Wall time and peak RSS of analyze/scan on synthetic accounts
+# (docs/benchmarks.md). Needs GNU time; writes only to a temporary directory.
+BENCH_SIZES ?= 1000 10000 50000
+.PHONY: bench-cli
+bench-cli: build-noui ## Time and peak memory of analyze and scan on 1k/10k/50k synthetic principals
+	@tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
+	printf '| Principals | Command | Wall time (s) | Peak RSS (MB) | Output (MB) |\n| ---: | --- | ---: | ---: | ---: |\n'; \
+	for n in $(BENCH_SIZES); do \
+	  $(BINARY) synth --principals $$n --seed 7 --escalation-rate 0.02 -o $$tmp/s.snapshot.json; \
+	  for cmd in "analyze" "scan -f json --fail-on none" "scan -f sarif --fail-on none"; do \
+	    /usr/bin/time -f '%e %M' -o $$tmp/t $(BINARY) $$cmd $$tmp/s.snapshot.json --deterministic -q -o $$tmp/out; \
+	    read -r wall rss < $$tmp/t; \
+	    printf '| %s | `%s` | %s | %d | %d |\n' $$n "$${cmd%% --fail-on none}" $$wall $$((rss / 1024)) $$(( $$(stat -c %s $$tmp/out) / 1048576 )); \
+	  done; \
+	done
+
 .PHONY: golden-update
 golden-update: ## Rewrite golden files (review the diff before committing)
 	$(GO) test $(GO_TEST_FLAGS) ./internal/contract/ ./internal/report/ -run Golden -update
@@ -182,6 +198,26 @@ demo: ## Build the GitHub Pages demo into web/dist-demo (synthetic data only)
 
 .PHONY: pages
 pages: demo ## Build the GitHub Pages site (the demo) into web/dist-demo
+
+## ---- README media ------------------------------------------------------
+# Not part of `make demo` (the Pages build, which CI runs without vhs or
+# ffmpeg). Requires vhs (with ttyd) and ffmpeg.
+MEDIA_DIR := docs/media
+
+.PHONY: demo-media
+demo-media: demo-cli demo-video ## Regenerate the CLI GIF, UI video/GIF and view screenshots in docs/media
+
+.PHONY: demo-cli
+demo-cli: ## Record the CLI demo (demo.tape) into docs/media/cli.gif with vhs
+	$(MAKE) build-noui VERSION=$$(git describe --tags --always 2>/dev/null || echo dev)
+	PATH="$(CURDIR)/$(BIN_DIR):$$PATH" vhs demo.tape
+
+.PHONY: demo-video
+demo-video: web-build ## Record the UI walkthrough (MP4 + GIF) and one screenshot per view and theme
+	cd $(WEB_DIR) && $(PNPM) media
+	ffmpeg -loglevel error -y -i $(MEDIA_DIR)/ui.webm -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -movflags +faststart -an $(MEDIA_DIR)/ui.mp4
+	ffmpeg -loglevel error -y -i $(MEDIA_DIR)/ui.webm -vf "fps=8,scale=880:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4" $(MEDIA_DIR)/ui.gif
+	rm -rf $(MEDIA_DIR)/ui.webm $(MEDIA_DIR)/.video
 
 .PHONY: release-check
 release-check: ## Validate .goreleaser.yaml

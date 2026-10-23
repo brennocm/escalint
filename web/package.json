@@ -27,7 +27,8 @@
     "e2e:serve": "playwright test -c playwright.serve.config.ts",
     "build:demo": "tsc --noEmit && vite build --mode demo",
     "e2e:demo": "playwright test -c playwright.demo.config.ts",
-    "e2e:security": "playwright test -c playwright.security.config.ts"
+    "e2e:security": "playwright test -c playwright.security.config.ts",
+    "media": "playwright test -c playwright.media.config.ts"
   },
   "dependencies": {
     "react": "19.3.1",
