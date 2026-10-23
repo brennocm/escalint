@@ -48,11 +48,14 @@ type CapabilityFinder struct {
 	Env     *graph.Env
 	cache   map[string]Capabilities
 	byNode  map[string]Capabilities
+	// expanded memoizes Catalog.Expand: principals share managed policies,
+	// so the same patterns come back for thousands of them.
+	expanded map[string][]catalog.Action
 }
 
 // NewCapabilityFinder returns a finder bound to a graph environment.
 func NewCapabilityFinder(c *catalog.Catalog, env *graph.Env) *CapabilityFinder {
-	return &CapabilityFinder{Catalog: c, Env: env, cache: map[string]Capabilities{}, byNode: map[string]Capabilities{}}
+	return &CapabilityFinder{Catalog: c, Env: env, cache: map[string]Capabilities{}, byNode: map[string]Capabilities{}, expanded: map[string][]catalog.Action{}}
 }
 
 // For returns the capabilities of a user, role or group node (nil for
@@ -112,7 +115,12 @@ func (f *CapabilityFinder) candidates(pr *eval.Principal) map[string]map[Class][
 				continue
 			}
 			for _, pat := range patterns {
-				addAll(f.Catalog.Expand(pat))
+				actions, ok := f.expanded[pat]
+				if !ok {
+					actions = f.Catalog.Expand(pat)
+					f.expanded[pat] = actions
+				}
+				addAll(actions)
 			}
 		}
 	}
