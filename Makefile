@@ -115,11 +115,11 @@ web-e2e: ## Playwright E2E (Chromium, Firefox, WebKit)
 
 .PHONY: web-visual
 web-visual: ## Visual regression inside the Playwright container
-	$(call not_yet,visual baselines arrive in Phase 1D)
+	$(call not_yet,visual baselines per view arrive in Phase 12 - ADR 0019)
 
 .PHONY: web-visual-update
 web-visual-update: ## Update visual baselines inside the Playwright container
-	$(call not_yet,visual baselines arrive in Phase 1D)
+	$(call not_yet,visual baselines per view arrive in Phase 12 - ADR 0019)
 
 .PHONY: web-a11y
 web-a11y: ## axe accessibility checks
