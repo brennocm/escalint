@@ -10,16 +10,31 @@ test('the Atlas renders with WebGL, without console errors, and keeps the camera
   page,
 }) => {
   const errors: string[] = [];
+  const pageErrors: string[] = [];
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(m.text());
   });
-  page.on('pageerror', (e) => errors.push(e.message));
+  page.on('pageerror', (e) => {
+    errors.push(e.message);
+    pageErrors.push(e.message);
+  });
   await page.route('**/analysis.json', (route) =>
     route.fulfill({ contentType: 'application/json', body: fixture }),
   );
   await page.goto('/#/atlas');
   const stage = page.getByRole('application');
   await expect(stage).toBeVisible();
+  // Headless Firefox on GPU-less CI runners has no WebGL2: there the Atlas
+  // must degrade to its notice and the accessible table instead.
+  const hasWebGL2 = await page.evaluate(
+    () => document.createElement('canvas').getContext('webgl2') !== null,
+  );
+  if (!hasWebGL2) {
+    await expect(page.getByText(/needs WebGL2/)).toBeVisible();
+    await expect(page.getByText('Principals in view (table)')).toBeVisible();
+    expect(pageErrors).toEqual([]);
+    return;
+  }
   await expect(page.getByText(/needs WebGL2/)).toHaveCount(0);
   await expect(page.getByText(/Laying out/)).toHaveCount(0, { timeout: 15_000 });
   // The WebGL canvas has drawn something other than the background.
