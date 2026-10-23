@@ -1,24 +1,26 @@
-import { spawn, type ChildProcess } from 'node:child_process';
+import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test } from '@playwright/test';
 import { hostileAnalysis } from './hostile';
 
-// security-ui: hostile names reach every view through `escalint serve`;
-// no script runs, no CSP violation, no request leaves the origin.
+// security-ui: hostile names reach every view through `escalint serve` and
+// through the single-file report opened from file://; no script runs, no CSP
+// violation, no request leaves the origin.
 const root = fileURLToPath(new URL('../../..', import.meta.url));
 const bin = process.env.ESCALINT_BIN ?? `${root}bin/escalint`;
 let server: ChildProcess | null = null;
 let url = '';
+let file = '';
 let analysis: { paths: { id: string; source: string }[] } = { paths: [] };
 
 test.beforeAll(async () => {
   const fixture = readFileSync(`${root}web/src/data/fixtures/vulnerable.analysis.json`, 'utf8');
   const text = hostileAnalysis(fixture);
   analysis = JSON.parse(text) as typeof analysis;
-  const file = join(mkdtempSync(join(tmpdir(), 'escalint-hostile-')), 'analysis.json');
+  file = join(mkdtempSync(join(tmpdir(), 'escalint-hostile-')), 'analysis.json');
   writeFileSync(file, text);
   server = spawn(bin, ['serve', file], { stdio: ['ignore', 'ignore', 'pipe'] });
   url = await new Promise<string>((resolve, reject) => {
@@ -92,5 +94,54 @@ test('hostile strings never execute, violate the CSP or leak requests', async ({
   expect(errors).toEqual([]);
   // The payload is shown as text.
   await page.goto(`${origin}/#/findings`);
+  await expect(page.getByText('<img src=x onerror="window.__xss=1">').first()).toBeAttached();
+});
+
+test('hostile strings in the HTML report opened from file://', async ({ page }) => {
+  test.setTimeout(120_000);
+  const out = join(mkdtempSync(join(tmpdir(), 'escalint-hostile-report-')), 'report.html');
+  execFileSync(bin, ['report', '--html', file, '-q', '-o', out]);
+  const dialogs: string[] = [];
+  const network: string[] = [];
+  const errors: string[] = [];
+  page.on('dialog', (d) => {
+    dialogs.push(d.message());
+    void d.dismiss();
+  });
+  page.on('request', (r) => {
+    const u = r.url();
+    if (!u.startsWith('file:') && !u.startsWith('data:') && !u.startsWith('blob:')) network.push(u);
+  });
+  page.on('pageerror', (e) => errors.push(e.message.slice(0, 300)));
+  await page.addInitScript(() => {
+    const w = window as unknown as { __csp: string[] };
+    w.__csp = [];
+    document.addEventListener('securitypolicyviolation', (e) => {
+      w.__csp.push(`${e.violatedDirective} ${e.blockedURI}`);
+    });
+  });
+  const base = pathToFileURL(out).toString();
+  const p = analysis.paths[0];
+  const hashes = ['#/', '#/atlas', '#/findings', '#/exposure', '#/fix', '#/detect'];
+  if (p) hashes.push(`#/path/${p.id}`, `#/reach/${p.source}`);
+  for (const h of hashes) {
+    await page.goto(base + h);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 15_000 });
+    if (h.startsWith('#/path/')) {
+      await page
+        .getByRole('button', { name: /edge: .*policy explainer/ })
+        .first()
+        .click();
+      await expect(page.getByRole('region', { name: 'Policy explainer' })).toBeVisible();
+    }
+  }
+  const xss = await page.evaluate(() => (window as unknown as { __xss?: number }).__xss);
+  const csp = await page.evaluate(() => (window as unknown as { __csp: string[] }).__csp);
+  expect(xss).toBeUndefined();
+  expect(dialogs).toEqual([]);
+  expect(csp).toEqual([]);
+  expect(network).toEqual([]);
+  expect(errors).toEqual([]);
+  await page.goto(`${base}#/findings`);
   await expect(page.getByText('<img src=x onerror="window.__xss=1">').first()).toBeAttached();
 });
