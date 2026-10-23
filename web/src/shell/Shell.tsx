@@ -6,6 +6,7 @@ import { useStore } from '../state/store';
 import { viewComponents } from '../views/registry';
 import { candidates, routeFor } from './candidates';
 import { CommandPalette } from './CommandPalette';
+import { DemoBanner } from './DemoBanner';
 import { DetailsPanel } from './DetailsPanel';
 import { HelpDialog } from './HelpDialog';
 import { keyAction } from './keys';
@@ -96,6 +97,7 @@ export function Shell({ store, ix }: { readonly store: AppStore; readonly ix: In
           store.set((s) => ({ ...s, help: true }));
         }}
       />
+      {import.meta.env.VITE_DEMO === 'true' && <DemoBanner />}
       {state.notice && (
         <div className="notice" role="status">
           {state.notice}

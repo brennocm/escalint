@@ -139,3 +139,12 @@ describe('Legend', () => {
     expect(screen.queryByText('Tier 0: effective administrator')).toBeNull();
   });
 });
+
+describe('DemoBanner', () => {
+  it('says the data is synthetic and switches datasets', async () => {
+    const { DemoBanner } = await import('./DemoBanner');
+    render(<DemoBanner />);
+    expect(screen.getByRole('note').textContent).toContain('synthetic');
+    expect(screen.getByRole('combobox', { name: 'Dataset' })).toBeTruthy();
+  });
+});

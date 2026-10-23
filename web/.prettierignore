@@ -1,4 +1,5 @@
 dist
+dist-demo
 coverage
 playwright-report
 test-results

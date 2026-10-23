@@ -1269,3 +1269,8 @@ kbd {
 .diff__key--removed {
   border-top: 2px dashed var(--color-text-muted);
 }
+
+.notice--demo {
+  flex-wrap: wrap;
+  background: var(--color-surface);
+}

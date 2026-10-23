@@ -8,12 +8,20 @@ import { defineConfig } from 'vitest/config';
 //   inlines it with the data and a hash-based CSP.
 export default defineConfig(({ mode }) => {
   const report = mode === 'report';
+  const demo = mode === 'demo';
   return {
     plugins: [react()],
     // Relative asset URLs so the same build works from `escalint serve`,
     // GitHub Pages (sub-path) and file://.
     base: './',
-    define: report ? { 'import.meta.env.VITE_REPORT': JSON.stringify('true') } : {},
+    define: report
+      ? { 'import.meta.env.VITE_REPORT': JSON.stringify('true') }
+      : demo
+        ? {
+            'import.meta.env.VITE_DEMO': JSON.stringify('true'),
+            'import.meta.env.VITE_DESIGN_ROUTE': JSON.stringify('true'),
+          }
+        : {},
     build: report
       ? {
           outDir: 'dist/report',
@@ -24,7 +32,7 @@ export default defineConfig(({ mode }) => {
           assetsInlineLimit: 100_000_000,
           rolldownOptions: { output: { codeSplitting: false } },
         }
-      : { outDir: 'dist', emptyOutDir: true, sourcemap: false },
+      : { outDir: demo ? 'dist-demo' : 'dist', emptyOutDir: true, sourcemap: false },
     test: {
       environment: 'happy-dom',
       include: ['src/**/*.test.{ts,tsx}'],

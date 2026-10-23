@@ -44,7 +44,7 @@ const javascriptUrl = {
 };
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'playwright-report', 'test-results', 'src/contract/**'] },
+  { ignores: ['dist', 'dist-demo', 'coverage', 'playwright-report', 'test-results', 'src/contract/**'] },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

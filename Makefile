@@ -153,6 +153,14 @@ web-visual-update: ## Rewrite visual baselines (review the images before committ
 web-a11y: ## axe accessibility checks (WCAG 2.2 AA, every view, both themes)
 	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) exec playwright test --project=chromium views
 
+.PHONY: web-e2e-serve
+web-e2e-serve: ## serve and report end to end against bin/escalint (run make web-build build first)
+	cd $(WEB_DIR) && $(PNPM) e2e:serve
+
+.PHONY: web-e2e-demo
+web-e2e-demo: ## Pages demo end to end (run make demo first)
+	cd $(WEB_DIR) && $(PNPM) e2e:demo
+
 .PHONY: web-perf
 web-perf: ## Performance budgets with synthetic data (10k principals)
 	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:perf
@@ -164,13 +172,17 @@ size: ## Bundle size budget
 ## ---- Distribution -------------------------------------------------------
 
 .PHONY: demo
-demo: ## Regenerate the CLI and UI demo recordings
-	$(call not_yet,Phase 18)
+demo: ## Build the GitHub Pages demo into web/dist-demo (synthetic data only)
+	cd $(WEB_DIR) && $(PNPM) build:demo
+	mkdir -p $(WEB_DIR)/dist-demo/data
+	$(GO) run -tags noui ./cmd/escalint analyze examples/vulnerable-account/snapshot.json --config-file examples/vulnerable-account/.escalint.yaml --deterministic -o $(WEB_DIR)/dist-demo/data/vulnerable.json
+	$(GO) run -tags noui ./cmd/escalint synth --principals 1000 --accounts 2 --seed 7 --escalation-rate 0.02 -o $(WEB_DIR)/dist-demo/data/synthetic-2k.snapshot.json
+	$(GO) run -tags noui ./cmd/escalint analyze $(WEB_DIR)/dist-demo/data/synthetic-2k.snapshot.json --deterministic -o $(WEB_DIR)/dist-demo/data/synthetic-2k.json
+	rm $(WEB_DIR)/dist-demo/data/synthetic-2k.snapshot.json
 
 .PHONY: pages
-pages: ## Build the GitHub Pages demo
-	$(call not_yet,Phase 13)
+pages: demo ## Build the GitHub Pages site (the demo) into web/dist-demo
 
 .PHONY: clean
 clean: ## Remove build outputs
-	rm -rf $(BIN_DIR) $(COVER_OUT) coverage.html $(WEB_DIR)/dist $(WEB_DIR)/coverage $(WEB_DIR)/playwright-report $(WEB_DIR)/test-results
+	rm -rf $(BIN_DIR) $(COVER_OUT) coverage.html $(WEB_DIR)/dist $(WEB_DIR)/dist-demo $(WEB_DIR)/coverage $(WEB_DIR)/playwright-report $(WEB_DIR)/test-results

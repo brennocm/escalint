@@ -66,9 +66,18 @@ export function detectSource(doc: Document = document): Source {
   if (doc.getElementById('escalint-data')) {
     return { kind: 'inline', elementId: 'escalint-data' };
   }
-  const demo = new URLSearchParams(doc.location.search).get('dataset');
-  if (demo && /^[a-z0-9-]{1,40}$/.test(demo)) {
-    return { kind: 'url', url: `data/${demo}.json` };
+  const dataset = new URLSearchParams(doc.location.search).get('dataset');
+  if (dataset && /^[a-z0-9-]{1,40}$/.test(dataset)) {
+    return { kind: 'url', url: `data/${dataset}.json` };
+  }
+  if (import.meta.env.VITE_DEMO === 'true') {
+    return { kind: 'url', url: `data/${demoDatasets[0].id}.json` };
   }
   return { kind: 'url', url: 'analysis.json' };
 }
+
+/** Datasets of the public demo (built by `make demo`). */
+export const demoDatasets = [
+  { id: 'vulnerable', label: 'Example: vulnerable account (one scenario per rule)' },
+  { id: 'synthetic-2k', label: 'Synthetic: 2,000 principals in 2 accounts' },
+] as const;
