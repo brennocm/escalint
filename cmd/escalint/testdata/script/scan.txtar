@@ -53,7 +53,7 @@ stderr 'not a severity'
 ! exec escalint scan $EXAMPLES/hardened-account/snapshot.json --enable EL-XX-*
 stderr 'unknown rule'
 ! exec escalint scan missing.json
-stderr 'no such file'
+stderr 'no such file|cannot find the file'
 ! exec escalint scan bad.json
 stderr 'escalint: '
 ! exec escalint scan

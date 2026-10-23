@@ -1,0 +1,10 @@
+# Check out text with LF on every platform: golden files, fixtures and
+# generated docs are compared byte for byte (Windows runners default to
+# core.autocrlf=true).
+* text=auto eol=lf
+
+*.png binary
+*.gif binary
+*.mp4 binary
+*.woff2 binary
+*.gz binary

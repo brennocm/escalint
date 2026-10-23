@@ -8,7 +8,7 @@ stderr 'roles-bad.txt:2: "arn:aws:s3:::bucket" is not a role ARN'
 ! exec escalint collect --assume-roles empty.txt
 stderr 'lists no role ARNs'
 ! exec escalint collect --assume-roles missing.txt
-stderr 'no such file'
+stderr 'no such file|cannot find the file'
 exec escalint collect --help
 stdout 'docs/collector-policy.json'
 
