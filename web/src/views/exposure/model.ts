@@ -87,7 +87,9 @@ export function buildMatrix(ix: Indexes, filter: (n: Node) => boolean = () => tr
       .sort()
       .map(([s, c]) => `${s}=${String(c)}`)
       .join(',');
-    groups.set(key, [...(groups.get(key) ?? []), n]);
+    const group = groups.get(key);
+    if (group) group.push(n);
+    else groups.set(key, [n]);
   }
   const sets = new Map([...groups.keys()].map((k) => [k, new Set(k === '' ? [] : k.split(','))]));
   const order = seriate([...groups.keys()], sets);

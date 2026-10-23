@@ -85,6 +85,53 @@ describe('Exposure view', () => {
     expect(route.sel).toMatch(/^n_/);
     expect(screen.getByText('Table view')).toBeTruthy();
   });
+  it('keeps the canvas to the visible area on tall matrices and picks rows after scrolling', () => {
+    // 5,000 principals: 70,000 px of rows, beyond what a canvas can hold.
+    const base = vulnerable.nodes.filter((n) => n.kind === 'role');
+    const nodes = Array.from({ length: 5000 }, (_, i) => {
+      const n = base[i % base.length];
+      if (!n) throw new Error('fixture has no roles');
+      return { ...n, id: `n_${String(i).padStart(16, '0')}` };
+    });
+    const big = buildIndexes({ ...vulnerable, nodes, edges: [], paths: [], findings: [] });
+    let route: Route = to('exposure');
+    const update = vi.fn((p: (r: Route) => Route) => {
+      route = p(route);
+    });
+    render(
+      <ThemeProvider name="light">
+        <Exposure
+          ix={big}
+          route={route}
+          pseudonyms={false}
+          navigate={() => undefined}
+          update={update}
+        />
+      </ThemeProvider>,
+    );
+    const canvas = screen.getByTestId('exposure-canvas');
+    expect(Number(canvas.getAttribute('height'))).toBeLessThanOrEqual(600);
+    const spacer = canvas.parentElement;
+    expect(spacer?.style.height).toBe(`${String(110 + 5000 * 14 + 8)}px`);
+    const scroller = screen.getByRole('region', { name: /Exposure matrix/ });
+    scroller.scrollTop = 14 * 1000;
+    fireEvent.scroll(scroller);
+    canvas.getBoundingClientRect = () => ({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+    // The first visible row after scrolling 1,000 rows down, below the header.
+    fireEvent.click(canvas, { clientX: 220 + 5, clientY: 110 + 5 });
+    const m = buildMatrix(big);
+    expect(route.sel).toBe(m.rows[1000]?.id);
+  });
   it('shows an empty state when the filter matches nothing', () => {
     render(
       <ThemeProvider name="dark">

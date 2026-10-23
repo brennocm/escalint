@@ -1172,8 +1172,14 @@ kbd {
   border-radius: 8px;
 }
 
+.exposure__spacer {
+  position: relative;
+}
+
 .exposure__canvas {
   display: block;
+  position: sticky;
+  top: 0;
   cursor: crosshair;
 }
 

@@ -6,7 +6,7 @@ import { ThemeProvider } from '../../design/theme';
 import { themes } from '../../design/tokens';
 import { SpatialGrid } from '../../layout/spatial';
 import { emptyFilters, to, type Route } from '../../state/route';
-import { Atlas } from './Atlas';
+import { Atlas, degradationNotice } from './Atlas';
 import { dashArray, EdgeFlag, NodeFlag } from './renderer';
 import {
   buildScene,
@@ -128,5 +128,10 @@ describe('Atlas view', () => {
     if (row) fireEvent.click(row);
     expect(route.sel === null || route.sel.startsWith('n_')).toBe(true);
     fireEvent.keyDown(screen.getByRole('application'), { key: '+' });
+    expect(screen.queryByText(/Large graph/)).toBeNull();
+  });
+  it('explains how it degrades on large graphs', () => {
+    expect(degradationNotice(10_000)).toBeNull();
+    expect(degradationNotice(50_000)).toMatch(/^Large graph: 50,000 nodes\. .*meta-node/);
   });
 });

@@ -32,6 +32,19 @@ import {
 
 /** Below this zoom, nodes collapse into one meta-node per account. */
 const metaZoom = 0.12;
+/** Above this many nodes the Atlas explains how it degrades. */
+const largeGraph = 10_000;
+
+/** What the Atlas tells the user on large graphs, or null. */
+export function degradationNotice(nodes: number): string | null {
+  if (nodes <= largeGraph) return null;
+  return (
+    `Large graph: ${nodes.toLocaleString('en-US')} nodes. The layout can take a minute; ` +
+    'zoomed out, each account is one meta-node and expands as you zoom in; labels show only ' +
+    'for the most important principals in view. Findings, Trace and search (Ctrl+K) go to a ' +
+    'principal directly.'
+  );
+}
 
 function reducedMotion(): boolean {
   return (
@@ -63,7 +76,9 @@ export function drawOverlay(
   s.nodes.forEach((n, i) => {
     if (!n.account || !visible(n, f)) return;
     const pt = toScreen(cam, w, h, pos.x[i] ?? 0, pos.y[i] ?? 0);
-    byAccount.set(n.account, [...(byAccount.get(n.account) ?? []), pt]);
+    const pts = byAccount.get(n.account);
+    if (pts) pts.push(pt);
+    else byAccount.set(n.account, [pt]);
   });
   if (byAccount.size > 1 && !meta) {
     for (const [acct, pts] of [...byAccount.entries()].sort()) {
@@ -446,14 +461,20 @@ export function Atlas({ ix, route, pseudonyms, update }: ViewProps) {
     update((r) => ({ ...r, filters: { ...r.filters, ...patch } }));
   };
 
-  const shown = scene.nodes.filter((n) => visible(n, f) && n.kind !== 'tier0_sink');
-  const tableRows = [...shown]
-    .sort(
-      (a, b) =>
-        a.tier - b.tier ||
-        (b.blast?.reachable_principals ?? 0) - (a.blast?.reachable_principals ?? 0),
-    )
-    .slice(0, 200);
+  // Sorting tens of thousands of nodes on every camera move froze large
+  // accounts: the table depends only on the data and the filters.
+  const notice = degradationNotice(scene.nodes.length);
+  const { shown, tableRows } = useMemo(() => {
+    const list = scene.nodes.filter((n) => visible(n, f) && n.kind !== 'tier0_sink');
+    const rows = [...list]
+      .sort(
+        (a, b) =>
+          a.tier - b.tier ||
+          (b.blast?.reachable_principals ?? 0) - (a.blast?.reachable_principals ?? 0),
+      )
+      .slice(0, 200);
+    return { shown: list, tableRows: rows };
+  }, [scene, f]);
   const toggleTier = (t: number): number[] =>
     f.tiers.includes(t) ? f.tiers.filter((x) => x !== t) : [...f.tiers, t];
 
@@ -575,6 +596,11 @@ export function Atlas({ ix, route, pseudonyms, update }: ViewProps) {
           Export PNG
         </button>
       </div>
+      {notice && (
+        <p className="notice" role="status">
+          {notice}
+        </p>
+      )}
       {glError && (
         <p className="notice" role="status">
           The graph needs WebGL2, which is not available here ({glError}). The table below lists the

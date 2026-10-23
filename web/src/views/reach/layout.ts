@@ -119,7 +119,9 @@ export function totalCrossings(
   const byRing = new Map<number, RingEdge[]>();
   for (const e of edges) {
     const d = ringOf.get(e.from) ?? 0;
-    byRing.set(d, [...(byRing.get(d) ?? []), e]);
+    const ring = byRing.get(d);
+    if (ring) ring.push(e);
+    else byRing.set(d, [e]);
   }
   let n = 0;
   for (const list of byRing.values()) n += crossings(list, pos);

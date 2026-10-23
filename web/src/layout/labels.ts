@@ -79,7 +79,11 @@ export function placeLabels(
     )
       continue;
     placed.push(box);
-    for (const k of cells) grid.set(k, [...(grid.get(k) ?? []), box]);
+    for (const k of cells) {
+      const cell = grid.get(k);
+      if (cell) cell.push(box);
+      else grid.set(k, [box]);
+    }
   }
   return placed;
 }
