@@ -96,12 +96,14 @@ golden-update: ## Rewrite golden files
 	$(call not_yet,golden files arrive in Phase 7)
 
 .PHONY: gen
-gen: ## Regenerate action catalog and TS contract
-	$(call not_yet,catalog in Phase 3 and contract in Phase 7)
+gen: ## Regenerate generated files (downloads the AWS service reference)
+	$(GO) generate ./internal/catalog/
 
+# The catalog needs the network and changes with AWS, so it is not part of
+# gen-check; the monthly catalog workflow (Phase 14) proposes updates.
 .PHONY: gen-check
-gen-check: ## Fail if generated files are stale
-	$(call not_yet,generated files arrive in Phases 3 and 7)
+gen-check: ## Fail if offline-generated files are stale
+	$(call not_yet,offline generated files (TS contract) arrive in Phase 7)
 
 ## ---- Web ---------------------------------------------------------------
 
