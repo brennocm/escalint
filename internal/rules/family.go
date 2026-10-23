@@ -5,6 +5,7 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/brennocm/escalint/internal/eval"
 	"github.com/brennocm/escalint/internal/graph"
@@ -151,12 +152,39 @@ func (r selfRule) Apply(ctx *Context) []Finding {
 		for _, target := range r.targets(ctx, actor) {
 			c := askAll(ctx, actor, r.meta.RequiredActions, target, actor.Account)
 			if c.ok {
-				ctx.Graph.AddEdge(edgeFor(r.meta, actor.ID, sinkOf(actor.Account), c, nil))
+				ctx.Graph.AddEdge(edgeFor(r.meta, actor.ID, sinkOf(actor.Account), c, boundaryCap(ctx, actor)))
 				break
 			}
 		}
 	}
 	return nil
+}
+
+// adminDocument stands for whatever the actor writes into its own policies.
+var adminDocument = sync.OnceValues(func() (*policy.Document, error) {
+	return policy.Parse([]byte(`{"Version":"2012-10-17","Statement":{"Effect":"Allow","Action":"*","Resource":"*"}}`), policy.KindIdentity, policy.Limits{})
+})
+
+// boundaryCap returns a prerequisite when the actor's permissions boundary
+// (with its SCPs) would keep even an administrator policy below Tier 0: the
+// boundary intersects whatever the actor grants itself. The edge is then
+// conditional, not dropped: the actor may also be able to remove the
+// boundary, or the boundary may grant enough for another path.
+func boundaryCap(ctx *Context, actor *graph.Node) []string {
+	pr := ctx.Env.Principal(actor.ID)
+	if pr == nil || pr.Boundary == nil {
+		return nil
+	}
+	doc, err := adminDocument()
+	if err != nil {
+		return nil // constant document; failing here keeps the edge allowed (over-report)
+	}
+	admin := *pr
+	admin.Identity = []eval.Policy{{Type: eval.TypeIdentity, Source: "escalint:self-granted", Doc: doc}}
+	if ctx.Env.PassesTier0Probes(&admin, actor.Account) {
+		return nil
+	}
+	return []string{"the permissions boundary " + pr.Boundary.Source + " caps what the new policy grants: administrator only if the boundary is removed or allows it"}
 }
 
 func ownARN(_ *Context, actor *graph.Node) []string { return []string{actor.ARN} }

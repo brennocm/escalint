@@ -5,6 +5,7 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -370,5 +371,54 @@ func checkFixture(t *testing.T, path string, data []byte) {
 	}
 	if string(got) != string(data) {
 		t.Fatalf("fixture %s is stale (run go test ./internal/rules -update)", path)
+	}
+}
+
+// Security review (Phase 19): a permissions boundary that allows the
+// self-escalation action but not administrator actions caps the result, so
+// the edge to Tier 0 is conditional with the reason; a boundary that allows
+// everything keeps it allowed.
+func TestSelfEscalationCappedByBoundary(t *testing.T) {
+	for _, r := range All() {
+		self, ok := r.(selfRule)
+		if !ok {
+			continue
+		}
+		for _, tc := range []struct {
+			name     string
+			boundary []string
+			want     graph.Status
+		}{
+			{"narrow boundary", self.meta.RequiredActions, graph.StatusConditional},
+			{"admin boundary", []string{"*"}, graph.StatusAllowed},
+		} {
+			t.Run(self.meta.ID+"/"+tc.name, func(t *testing.T) {
+				sc := build(r, variant{name: "positive"})
+				all := slices.Concat(sc.users, sc.roles)
+				for _, e := range all {
+					if n, _ := e["UserName"].(string); n == "attacker" {
+						e["PermissionsBoundary"] = map[string]any{"PermissionsBoundaryType": "Policy", "PermissionsBoundaryArn": arnOf("policy", "Cap")}
+					}
+					if n, _ := e["RoleName"].(string); n == "attacker" {
+						e["PermissionsBoundary"] = map[string]any{"PermissionsBoundaryType": "Policy", "PermissionsBoundaryArn": arnOf("policy", "Cap")}
+					}
+				}
+				sc.policies = append(sc.policies, managed("Cap", doc(statement(tc.boundary))))
+				data, err := json.Marshal(sc.envelope())
+				if err != nil {
+					t.Fatal(err)
+				}
+				edges := edgesOf(runAll(t, data), self.meta.ID)
+				if len(edges) != 1 {
+					t.Fatalf("edges = %d", len(edges))
+				}
+				if edges[0].Status != tc.want {
+					t.Errorf("status = %s, want %s", edges[0].Status, tc.want)
+				}
+				if tc.want == graph.StatusConditional && (len(edges[0].PrerequisitesUnverified) != 1 || !strings.Contains(edges[0].PrerequisitesUnverified[0], "permissions boundary")) {
+					t.Errorf("prerequisites = %v", edges[0].PrerequisitesUnverified)
+				}
+			})
+		}
 	}
 }

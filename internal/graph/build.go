@@ -457,6 +457,17 @@ func Tier0Probes(account string) []tier0Probe {
 	}
 }
 
+// PassesTier0Probes reports whether pr would pass every Tier 0 probe of
+// account (decision allowed or conditional).
+func (e *Env) PassesTier0Probes(pr *eval.Principal, account string) bool {
+	for _, probe := range Tier0Probes(account) {
+		if !e.Ask(pr, probe.action, probe.resource, account, "", nil).Decision.Allowed() {
+			return false
+		}
+	}
+	return true
+}
+
 // markTier0 evaluates the probe set for every user, role and group and adds
 // an admin edge to the account sink for Tier 0 principals. Probes are
 // identity-only questions (no trust policy), as ADR 0008 defines Tier 0 by
