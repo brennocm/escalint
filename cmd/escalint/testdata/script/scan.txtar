@@ -25,6 +25,12 @@ stdout 'no findings'
 ! stdout 'EL-PE-001 '
 ! stdout 'MEDIUM'
 
+# Devices are written in place, not replaced by a rename.
+[!windows] exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json -f sarif --fail-on none -q -o /dev/null
+[!windows] ! stderr .
+[!windows] exec escalint analyze $EXAMPLES/hardened-account/snapshot.json -o /dev/null
+[!windows] ! stderr .
+
 # JSON and SARIF to files; the summary goes to stderr.
 ! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json -f json -o out.json
 stderr 'findings: [0-9]+ critical'

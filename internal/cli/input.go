@@ -287,14 +287,24 @@ func exceeds(findings []contract.Finding, sev rules.Severity) bool {
 // file written atomically with mode 0600 (reports describe who can become
 // administrator).
 type output struct {
-	w     io.Writer
-	tmp   *os.File
-	final string
+	w      io.Writer
+	tmp    *os.File
+	final  string
+	direct *os.File // a device or pipe, written in place
 }
 
 func openOutput(cmd *cobra.Command, path string) (*output, error) {
 	if path == "" || path == "-" {
 		return &output{w: cmd.OutOrStdout()}, nil
+	}
+	if fi, err := os.Stat(path); err == nil && !fi.Mode().IsRegular() {
+		// Devices and pipes (/dev/null, /dev/stdout, a FIFO) cannot be
+		// replaced by a rename: write to them directly.
+		f, err := os.OpenFile(path, os.O_WRONLY, 0) // #nosec G304 -- the user chooses the output
+		if err != nil {
+			return nil, fmt.Errorf("open output: %w", err)
+		}
+		return &output{w: f, direct: f}, nil
 	}
 	dir := filepath.Dir(path)
 	tmp, err := os.CreateTemp(dir, ".escalint-*")
@@ -312,6 +322,9 @@ func openOutput(cmd *cobra.Command, path string) (*output, error) {
 
 // close commits the file; on error it removes the temporary file.
 func (o *output) close(failed bool) error {
+	if o.direct != nil {
+		return o.direct.Close()
+	}
 	if o.tmp == nil {
 		return nil
 	}
