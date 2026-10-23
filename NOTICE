@@ -6,3 +6,10 @@ This product includes software developed by brennocm
 
 escalint is not affiliated with, endorsed by, or sponsored by Amazon Web
 Services or Datadog.
+
+This product includes data from MITRE ATT&CK®.
+© 2026 The MITRE Corporation. This work is reproduced and distributed with the
+permission of The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered
+trademarks of The MITRE Corporation. License: internal/attack/data/LICENSE-MITRE.txt
+
+See THIRD_PARTY_NOTICES.md for every third-party component and data set.
