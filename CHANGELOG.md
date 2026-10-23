@@ -24,6 +24,47 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   rules and decision traces (ADR 0004, 0005).
 - Can-act-as graph, k shortest escalation paths, cycles, tiers, blast radius,
   choke points and a greedy fix plan (ADR 0006, 0007, 0009, 0010).
+- 39 rules: 30 escalation paths (`EL-PE-001`…`030`, 33 pathfinding.cloud
+  paths), 6 trust rules (`EL-TR-001`…`006`), 3 diagnostics
+  (`EL-PARSE-001`…`003`), each with fixtures and embedded documentation;
+  generated `docs/coverage.md` and README rule table.
+- Vulnerable and hardened example accounts as integration tests; synthetic
+  snapshot generator (`escalint synth`).
+- `analysis.json` contract with JSON Schema and a generated TypeScript type;
+  text, JSON, SARIF 2.1.0, DOT and Mermaid reporters; `--redact` with
+  per-run pseudonyms (ADR 0003, 0010, 0011).
+- CLI: `analyze`, `scan`, `diff`, `graph`, `rules list|explain`,
+  `attack coverage`, `schema`, `synth`, exit codes, `--deterministic`;
+  `.escalint.yaml` with suppressions (mandatory reason, expiry) and groupings.
+- Read-only collector (`escalint collect`) with Organizations, resource
+  inventory and multi-account role assumption; minimal IAM policy checked by
+  a test (ADR 0020).
+- Web UI: Overview, Atlas (own WebGL2 renderer, force layout in a worker,
+  semantic zoom), Trace, policy explainer, Reach, Exposure, Findings, Fix
+  plan, Detect and Diff; URL state, command palette, light and dark themes,
+  accessible tables, SVG/PNG export (ADR 0014, 0015, 0016).
+- `escalint serve` on loopback with a one-time token, Host check and strict
+  CSP; `escalint report --html`, one offline file with a hash-based CSP;
+  GitHub Pages demo with synthetic data (ADR 0017, 0018).
+- CI: lint, race tests with per-package coverage gates, fuzz smoke,
+  govulncheck, generated-file check, Playwright E2E in three browsers,
+  visual baselines in the Playwright container, axe, hostile-data tests,
+  CodeQL, Scorecard, dependency review; nightly long fuzzing, mutation
+  testing and benchmarks; monthly catalog refresh.
+- Releases with GoReleaser: binaries with the UI for six platforms, SBOMs,
+  keyless-signed checksums, provenance and a signed distroless image on
+  ghcr.io; composite GitHub Action with SARIF report, `fail-on` gate and
+  baseline diff (ADR 0026).
+- README media (`make demo-media`), threat model, benchmarks
+  (`make bench-cli`, `docs/benchmarks.md`).
+
+### Performance
+
+- 50,000-principal accounts analyze in about 28 s with a 1.3 GB peak:
+  per-account AssumeRole pre-filter, exact-ARN target lookup in pair rules,
+  memoized action patterns, and streamed JSON and SARIF output.
+- The UI stays responsive with 50,000 principals (Exposure draws only
+  visible rows, the Atlas table is memoized, linear grouping).
 
 ### Security
 
@@ -31,3 +72,7 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   policies instead of reading them with a different meaning.
 - Decode snapshots with case-sensitive field names (`encoding/json/v2`).
 - Escape snapshot-derived text in CLI errors (terminal escape sequences).
+- Reject YAML anchors and aliases and unknown keys in `.escalint.yaml`.
+- Write every output file with mode 0600.
+- Hostile-data tests for `serve` and for the HTML report opened from
+  `file://`: no script execution, no CSP violation, no external request.
