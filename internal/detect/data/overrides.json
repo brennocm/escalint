@@ -1,0 +1,756 @@
+{
+ "format_version": 1,
+ "sources": [
+  "docs/research.md §14"
+ ],
+ "actions": [
+  {
+   "action": "cloudformation:CreateStack",
+   "events": [
+    {
+     "source": "cloudformation.amazonaws.com",
+     "name": "CreateStack",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.stackName",
+      "requestParameters.roleARN",
+      "requestParameters.templateURL"
+     ],
+     "region": "the Region of the call",
+     "notes": "Only parameter keys are logged, not their values."
+    }
+   ],
+   "blind_spots": [
+    "Parameter values and inline template bodies may not be visible in the log."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateStack"
+  },
+  {
+   "action": "codebuild:CreateProject",
+   "events": [
+    {
+     "source": "codebuild.amazonaws.com",
+     "name": "CreateProject",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.name",
+      "requestParameters.serviceRole"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateProject"
+  },
+  {
+   "action": "codebuild:StartBuild",
+   "events": [
+    {
+     "source": "codebuild.amazonaws.com",
+     "name": "StartBuild",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.projectName",
+      "requestParameters.buildspecOverride"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [
+    "Commands run by the build are not in CloudTrail; only later API calls made with the role are."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "StartBuild"
+  },
+  {
+   "action": "ec2:RunInstances",
+   "events": [
+    {
+     "source": "ec2.amazonaws.com",
+     "name": "RunInstances",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.iamInstanceProfile",
+      "responseElements.instancesSet"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "RunInstances"
+  },
+  {
+   "action": "ecs:CreateCluster",
+   "events": [
+    {
+     "source": "ecs.amazonaws.com",
+     "name": "CreateCluster",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.clusterName"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateCluster"
+  },
+  {
+   "action": "ecs:RegisterTaskDefinition",
+   "events": [
+    {
+     "source": "ecs.amazonaws.com",
+     "name": "RegisterTaskDefinition",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.family",
+      "requestParameters.taskRoleArn"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "RegisterTaskDefinition"
+  },
+  {
+   "action": "ecs:RunTask",
+   "events": [
+    {
+     "source": "ecs.amazonaws.com",
+     "name": "RunTask",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.cluster",
+      "requestParameters.taskDefinition"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "RunTask"
+  },
+  {
+   "action": "glue:CreateJob",
+   "events": [
+    {
+     "source": "glue.amazonaws.com",
+     "name": "CreateJob",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.name",
+      "requestParameters.role"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateJob"
+  },
+  {
+   "action": "glue:StartJobRun",
+   "events": [
+    {
+     "source": "glue.amazonaws.com",
+     "name": "StartJobRun",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.jobName"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "StartJobRun"
+  },
+  {
+   "action": "iam:AddUserToGroup",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "AddUserToGroup",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName",
+      "requestParameters.groupName"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AddUserToGroup"
+  },
+  {
+   "action": "iam:AttachGroupPolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "AttachGroupPolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.groupName",
+      "requestParameters.policyArn"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AttachGroupPolicy"
+  },
+  {
+   "action": "iam:AttachRolePolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "AttachRolePolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.roleName",
+      "requestParameters.policyArn"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AttachRolePolicy"
+  },
+  {
+   "action": "iam:AttachUserPolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "AttachUserPolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName",
+      "requestParameters.policyArn"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AttachUserPolicy"
+  },
+  {
+   "action": "iam:CreateAccessKey",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "CreateAccessKey",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName",
+      "responseElements.accessKey.accessKeyId"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [
+    "Use of the new key later appears as the target user, not as the caller."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateAccessKey"
+  },
+  {
+   "action": "iam:CreateLoginProfile",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "CreateLoginProfile",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    },
+    {
+     "source": "signin.amazonaws.com",
+     "name": "ConsoleLogin",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "responseElements.ConsoleLogin",
+      "additionalEventData.MFAUsed"
+     ],
+     "region": "the Region of the call",
+     "notes": "The later console sign-in with the new password."
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateLoginProfile"
+  },
+  {
+   "action": "iam:CreatePolicyVersion",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "CreatePolicyVersion",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.policyArn",
+      "requestParameters.setAsDefault"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreatePolicyVersion"
+  },
+  {
+   "action": "iam:DeleteAccessKey",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "DeleteAccessKey",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName",
+      "requestParameters.accessKeyId"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "DeleteAccessKey"
+  },
+  {
+   "action": "iam:PassRole",
+   "events": [],
+   "blind_spots": [
+    "iam:PassRole is a permission, not an API call: it never appears as its own event. Look for the call that creates the resource, with the role in its request parameters."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "PassRole"
+  },
+  {
+   "action": "iam:PutGroupPolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "PutGroupPolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.groupName",
+      "requestParameters.policyName",
+      "requestParameters.policyDocument"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "PutGroupPolicy"
+  },
+  {
+   "action": "iam:PutRolePolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "PutRolePolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.roleName",
+      "requestParameters.policyName",
+      "requestParameters.policyDocument"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "PutRolePolicy"
+  },
+  {
+   "action": "iam:PutUserPolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "PutUserPolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName",
+      "requestParameters.policyName",
+      "requestParameters.policyDocument"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "PutUserPolicy"
+  },
+  {
+   "action": "iam:SetDefaultPolicyVersion",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "SetDefaultPolicyVersion",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.policyArn",
+      "requestParameters.versionId"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "SetDefaultPolicyVersion"
+  },
+  {
+   "action": "iam:UpdateAssumeRolePolicy",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "UpdateAssumeRolePolicy",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.roleName",
+      "requestParameters.policyDocument"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "UpdateAssumeRolePolicy"
+  },
+  {
+   "action": "iam:UpdateLoginProfile",
+   "events": [
+    {
+     "source": "iam.amazonaws.com",
+     "name": "UpdateLoginProfile",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.userName"
+     ],
+     "region": "IAM events are recorded in us-east-1 (global service).",
+     "notes": ""
+    },
+    {
+     "source": "signin.amazonaws.com",
+     "name": "ConsoleLogin",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "responseElements.ConsoleLogin",
+      "additionalEventData.MFAUsed"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "UpdateLoginProfile"
+  },
+  {
+   "action": "lambda:CreateFunction",
+   "events": [
+    {
+     "source": "lambda.amazonaws.com",
+     "name": "CreateFunction20150331",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.functionName",
+      "requestParameters.role"
+     ],
+     "region": "the Region of the call",
+     "notes": "The event name carries a version suffix; Environment and ZipFile are omitted from the log."
+    }
+   ],
+   "blind_spots": [
+    "The function code and environment variables are not in CloudTrail."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateFunction"
+  },
+  {
+   "action": "lambda:InvokeFunction",
+   "events": [
+    {
+     "source": "lambda.amazonaws.com",
+     "name": "Invoke",
+     "kind": "data",
+     "key_fields": [
+      "userIdentity.arn",
+      "resources.ARN"
+     ],
+     "region": "the Region of the call",
+     "notes": "Data event: not logged unless the trail enables Lambda data events."
+    }
+   ],
+   "blind_spots": [
+    "Invoke is a data event: trails and event data stores do not log it by default, and Event history never shows it."
+   ],
+   "requires_data_events": true,
+   "status": "verified",
+   "operation": "Invoke"
+  },
+  {
+   "action": "lambda:UpdateFunctionCode",
+   "events": [
+    {
+     "source": "lambda.amazonaws.com",
+     "name": "UpdateFunctionCode20150331v2",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.functionName"
+     ],
+     "region": "the Region of the call",
+     "notes": "The event name carries a version suffix; ZipFile is omitted from the log."
+    }
+   ],
+   "blind_spots": [
+    "The new code itself is not in CloudTrail."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "UpdateFunctionCode"
+  },
+  {
+   "action": "sagemaker:CreateNotebookInstance",
+   "events": [
+    {
+     "source": "sagemaker.amazonaws.com",
+     "name": "CreateNotebookInstance",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.notebookInstanceName",
+      "requestParameters.roleArn"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "CreateNotebookInstance"
+  },
+  {
+   "action": "ssm:SendCommand",
+   "events": [
+    {
+     "source": "ssm.amazonaws.com",
+     "name": "SendCommand",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.instanceIds",
+      "requestParameters.documentName"
+     ],
+     "region": "the Region of the call",
+     "notes": ""
+    }
+   ],
+   "blind_spots": [
+    "What the command does on the instance is not in CloudTrail."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "SendCommand"
+  },
+  {
+   "action": "sts:AssumeRole",
+   "events": [
+    {
+     "source": "sts.amazonaws.com",
+     "name": "AssumeRole",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.arn",
+      "requestParameters.roleArn",
+      "requestParameters.roleSessionName",
+      "sharedEventID",
+      "recipientAccountId"
+     ],
+     "region": "Global STS endpoint: us-east-1; regional STS endpoints: the endpoint's Region.",
+     "notes": "Logged in both accounts for cross-account calls, linked by sharedEventID; readOnly is true."
+    }
+   ],
+   "blind_spots": [
+    "AssumeRole is a read-only event: trails that keep only write management events miss it.",
+    "A denied cross-account AssumeRole is not logged in the target account."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AssumeRole"
+  },
+  {
+   "action": "sts:AssumeRoleWithSAML",
+   "events": [
+    {
+     "source": "sts.amazonaws.com",
+     "name": "AssumeRoleWithSAML",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.identityProvider",
+      "requestParameters.roleArn",
+      "requestParameters.principalArn"
+     ],
+     "region": "Global STS endpoint: us-east-1; regional STS endpoints: the endpoint's Region.",
+     "notes": "Logged only in the role's account; userIdentity.type is SAMLUser."
+    }
+   ],
+   "blind_spots": [
+    "AssumeRoleWithSAML is a read-only event: write-only trails miss it."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AssumeRoleWithSAML",
+   "reference_gap": "Unauthenticated STS operation: the service reference lists no authorized action for it; the event name is confirmed in the IAM CloudTrail documentation."
+  },
+  {
+   "action": "sts:AssumeRoleWithWebIdentity",
+   "events": [
+    {
+     "source": "sts.amazonaws.com",
+     "name": "AssumeRoleWithWebIdentity",
+     "kind": "management",
+     "key_fields": [
+      "userIdentity.identityProvider",
+      "requestParameters.roleArn",
+      "responseElements.subjectFromWebIdentityToken",
+      "responseElements.audience"
+     ],
+     "region": "Global STS endpoint: us-east-1; regional STS endpoints: the endpoint's Region.",
+     "notes": "Logged only in the role's account; userIdentity.type is WebIdentityUser."
+    }
+   ],
+   "blind_spots": [
+    "AssumeRoleWithWebIdentity is a read-only event: write-only trails miss it."
+   ],
+   "requires_data_events": false,
+   "status": "verified",
+   "operation": "AssumeRoleWithWebIdentity",
+   "reference_gap": "Unauthenticated STS operation: the service reference lists no authorized action for it; the event name is confirmed in the IAM CloudTrail documentation."
+  }
+ ],
+ "edge_kinds": {
+  "assume": {
+   "blind_spots": [
+    "Actions taken afterwards appear as the role session, not the original caller; require sts:SourceIdentity to keep attribution."
+   ]
+  },
+  "trust": {
+   "blind_spots": [
+    "The external side of the call is outside this account's trails."
+   ]
+  },
+  "credential": {
+   "blind_spots": []
+  },
+  "modify_permissions": {
+   "blind_spots": []
+  },
+  "modify_trust": {
+   "blind_spots": []
+  },
+  "passrole_compute": {
+   "blind_spots": [
+    "Activity inside the compute resource and credential reads from instance metadata or the runtime environment are not logged; only later API calls made with the role appear (experimental: inferred from the service documentation)."
+   ]
+  },
+  "update_code": {
+   "blind_spots": [
+    "Activity inside the compute resource is not logged; only later API calls made with the role appear (experimental)."
+   ]
+  },
+  "admin": {
+   "blind_spots": [],
+   "structural": true
+  },
+  "member_of": {
+   "blind_spots": [],
+   "structural": true
+  }
+ }
+}

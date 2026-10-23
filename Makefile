@@ -97,7 +97,7 @@ golden-update: ## Rewrite golden files
 
 .PHONY: gen
 gen: ## Regenerate generated data (downloads the AWS service reference and ATT&CK)
-	$(GO) generate ./internal/catalog/ ./internal/attack/
+	$(GO) generate ./internal/catalog/ ./internal/attack/ ./internal/detect/
 
 # The catalog needs the network and changes with AWS, so it is not part of
 # gen-check; the monthly catalog workflow (Phase 14) proposes updates.
