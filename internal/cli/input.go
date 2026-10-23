@@ -299,6 +299,7 @@ func openOutput(cmd *cobra.Command, path string) (*output, error) {
 		return nil, err
 	}
 	if err := tmp.Chmod(0o600); err != nil {
+		// Best-effort cleanup of the temporary file; the chmod error is returned.
 		_ = tmp.Close()
 		_ = os.Remove(tmp.Name())
 		return nil, err
@@ -313,11 +314,11 @@ func (o *output) close(failed bool) error {
 	}
 	name := o.tmp.Name()
 	if err := o.tmp.Close(); err != nil || failed {
-		_ = os.Remove(name)
+		_ = os.Remove(name) // best effort: the write or close error is what matters
 		return err
 	}
 	if err := os.Rename(name, o.final); err != nil {
-		_ = os.Remove(name)
+		_ = os.Remove(name) // best effort: report the rename error
 		return err
 	}
 	return nil
