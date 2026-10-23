@@ -102,11 +102,11 @@ func TestMayAllow(t *testing.T) {
 		for _, d := range tc.docs {
 			pr.Identity = append(pr.Identity, eval.Policy{Doc: d})
 		}
-		if got := mayAllow(pr, "sts:AssumeRole"); got != tc.want {
+		if got := MayAllow(pr, "sts:AssumeRole"); got != tc.want {
 			t.Errorf("%s: mayAllow = %v, want %v", tc.name, got, tc.want)
 		}
 	}
-	if mayAllow(nil, "x") {
+	if MayAllow(nil, "x") {
 		t.Error("nil principal")
 	}
 }

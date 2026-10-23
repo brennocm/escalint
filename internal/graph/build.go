@@ -266,7 +266,7 @@ func addAssumeEdges(g *Graph, env *Env) {
 						continue // a specific principal that is not in the snapshot
 					}
 					for _, n := range byAccount[account] {
-						if mayAllow(env.Principal(n.ID), "sts:AssumeRole") {
+						if MayAllow(env.Principal(n.ID), "sts:AssumeRole") {
 							candidates[n.ID] = n
 						}
 					}
@@ -297,9 +297,9 @@ func addAssumeEdges(g *Graph, env *Env) {
 	}
 }
 
-// mayAllow is a cheap pre-filter: does any identity statement possibly allow
+// MayAllow is a cheap pre-filter: does any identity statement possibly allow
 // the action (ignoring resources and conditions)? Unknown policies may.
-func mayAllow(pr *eval.Principal, action string) bool {
+func MayAllow(pr *eval.Principal, action string) bool {
 	if pr == nil {
 		return false
 	}

@@ -186,6 +186,22 @@ func (e *Env) Ask(from *eval.Principal, action, resourceARN, resourceAccount, re
 	return eval.Evaluate(&eval.Request{Principal: from, Action: action, Resource: res, Context: ctx})
 }
 
+// AskWithPolicy is Ask with an explicit resource-based policy, for "what
+// if" questions such as "could X assume Y once Y's trust names X?".
+func (e *Env) AskWithPolicy(from *eval.Principal, action, resourceARN, resourceAccount string, pol *eval.Policy, ctx map[string][]string) eval.Result {
+	res := &eval.Resource{ARN: resourceARN, Account: resourceAccount, Policy: pol}
+	if resourceAccount != "" && eval.RCPApplies(action) {
+		res.RCPs = e.orgChain(resourceAccount, snapshot.PolicyRCP)
+	}
+	if ctx == nil {
+		ctx = eval.NewContext(from, e.OrgID)
+	}
+	return eval.Evaluate(&eval.Request{Principal: from, Action: action, Resource: res, Context: ctx})
+}
+
+// TrustPolicy returns the trust policy of a role node, or nil.
+func (e *Env) TrustPolicy(roleNode string) *eval.Policy { return e.trust[roleNode] }
+
 // EvidenceFrom converts the allowing statements of a result into evidence.
 func EvidenceFrom(principalNode, action string, r eval.Result) []Evidence {
 	var out []Evidence
