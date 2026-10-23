@@ -56,7 +56,15 @@ func analyze(t *testing.T, path string, opts engine.Options) []byte {
 	if err != nil {
 		t.Fatal(err)
 	}
-	a, err := Build(res, Meta{Deterministic: true})
+	raw, err := os.ReadFile(path) // #nosec G304 -- test fixture
+	if err != nil {
+		t.Fatal(err)
+	}
+	loc, err := snapshot.Locate(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, err := Build(res, Meta{Deterministic: true, Locator: loc})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1508,7 +1508,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 62
       },
       "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.",
       "suppressed": null

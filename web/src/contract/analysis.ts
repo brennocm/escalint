@@ -180,6 +180,8 @@ export interface Grouping {
 export interface Location {
   readonly account: string;
   readonly entity: string;
+  /** Line of the deciding statement in the snapshot file, when the snapshot was read from a file (ADR 0011). */
+  readonly line: number | null;
   readonly path: string;
   readonly policy: string;
   readonly statement_index: number;

@@ -2558,7 +2558,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove iam:PutRolePolicy from the role's policies, or scope its Resource to roles other than itself and add a permissions boundary that denies it.",
       "suppressed": null
@@ -2578,7 +2579,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
       "suppressed": null
@@ -2598,7 +2600,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -2618,7 +2621,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -2638,7 +2642,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Scope iam:CreateAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
       "suppressed": null
@@ -2658,7 +2663,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Scope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
       "suppressed": null
@@ -2678,7 +2684,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Scope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
       "suppressed": null
@@ -2698,7 +2705,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Scope iam:CreateLoginProfile to the caller's own user and require MFA for console access.",
       "suppressed": null
@@ -2718,7 +2726,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Scope iam:UpdateLoginProfile to the caller's own user and enforce MFA for every console user.",
       "suppressed": null
@@ -2738,7 +2747,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -2758,7 +2768,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -2778,7 +2789,8 @@
         "entity": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
         "policy": "arn:aws:iam::aws:policy/AdministratorAccess",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 207
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null

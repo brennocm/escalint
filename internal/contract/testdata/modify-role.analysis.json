@@ -1690,7 +1690,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 92
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -1710,7 +1711,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 92
       },
       "remediation": "Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.",
       "suppressed": null
@@ -1730,7 +1732,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 92
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -1750,7 +1753,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 92
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -1770,7 +1774,8 @@
         "entity": "arn:aws:iam::111111111111:user/attacker",
         "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 92
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null

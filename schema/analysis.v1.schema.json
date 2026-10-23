@@ -950,6 +950,7 @@
       "required": [
         "account",
         "entity",
+        "line",
         "path",
         "policy",
         "statement_index"
@@ -970,6 +971,14 @@
         },
         "path": {
           "type": "string"
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "Line of the deciding statement in the snapshot file, when the snapshot was read from a file (ADR 0011)."
         }
       }
     },

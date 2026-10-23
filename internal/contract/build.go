@@ -14,6 +14,7 @@ import (
 	"github.com/brennocm/escalint/internal/engine"
 	"github.com/brennocm/escalint/internal/graph"
 	"github.com/brennocm/escalint/internal/rules"
+	"github.com/brennocm/escalint/internal/snapshot"
 )
 
 // Meta is what the contract needs beyond the engine result.
@@ -22,6 +23,8 @@ type Meta struct {
 	Duration      time.Duration
 	Deterministic bool
 	Groupings     []Grouping
+	// Locator, when the snapshot came from a file, fills location.line.
+	Locator *snapshot.Locator
 }
 
 // Build converts an engine result into the contract document.
@@ -83,7 +86,13 @@ func Build(res *engine.Result, meta Meta) (*Analysis, error) {
 		})
 	}
 	for _, f := range res.Findings {
-		a.Findings = append(a.Findings, FindingOf(f))
+		cf := FindingOf(f)
+		if meta.Locator != nil {
+			if line, ok := meta.Locator.Find(f.Location.Entity, f.Location.Policy, f.Location.Statement); ok {
+				cf.Location.Line = &line
+			}
+		}
+		a.Findings = append(a.Findings, cf)
 	}
 	for _, c := range res.ChokePoints {
 		a.ChokePoints = append(a.ChokePoints, ChokePoint{EdgeID: c.EdgeID, PathsCut: c.PathsCut, Share: c.Share})

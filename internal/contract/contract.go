@@ -206,6 +206,7 @@ type Location struct {
 	Policy         string `json:"policy"`
 	StatementIndex int    `json:"statement_index"` // -1 when unknown
 	Path           string `json:"path"`
+	Line           *int   `json:"line"` // in the snapshot file, null without one
 }
 
 // Suppressed explains why a finding is suppressed.

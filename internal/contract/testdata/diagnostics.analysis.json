@@ -2850,7 +2850,8 @@
         "entity": "arn:aws:iam::111111111111:group/developers",
         "policy": "arn:aws:iam::111111111111:policy/DevLambda",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 246
       },
       "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.",
       "suppressed": null
@@ -2870,7 +2871,8 @@
         "entity": "arn:aws:iam::111111111111:group/developers",
         "policy": "arn:aws:iam::111111111111:policy/DevLambda",
         "statement_index": 0,
-        "path": ""
+        "path": "",
+        "line": 246
       },
       "remediation": "Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.",
       "suppressed": null
@@ -2890,7 +2892,8 @@
         "entity": "arn:aws:iam::111111111111:user/alice",
         "policy": "broken",
         "statement_index": -1,
-        "path": "Statement.Effect"
+        "path": "Statement.Effect",
+        "line": 23
       },
       "remediation": "Fix the policy so it is valid IAM JSON (AWS itself rejects most of these documents); until then, paths that depend on it are not analyzed.",
       "suppressed": null
@@ -2910,7 +2913,8 @@
         "entity": "arn:aws:iam::111111111111:user/alice",
         "policy": "arn:aws:iam::aws:policy/ReadOnlyAccess",
         "statement_index": -1,
-        "path": ""
+        "path": "",
+        "line": 3
       },
       "remediation": "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
       "suppressed": null
@@ -2930,7 +2934,8 @@
         "entity": "arn:aws:iam::111111111111:user/alice",
         "policy": "",
         "statement_index": -1,
-        "path": ""
+        "path": "",
+        "line": 3
       },
       "remediation": "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
       "suppressed": null
