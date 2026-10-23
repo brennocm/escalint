@@ -181,10 +181,24 @@ func Evaluate(req *Request) Result {
 	// --- 2–6. Gates. viaIdentity is the identity-based path; viaResource the
 	// path where the resource policy grants access.
 	sameAccount := pr.Account != "" && (res.Account == "" || res.Account == pr.Account)
+	crossAccount := pr.Account != "" && res.Account != "" && res.Account != pr.Account
 	idAndBoundary := and(identity.allow, boundary.allow)
 	var access tri
 	var allowStep *Step
+	noGrant := false // cross-account with no resource-based policy that could grant
 	switch {
+	case res.Policy == nil && crossAccount && isIAMAction(req.Action):
+		// IAM users, groups, policies and instance profiles have no
+		// resource-based policies, so another account can never be granted
+		// iam:* on them (§2.3: the resource account must allow too).
+		access, noGrant = triFalse, true
+		note("iam actions cannot be performed on another account's IAM resources")
+	case res.Policy == nil && crossAccount:
+		// The resource account must allow through a resource-based policy,
+		// which v1 does not collect (§5.2): the outcome depends on it.
+		access, allowStep = and(triUnknown, idAndBoundary), identity.firstAllow
+		out.Steps = append(out.Steps, Step{Stage: TypeResource, Policy: "resource", Statement: -1, Outcome: OutcomeUnknown, Keys: []string{unknownPolicyKey}})
+		note("cross-account: the resource-based policy of the resource account is not in the snapshot")
 	case res.Policy == nil:
 		access, allowStep = idAndBoundary, identity.firstAllow
 	case !callerKnown:
@@ -218,9 +232,15 @@ func Evaluate(req *Request) Result {
 		out.Unevaluated = unevaluated(out.Steps)
 	case triFalse:
 		out.Decision = ImplicitDeny
-		out.Decisive = implicitDenyReason(rcp, scp, res.Policy != nil, resource, identity, callerKnown)
+		out.Decisive = implicitDenyReason(rcp, scp, res.Policy != nil || noGrant, resource, identity, callerKnown)
 	}
 	return out
+}
+
+// isIAMAction reports whether action belongs to the iam service.
+func isIAMAction(action string) bool {
+	service, _, _ := strings.Cut(action, ":")
+	return strings.EqualFold(service, "iam")
 }
 
 // implicitDenyReason names the first gate that had no allow.

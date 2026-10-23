@@ -152,6 +152,8 @@ Operator semantics implemented for the evaluated keys: all String/ARN operators,
 | E17 | Cross-account: trust names U's ARN; U without identity allow | ImplicitDeny | [cross-account] |
 | E18 | Trust `"Principal":"*"` + `StringEquals aws:PrincipalOrgID o-x`; org data present, caller in org | Allow; external caller → ImplicitDeny | [principal] |
 | E37 | Same account: trust `"Principal":"*"` (no condition); caller has no identity allow and a boundary without sts:AssumeRole | Allow (wildcard grants need no identity allow and ignore the boundary's implicit deny) | [principal] |
+| E38 | Cross-account: identity allows `iam:*`; request `iam:CreateAccessKey` on a user of another account | ImplicitDeny (IAM users, groups and policies have no resource-based policy, so the resource account never allows) | [cross-account] |
+| E39 | Cross-account: identity allows `lambda:UpdateFunctionCode`; the function policy is not collected (§5.2) | Conditional (`escalint:unknown-policy`) | [cross-account] |
 | E19 | E18 without org data in snapshot | Conditional (`aws:PrincipalOrgID`) | §2.7 |
 | E20 | Trust with principal unique ID `AROA…` (deleted role) | matches nothing; reported as info | [principal] |
 | E21 | `Principal: {"AWS":"arn:aws:iam::111111111111:role/*"}` | invalid (partial wildcard); parse finding, never matches | [principal] |

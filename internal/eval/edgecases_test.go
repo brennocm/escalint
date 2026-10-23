@@ -342,3 +342,25 @@ func TestE37WildcardTrustNeedsNoIdentityAndIgnoresBoundary(t *testing.T) {
 	tr := trust(t, `{"Statement":{"Effect":"Allow","Principal":"*","Action":"sts:AssumeRole"}}`)
 	want(t, ask(r, "sts:AssumeRole", roleResource(acct, "target", tr)), Allow)
 }
+
+// docs: reference_policies_evaluation-logic-cross-account.html (E38, E39,
+// docs/research.md §2.3): the resource account must allow as well.
+func TestE38CrossAccountIAMActionIsDenied(t *testing.T) {
+	pr := user(acct, "u", identity(t, allowAll))
+	got := ask(pr, "iam:CreateAccessKey", onResource("arn:aws:iam::"+other+":user/admin", other))
+	want(t, got, ImplicitDeny)
+	if got.Decisive == nil || got.Decisive.Stage != TypeResource {
+		t.Fatalf("decisive = %+v, want the resource stage", got.Decisive)
+	}
+}
+
+func TestE39CrossAccountWithoutResourcePolicyIsConditional(t *testing.T) {
+	pr := user(acct, "u", identity(t, allowAll))
+	got := ask(pr, "lambda:UpdateFunctionCode", onResource("arn:aws:lambda:us-east-1:"+other+":function:f", other))
+	want(t, got, Conditional)
+	if len(got.Unevaluated) != 1 || got.Unevaluated[0] != unknownPolicyKey {
+		t.Fatalf("unevaluated = %v, want [%s]", got.Unevaluated, unknownPolicyKey)
+	}
+	none := user(acct, "n")
+	want(t, ask(none, "lambda:UpdateFunctionCode", onResource("arn:aws:lambda:us-east-1:"+other+":function:f", other)), ImplicitDeny)
+}
