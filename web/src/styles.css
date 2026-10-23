@@ -1162,3 +1162,28 @@ kbd {
   stroke: var(--color-bg);
   stroke-width: 3px;
 }
+
+/* ---- Exposure ------------------------------------------------------ */
+
+.exposure__scroll {
+  max-height: 70vh;
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.exposure__canvas {
+  display: block;
+  cursor: crosshair;
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 8px;
+}
+
+.exposure__detail {
+  margin: 8px 0;
+}
