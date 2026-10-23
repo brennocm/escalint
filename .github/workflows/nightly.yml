@@ -1,0 +1,125 @@
+name: nightly
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  fuzz:
+    name: Long fuzzing (10 min per target)
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions:
+      contents: read
+      issues: write # report fuzz crashes
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Fuzz
+        run: make fuzz-run FUZZTIME=10m
+      - name: Keep crashers
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fuzz-crashers
+          path: "**/testdata/fuzz/**"
+          if-no-files-found: ignore
+      - name: Open an issue for the crash
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Nightly fuzzing found a crash" --label bug \
+            --body "The nightly fuzz run failed: $RUN_URL. Download the fuzz-crashers artifact, add the input under testdata/fuzz/ as a regression case and fix the bug."
+
+  mutation:
+    name: Mutation testing (Gremlins, not blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Gremlins on the evaluator and matcher
+        run: |
+          {
+            echo "## Mutation testing (Gremlins)"
+            for pkg in ./internal/eval ./internal/match; do
+              echo "### $pkg"
+              echo '```'
+              go run github.com/go-gremlins/gremlins/cmd/gremlins@v0.6.0 unleash --tags noui "$pkg" 2>&1 | tail -20
+              echo '```'
+            done
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+  benchmarks:
+    name: Benchmarks (Go and UI, 10k and 50k principals)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Restore the previous results
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: bench-previous
+          key: bench-${{ github.run_id }}
+          restore-keys: bench-
+      - name: Go benchmarks
+        run: |
+          mkdir -p bench
+          go test -tags noui -run '^$' -bench . -benchmem -count 5 ./internal/analysis/ ./internal/engine/ ./internal/eval/ | tee bench/go.txt
+      - name: Compare with the previous run
+        run: |
+          {
+            echo "## Go benchmarks"
+            echo '```'
+            if [ -f bench-previous/go.txt ]; then
+              go run golang.org/x/perf/cmd/benchstat@v0.0.0-20261009192801-be2c69fb417e bench-previous/go.txt bench/go.txt
+            else
+              go run golang.org/x/perf/cmd/benchstat@v0.0.0-20261009192801-be2c69fb417e bench/go.txt
+            fi
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: make web-install
+      - name: UI performance budgets
+        working-directory: web
+        run: |
+          pnpm build
+          pnpm exec playwright install --with-deps chromium
+          pnpm e2e:perf | tee ../bench/ui.txt
+      - name: Keep the results for the next run
+        run: rm -rf bench-previous && cp -r bench bench-previous
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: benchmarks
+          path: bench

@@ -1,0 +1,47 @@
+name: catalog
+
+on:
+  schedule:
+    - cron: "41 6 3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Refresh the AWS action catalog, ATT&CK and detection data
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # push the refresh branch
+      pull-requests: write # open the pull request
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Regenerate
+        run: make gen
+      - name: Update everything derived from the catalog
+        run: |
+          go run ./tools/gen-contract-ts -schema schema/analysis.v1.schema.json -out web/src/contract/analysis.ts
+          go test -tags noui ./internal/rules/ -run TestCoverageDocUpToDate -update-docs
+          go test -tags noui ./... || echo "TESTS_FAILED=1" >> "$GITHUB_ENV"
+      - name: Open a pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1 # zizmor: ignore[superfluous-actions]
+        with:
+          branch: chore/catalog-refresh
+          commit-message: "chore(catalog): refresh AWS service reference data"
+          title: "chore(catalog): refresh AWS service reference data"
+          body: |
+            Monthly refresh of the embedded AWS action catalog (`make gen`).
+            Review the diff of `internal/catalog/data` and the test results of this run before merging.
+          delete-branch: true
