@@ -18,6 +18,12 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - ATT&CK v20.0 mapping and CloudTrail detection research (ADR 0021, 0022).
 - Policy parser with strict handling of untrusted JSON (ADR 0023) and the
   snapshot loader for authorization details and the escalint envelope.
+- Action catalog generated from the AWS service reference (ADR 0012) and
+  IAM wildcard matching for actions and ARNs.
+- Policy evaluator with SCPs, RCPs, trust policies, boundaries, cross-account
+  rules and decision traces (ADR 0004, 0005).
+- Can-act-as graph, k shortest escalation paths, cycles, tiers, blast radius,
+  choke points and a greedy fix plan (ADR 0006, 0007, 0009, 0010).
 
 ### Security
 

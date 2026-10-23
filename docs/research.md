@@ -226,6 +226,7 @@ Adjustments proposed to the skeleton in `project.md` §3.4:
   - `credential` X → Y (user) and `modify_trust` X → Y (role) are act-as edges by themselves.
   - `modify_permissions` X → Y is **not** an act-as edge. If an act-as edge X → Y also exists, the builder emits a composite edge X → `tier0_sink` (pathfinding iam-014…021) with both action sets in `required_actions`. Otherwise the edge is kept as `latent: true` (shown in the UI, not used for paths) and reported.
 - `member_of` stays structural; `iam:AddUserToGroup` produces `modify_permissions` X → group G (X obtains G's policies), and group nodes take part in paths.
+- Group nodes are evaluated as "what a new member gains": the group's own policies, with the group ARN standing in for the member in `aws:PrincipalArn` conditions. The joining principal's own policies are not combined with the group's (approximation; such combinations are rare).
 - `passrole_compute` X → Y requires: `iam:PassRole` on Y (with `PassedToService` evaluated), Y trusts the service principal, and the compute actions of the rule. Prerequisites that need inventory (e.g., an ECS cluster exists) → `conditional` with `prerequisites_unverified`.
 
 ---
