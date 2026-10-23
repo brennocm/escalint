@@ -13,18 +13,35 @@ const htmlInjectionSinks = [
     message: 'dangerouslySetInnerHTML is forbidden: render text nodes instead.',
   },
   {
+    selector: "JSXAttribute[name.name='srcDoc']",
+    message: 'srcDoc is forbidden: it renders HTML.',
+  },
+  {
     selector: 'MemberExpression[property.name=/^(innerHTML|outerHTML)$/]',
     message: 'innerHTML/outerHTML are forbidden: use textContent or DOM APIs.',
   },
   {
-    selector: "CallExpression[callee.property.name='insertAdjacentHTML']",
-    message: 'insertAdjacentHTML is forbidden.',
+    // Computed access such as el['innerHTML'].
+    selector: 'MemberExpression[computed=true][property.value=/^(innerHTML|outerHTML)$/]',
+    message: 'innerHTML/outerHTML are forbidden: use textContent or DOM APIs.',
   },
   {
-    selector: "CallExpression[callee.property.name='write'][callee.object.name='document']",
+    selector:
+      'CallExpression[callee.property.name=/^(insertAdjacentHTML|createContextualFragment)$/]',
+    message: 'HTML parsing sinks are forbidden.',
+  },
+  {
+    selector:
+      "CallExpression[callee.property.name=/^(write|writeln)$/][callee.object.name='document']",
     message: 'document.write is forbidden.',
   },
 ];
+
+// Tests and this file legitimately contain hostile strings as data.
+const javascriptUrl = {
+  selector: 'Literal[value=/^\\s*javascript:/i]',
+  message: 'javascript: URLs are forbidden.',
+};
 
 export default tseslint.config(
   { ignores: ['dist', 'coverage', 'playwright-report', 'test-results', 'src/contract/**'] },
@@ -46,7 +63,7 @@ export default tseslint.config(
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
-      'no-restricted-syntax': ['error', ...htmlInjectionSinks],
+      'no-restricted-syntax': ['error', ...htmlInjectionSinks, javascriptUrl],
     },
   },
   jsxA11y.flatConfigs.strict,
@@ -55,8 +72,13 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.node } },
   },
   {
+    files: ['src/**/*.test.{ts,tsx}', 'tests/**'],
+    rules: { 'no-restricted-syntax': ['error', ...htmlInjectionSinks] },
+  },
+  {
     files: ['eslint.config.js'],
     ...tseslint.configs.disableTypeChecked,
+    rules: { ...tseslint.configs.disableTypeChecked.rules, 'no-restricted-syntax': 'off' },
   },
   prettier,
 );
