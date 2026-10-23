@@ -41,6 +41,23 @@ func TestAction(t *testing.T) {
 	}
 }
 
+func TestGlob(t *testing.T) {
+	tests := []struct {
+		pattern, s string
+		want       bool
+	}{
+		{"repo:example-org/*", "repo:example-org/app:ref:refs/heads/main", true},
+		{"repo:example-org/*", "repo:Example-org/app", false}, // case-sensitive
+		{"a?c", "abc", true},
+		{"*", "", true},
+	}
+	for _, tc := range tests {
+		if got := Glob(tc.pattern, tc.s); got != tc.want {
+			t.Errorf("Glob(%q, %q) = %v, want %v", tc.pattern, tc.s, got, tc.want)
+		}
+	}
+}
+
 func TestARN(t *testing.T) {
 	tests := []struct {
 		pattern, arn string

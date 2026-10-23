@@ -19,6 +19,13 @@ package match
 
 import "strings"
 
+// Glob reports whether s matches pattern, where '*' matches any sequence of
+// characters and '?' one character. It is case-sensitive and treats ':' like
+// any other character, as the StringLike condition operator does.
+func Glob(pattern, s string) bool {
+	return glob([]rune(pattern), []rune(s))
+}
+
 // Action reports whether an IAM action pattern matches an action name.
 func Action(pattern, action string) bool {
 	return glob([]rune(strings.ToLower(pattern)), []rune(strings.ToLower(action)))
