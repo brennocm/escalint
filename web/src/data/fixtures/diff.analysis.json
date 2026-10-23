@@ -9,7 +9,9 @@
     "format": "envelope",
     "collected_at": "2026-10-23T00:00:00Z",
     "partition": "aws",
-    "accounts": ["111111111111"],
+    "accounts": [
+      "111111111111"
+    ],
     "redacted": false,
     "organization": null
   },
@@ -109,7 +111,9 @@
       "attack": [],
       "attack_unmapped_reason": "Configuration diagnostic about .escalint.yaml, not an adversary behavior.",
       "remediation": "Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
-      "references": ["https://github.com/brennocm/escalint/blob/main/docs/configuration.md"]
+      "references": [
+        "https://github.com/brennocm/escalint/blob/main/docs/configuration.md"
+      ]
     },
     {
       "id": "EL-PE-001",
@@ -118,8 +122,12 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-001"],
-      "required_actions": ["iam:CreatePolicyVersion"],
+      "pathfinding_ids": [
+        "iam-001"
+      ],
+      "required_actions": [
+        "iam:CreatePolicyVersion"
+      ],
       "prerequisites": [
         "a customer managed policy is attached to the actor (directly or through a group)"
       ],
@@ -127,7 +135,10 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -145,14 +156,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-005"],
-      "required_actions": ["iam:PutRolePolicy"],
-      "prerequisites": ["the actor is a role allowed iam:PutRolePolicy on its own ARN"],
+      "pathfinding_ids": [
+        "iam-005"
+      ],
+      "required_actions": [
+        "iam:PutRolePolicy"
+      ],
+      "prerequisites": [
+        "the actor is a role allowed iam:PutRolePolicy on its own ARN"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -170,14 +190,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-007"],
-      "required_actions": ["iam:PutUserPolicy"],
-      "prerequisites": ["the actor is a user allowed iam:PutUserPolicy on its own ARN"],
+      "pathfinding_ids": [
+        "iam-007"
+      ],
+      "required_actions": [
+        "iam:PutUserPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a user allowed iam:PutUserPolicy on its own ARN"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -195,14 +224,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-008"],
-      "required_actions": ["iam:AttachUserPolicy"],
-      "prerequisites": ["the actor is a user"],
+      "pathfinding_ids": [
+        "iam-008"
+      ],
+      "required_actions": [
+        "iam:AttachUserPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a user"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -220,14 +258,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-009"],
-      "required_actions": ["iam:AttachRolePolicy"],
-      "prerequisites": ["the actor is a role"],
+      "pathfinding_ids": [
+        "iam-009"
+      ],
+      "required_actions": [
+        "iam:AttachRolePolicy"
+      ],
+      "prerequisites": [
+        "the actor is a role"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -245,14 +292,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-010"],
-      "required_actions": ["iam:AttachGroupPolicy"],
-      "prerequisites": ["the actor is a member of the group"],
+      "pathfinding_ids": [
+        "iam-010"
+      ],
+      "required_actions": [
+        "iam:AttachGroupPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a member of the group"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -270,14 +326,23 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-011"],
-      "required_actions": ["iam:PutGroupPolicy"],
-      "prerequisites": ["the actor is a member of the group"],
+      "pathfinding_ids": [
+        "iam-011"
+      ],
+      "required_actions": [
+        "iam:PutGroupPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a member of the group"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -295,14 +360,23 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-013"],
-      "required_actions": ["iam:AddUserToGroup"],
-      "prerequisites": ["the actor is a user that is not yet a member"],
+      "pathfinding_ids": [
+        "iam-013"
+      ],
+      "required_actions": [
+        "iam:AddUserToGroup"
+      ],
+      "prerequisites": [
+        "the actor is a user that is not yet a member"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -320,20 +394,34 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": ["iam-002"],
-      "required_actions": ["iam:CreateAccessKey"],
-      "prerequisites": ["the target user has fewer than 2 access keys"],
+      "pathfinding_ids": [
+        "iam-002"
+      ],
+      "required_actions": [
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the target user has fewer than 2 access keys"
+      ],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -351,20 +439,35 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": ["iam-003"],
-      "required_actions": ["iam:CreateAccessKey", "iam:DeleteAccessKey"],
-      "prerequisites": ["the target is an IAM user"],
+      "pathfinding_ids": [
+        "iam-003"
+      ],
+      "required_actions": [
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey"
+      ],
+      "prerequisites": [
+        "the target is an IAM user"
+      ],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -382,20 +485,34 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": ["iam-004"],
-      "required_actions": ["iam:CreateLoginProfile"],
-      "prerequisites": ["the target user has no console password yet"],
+      "pathfinding_ids": [
+        "iam-004"
+      ],
+      "required_actions": [
+        "iam:CreateLoginProfile"
+      ],
+      "prerequisites": [
+        "the target user has no console password yet"
+      ],
       "attack": [
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -413,8 +530,12 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "credential",
-      "pathfinding_ids": ["iam-006"],
-      "required_actions": ["iam:UpdateLoginProfile"],
+      "pathfinding_ids": [
+        "iam-006"
+      ],
+      "required_actions": [
+        "iam:UpdateLoginProfile"
+      ],
       "prerequisites": [
         "the target user has a console password",
         "MFA on the target may still block console use"
@@ -423,13 +544,21 @@
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -447,8 +576,12 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "modify_trust",
-      "pathfinding_ids": ["iam-012"],
-      "required_actions": ["iam:UpdateAssumeRolePolicy"],
+      "pathfinding_ids": [
+        "iam-012"
+      ],
+      "required_actions": [
+        "iam:UpdateAssumeRolePolicy"
+      ],
       "prerequisites": [
         "the target role is not service-linked",
         "the actor can assume the role once the trust names it"
@@ -457,7 +590,10 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -475,20 +611,33 @@
       "severity": "medium",
       "status": "stable",
       "edge_kind": "assume",
-      "pathfinding_ids": ["sts-001"],
-      "required_actions": ["sts:AssumeRole"],
-      "prerequisites": ["the role's trust policy accepts the actor (docs/research.md §2.4)"],
+      "pathfinding_ids": [
+        "sts-001"
+      ],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the role's trust policy accepts the actor (docs/research.md §2.4)"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -506,20 +655,32 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-014"],
-      "required_actions": ["iam:AttachRolePolicy", "sts:AssumeRole"],
-      "prerequisites": ["the actor can already assume the role"],
+      "pathfinding_ids": [
+        "iam-014"
+      ],
+      "required_actions": [
+        "iam:AttachRolePolicy",
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the actor can already assume the role"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -537,8 +698,13 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-016"],
-      "required_actions": ["iam:CreatePolicyVersion", "sts:AssumeRole"],
+      "pathfinding_ids": [
+        "iam-016"
+      ],
+      "required_actions": [
+        "iam:CreatePolicyVersion",
+        "sts:AssumeRole"
+      ],
       "prerequisites": [
         "a customer managed policy is attached to the role",
         "the actor can already assume the role"
@@ -547,13 +713,18 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -571,20 +742,32 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-017"],
-      "required_actions": ["iam:PutRolePolicy", "sts:AssumeRole"],
-      "prerequisites": ["the actor can already assume the role"],
+      "pathfinding_ids": [
+        "iam-017"
+      ],
+      "required_actions": [
+        "iam:PutRolePolicy",
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the actor can already assume the role"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -602,20 +785,33 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-015"],
-      "required_actions": ["iam:AttachUserPolicy", "iam:CreateAccessKey"],
-      "prerequisites": ["the actor can create credentials for the user"],
+      "pathfinding_ids": [
+        "iam-015"
+      ],
+      "required_actions": [
+        "iam:AttachUserPolicy",
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the actor can create credentials for the user"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         }
       ],
@@ -633,20 +829,33 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-018"],
-      "required_actions": ["iam:PutUserPolicy", "iam:CreateAccessKey"],
-      "prerequisites": ["the actor can create credentials for the user"],
+      "pathfinding_ids": [
+        "iam-018"
+      ],
+      "required_actions": [
+        "iam:PutUserPolicy",
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the actor can create credentials for the user"
+      ],
       "attack": [
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         },
         {
           "id": "T1098.001",
           "name": "Account Manipulation: Additional Cloud Credentials",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/001"
         }
       ],
@@ -664,7 +873,11 @@
       "severity": "critical",
       "status": "stable",
       "edge_kind": "modify_permissions",
-      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
+      "pathfinding_ids": [
+        "iam-019",
+        "iam-020",
+        "iam-021"
+      ],
       "required_actions": [
         "iam:AttachRolePolicy",
         "iam:CreatePolicyVersion",
@@ -678,7 +891,10 @@
         {
           "id": "T1098.003",
           "name": "Account Manipulation: Additional Cloud Roles",
-          "tactics": ["Persistence", "Privilege Escalation"],
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1098/003"
         }
       ],
@@ -696,14 +912,24 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["ec2-001"],
-      "required_actions": ["iam:PassRole", "ec2:RunInstances"],
-      "prerequisites": ["the role trusts ec2.amazonaws.com", "the role is in an instance profile"],
+      "pathfinding_ids": [
+        "ec2-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "ec2:RunInstances"
+      ],
+      "prerequisites": [
+        "the role trusts ec2.amazonaws.com",
+        "the role is in an instance profile"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -722,20 +948,32 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["lambda-001"],
-      "required_actions": ["iam:PassRole", "lambda:CreateFunction", "lambda:InvokeFunction"],
-      "prerequisites": ["the role trusts lambda.amazonaws.com"],
+      "pathfinding_ids": [
+        "lambda-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "prerequisites": [
+        "the role trusts lambda.amazonaws.com"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         },
         {
           "id": "T1648",
           "name": "Serverless Execution",
-          "tactics": ["Execution"],
+          "tactics": [
+            "Execution"
+          ],
           "url": "https://attack.mitre.org/techniques/T1648"
         }
       ],
@@ -753,14 +991,23 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["cloudformation-001"],
-      "required_actions": ["iam:PassRole", "cloudformation:CreateStack"],
-      "prerequisites": ["the role trusts cloudformation.amazonaws.com"],
+      "pathfinding_ids": [
+        "cloudformation-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "cloudformation:CreateStack"
+      ],
+      "prerequisites": [
+        "the role trusts cloudformation.amazonaws.com"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -778,14 +1025,24 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["codebuild-001"],
-      "required_actions": ["iam:PassRole", "codebuild:CreateProject", "codebuild:StartBuild"],
-      "prerequisites": ["the role trusts codebuild.amazonaws.com"],
+      "pathfinding_ids": [
+        "codebuild-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "codebuild:CreateProject",
+        "codebuild:StartBuild"
+      ],
+      "prerequisites": [
+        "the role trusts codebuild.amazonaws.com"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -803,14 +1060,24 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["glue-003"],
-      "required_actions": ["iam:PassRole", "glue:CreateJob", "glue:StartJobRun"],
-      "prerequisites": ["the role trusts glue.amazonaws.com"],
+      "pathfinding_ids": [
+        "glue-003"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "glue:CreateJob",
+        "glue:StartJobRun"
+      ],
+      "prerequisites": [
+        "the role trusts glue.amazonaws.com"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -828,14 +1095,23 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "passrole_compute",
-      "pathfinding_ids": ["sagemaker-001"],
-      "required_actions": ["iam:PassRole", "sagemaker:CreateNotebookInstance"],
-      "prerequisites": ["the role trusts sagemaker.amazonaws.com"],
+      "pathfinding_ids": [
+        "sagemaker-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "sagemaker:CreateNotebookInstance"
+      ],
+      "prerequisites": [
+        "the role trusts sagemaker.amazonaws.com"
+      ],
       "attack": [
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
@@ -853,26 +1129,39 @@
       "severity": "high",
       "status": "stable",
       "edge_kind": "update_code",
-      "pathfinding_ids": ["lambda-004"],
-      "required_actions": ["lambda:UpdateFunctionCode", "lambda:InvokeFunction"],
-      "prerequisites": ["a Lambda function runs with the role"],
+      "pathfinding_ids": [
+        "lambda-004"
+      ],
+      "required_actions": [
+        "lambda:UpdateFunctionCode",
+        "lambda:InvokeFunction"
+      ],
+      "prerequisites": [
+        "a Lambda function runs with the role"
+      ],
       "attack": [
         {
           "id": "T1648",
           "name": "Serverless Execution",
-          "tactics": ["Execution"],
+          "tactics": [
+            "Execution"
+          ],
           "url": "https://attack.mitre.org/techniques/T1648"
         },
         {
           "id": "T1548.005",
           "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
-          "tactics": ["Privilege Escalation"],
+          "tactics": [
+            "Privilege Escalation"
+          ],
           "url": "https://attack.mitre.org/techniques/T1548/005"
         }
       ],
       "attack_unmapped_reason": null,
       "remediation": "Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.",
-      "references": ["https://cwe.mitre.org/data/definitions/266.html"]
+      "references": [
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
     },
     {
       "id": "EL-TR-001",
@@ -882,13 +1171,20 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": ["sts:AssumeRole"],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -907,19 +1203,28 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
+      "required_actions": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": ["Initial Access"],
+          "tactics": [
+            "Initial Access"
+          ],
           "url": "https://attack.mitre.org/techniques/T1199"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -939,19 +1244,28 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": ["sts:AssumeRoleWithWebIdentity"],
+      "required_actions": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": ["Initial Access"],
+          "tactics": [
+            "Initial Access"
+          ],
           "url": "https://attack.mitre.org/techniques/T1199"
         },
         {
           "id": "T1078.004",
           "name": "Valid Accounts: Cloud Accounts",
-          "tactics": ["Initial Access", "Persistence", "Privilege Escalation", "Stealth"],
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
           "url": "https://attack.mitre.org/techniques/T1078/004"
         }
       ],
@@ -970,13 +1284,17 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": ["sts:AssumeRole"],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": ["Initial Access"],
+          "tactics": [
+            "Initial Access"
+          ],
           "url": "https://attack.mitre.org/techniques/T1199"
         }
       ],
@@ -995,13 +1313,17 @@
       "status": "stable",
       "edge_kind": null,
       "pathfinding_ids": [],
-      "required_actions": ["sts:AssumeRole"],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
       "prerequisites": [],
       "attack": [
         {
           "id": "T1199",
           "name": "Trusted Relationship",
-          "tactics": ["Initial Access"],
+          "tactics": [
+            "Initial Access"
+          ],
           "url": "https://attack.mitre.org/techniques/T1199"
         }
       ],
@@ -1031,12 +1353,16 @@
         "capabilities": {
           "permission_management": [],
           "write": [],
-          "read": ["s3"],
+          "read": [
+            "s3"
+          ],
           "list": []
         }
       },
       "last_used": null,
-      "flags": ["no_boundary"],
+      "flags": [
+        "no_boundary"
+      ],
       "group": null
     },
     {
@@ -1054,14 +1380,20 @@
         "reachable_principals": 1,
         "reaches_tier0": true,
         "capabilities": {
-          "permission_management": ["iam"],
+          "permission_management": [
+            "iam"
+          ],
           "write": [],
-          "read": ["s3"],
+          "read": [
+            "s3"
+          ],
           "list": []
         }
       },
       "last_used": null,
-      "flags": ["no_boundary"],
+      "flags": [
+        "no_boundary"
+      ],
       "group": null
     },
     {
@@ -1103,10 +1435,22 @@
       "from": "n_79a4ee97268448d4",
       "to": "n_0a419cfb333eab04",
       "kind": "modify_permissions",
-      "rule_ids": ["EL-PE-015", "EL-PE-016", "EL-PE-017"],
-      "pathfinding_ids": ["iam-014", "iam-016", "iam-017"],
+      "rule_ids": [
+        "EL-PE-015",
+        "EL-PE-016",
+        "EL-PE-017"
+      ],
+      "pathfinding_ids": [
+        "iam-014",
+        "iam-016",
+        "iam-017"
+      ],
       "status": "allowed",
-      "required_actions": ["iam:AttachRolePolicy", "iam:CreatePolicyVersion", "iam:PutRolePolicy"],
+      "required_actions": [
+        "iam:AttachRolePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:PutRolePolicy"
+      ],
       "evidence": [
         {
           "principal": "n_79a4ee97268448d4",
@@ -1140,7 +1484,10 @@
       "prerequisites_unverified": [],
       "latent": true,
       "actor": null,
-      "attack": ["T1098.003", "T1548.005"],
+      "attack": [
+        "T1098.003",
+        "T1548.005"
+      ],
       "detection": {
         "events": [
           {
@@ -1195,7 +1542,9 @@
       "rule_ids": [],
       "pathfinding_ids": [],
       "status": "allowed",
-      "required_actions": ["sts:AssumeRole"],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
       "evidence": [
         {
           "principal": "n_0a419cfb333eab04",
@@ -1244,10 +1593,16 @@
       "from": "n_79a4ee97268448d4",
       "to": "n_0a419cfb333eab04",
       "kind": "modify_trust",
-      "rule_ids": ["EL-PE-013"],
-      "pathfinding_ids": ["iam-012"],
+      "rule_ids": [
+        "EL-PE-013"
+      ],
+      "pathfinding_ids": [
+        "iam-012"
+      ],
       "status": "allowed",
-      "required_actions": ["iam:UpdateAssumeRolePolicy"],
+      "required_actions": [
+        "iam:UpdateAssumeRolePolicy"
+      ],
       "evidence": [
         {
           "principal": "n_79a4ee97268448d4",
@@ -1272,7 +1627,9 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": null,
-      "attack": ["T1098.003"],
+      "attack": [
+        "T1098.003"
+      ],
       "detection": {
         "events": [
           {
@@ -1299,10 +1656,19 @@
       "from": "n_79a4ee97268448d4",
       "to": "n_d175b3293ae2fde2",
       "kind": "modify_permissions",
-      "rule_ids": ["EL-PE-020"],
-      "pathfinding_ids": ["iam-019", "iam-020", "iam-021"],
+      "rule_ids": [
+        "EL-PE-020"
+      ],
+      "pathfinding_ids": [
+        "iam-019",
+        "iam-020",
+        "iam-021"
+      ],
       "status": "allowed",
-      "required_actions": ["iam:AttachRolePolicy", "iam:UpdateAssumeRolePolicy"],
+      "required_actions": [
+        "iam:AttachRolePolicy",
+        "iam:UpdateAssumeRolePolicy"
+      ],
       "evidence": [
         {
           "principal": "n_79a4ee97268448d4",
@@ -1336,7 +1702,9 @@
       "prerequisites_unverified": [],
       "latent": false,
       "actor": "n_79a4ee97268448d4",
-      "attack": ["T1098.003"],
+      "attack": [
+        "T1098.003"
+      ],
       "detection": {
         "events": [
           {
@@ -1376,8 +1744,13 @@
       "id": "p_892d4eb8041727f7",
       "source": "n_79a4ee97268448d4",
       "target": "n_d175b3293ae2fde2",
-      "edges": ["e_dca794e3b8e4b860"],
-      "nodes": ["n_79a4ee97268448d4", "n_d175b3293ae2fde2"],
+      "edges": [
+        "e_dca794e3b8e4b860"
+      ],
+      "nodes": [
+        "n_79a4ee97268448d4",
+        "n_d175b3293ae2fde2"
+      ],
       "length": 1,
       "status": "allowed",
       "severity": "critical"
@@ -1505,7 +1878,9 @@
       "edge_id": "e_dca794e3b8e4b860",
       "change": "Remove iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:user/attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/victim-role",
       "target": "inline:arn:aws:iam::111111111111:user/attacker/p#0",
-      "paths_cut": ["p_892d4eb8041727f7"]
+      "paths_cut": [
+        "p_892d4eb8041727f7"
+      ]
     }
   ],
   "notes": [],
@@ -1521,8 +1896,14 @@
       "generator": "dev"
     },
     "added": {
-      "edges": ["e_0984d028716e04d7", "e_2063322dc7b43c0f", "e_dca794e3b8e4b860"],
-      "paths": ["p_892d4eb8041727f7"],
+      "edges": [
+        "e_0984d028716e04d7",
+        "e_2063322dc7b43c0f",
+        "e_dca794e3b8e4b860"
+      ],
+      "paths": [
+        "p_892d4eb8041727f7"
+      ],
       "findings": [
         "f_164b76ce473b4efb",
         "f_33799fec1fb1d893",
@@ -1577,7 +1958,9 @@
               "iam:PutRolePolicy",
               "iam:UpdateAssumeRolePolicy"
             ],
-            "Resource": ["*"]
+            "Resource": [
+              "*"
+            ]
           }
         ]
       }
@@ -1592,9 +1975,13 @@
           {
             "Effect": "Allow",
             "Principal": {
-              "Service": ["ec2.amazonaws.com"]
+              "Service": [
+                "ec2.amazonaws.com"
+              ]
             },
-            "Action": ["sts:AssumeRole"]
+            "Action": [
+              "sts:AssumeRole"
+            ]
           }
         ]
       }
