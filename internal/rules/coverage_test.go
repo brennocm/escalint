@@ -23,3 +23,30 @@ func TestCoverageDocUpToDate(t *testing.T) {
 		t.Error("docs/coverage.md is stale; run make gen-docs")
 	}
 }
+
+func TestReadmeRulesUpToDate(t *testing.T) {
+	data, err := os.ReadFile("../../README.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, ok := ReplaceReadmeRules(string(data))
+	if !ok {
+		t.Fatal("README.md has no generated rules section")
+	}
+	if *updateDocs {
+		// The path is a constant; the content is the generated table.
+		if err := os.WriteFile("../../README.md", []byte(got), 0o600); err != nil { //nolint:gosec // G703 false positive
+			t.Fatal(err)
+		}
+		return
+	}
+	if got != string(data) {
+		t.Error("the rules table in README.md is stale; run make gen-docs")
+	}
+}
+
+func TestReplaceReadmeRulesWithoutMarkers(t *testing.T) {
+	if _, ok := ReplaceReadmeRules("# x\n"); ok {
+		t.Error("replaced without markers")
+	}
+}

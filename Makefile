@@ -119,11 +119,11 @@ gen: ## Regenerate generated data (downloads the AWS service reference and ATT&C
 # gen-check; the monthly catalog workflow (Phase 14) proposes updates.
 .PHONY: gen-check
 gen-check: gen-contract gen-web-fixtures gen-docs ## Fail if offline-generated files are stale
-	git diff --exit-code -- web/src/contract/ web/src/data/fixtures/ docs/coverage.md
+	git diff --exit-code -- web/src/contract/ web/src/data/fixtures/ docs/coverage.md README.md
 
 .PHONY: gen-docs
-gen-docs: ## Regenerate docs/coverage.md from the rule registry
-	$(GO) test $(GO_TEST_FLAGS) ./internal/rules/ -run TestCoverageDocUpToDate -update-docs
+gen-docs: ## Regenerate docs/coverage.md and the README rule table from the rule registry
+	$(GO) test $(GO_TEST_FLAGS) ./internal/rules/ -run 'TestCoverageDocUpToDate|TestReadmeRulesUpToDate' -update-docs
 
 .PHONY: gen-web-fixtures
 gen-web-fixtures: ## Regenerate the analysis.json fixtures of the web tests
