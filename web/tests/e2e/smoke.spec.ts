@@ -31,7 +31,7 @@ test('navigates with links, the palette and the keyboard', async ({ page }) => {
   await page.getByRole('link', { name: 'Findings' }).click();
   await expect(page).toHaveURL(/#\/findings$/);
   await page.keyboard.press('Control+k');
-  await page.getByRole('combobox').fill('atlas');
+  await page.getByRole('dialog', { name: 'Search' }).getByRole('combobox').fill('atlas');
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#\/atlas$/);
   await page.keyboard.press('?');

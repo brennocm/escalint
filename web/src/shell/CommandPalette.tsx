@@ -70,6 +70,7 @@ export function CommandPalette({ candidates, onChoose, onClose }: Props) {
           className="palette__input"
           type="search"
           role="combobox"
+          aria-label="Search"
           aria-expanded={matches.length > 0}
           aria-controls={listId}
           aria-activedescendant={matches[active] ? `${listId}-${String(active)}` : undefined}

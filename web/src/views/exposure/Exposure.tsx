@@ -135,6 +135,11 @@ export function Exposure({ ix, route, pseudonyms, update }: ViewProps) {
       </div>
       <div
         className="exposure__scroll"
+        role="region"
+        aria-label="Exposure matrix (scrollable); the table view lists the same data"
+        // Scrollable regions must be keyboard-focusable (WCAG 2.1.1).
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={0}
         onScroll={(e) => {
           setScroll({ top: e.currentTarget.scrollTop, height: e.currentTarget.clientHeight });
         }}

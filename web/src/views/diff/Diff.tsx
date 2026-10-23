@@ -25,14 +25,25 @@ export function Diff({ ix, pseudonyms, update }: ViewProps) {
       </Empty>
     );
   }
-  const xs = scene.nodes.map((n) => n.x);
-  const ys = scene.nodes.map((n) => n.y);
-  const pad = 60;
+  // Small changes get a readable size; labels need horizontal room.
+  const rawX = scene.nodes.map((n) => n.x);
+  const rawY = scene.nodes.map((n) => n.y);
+  const extent = Math.max(
+    1,
+    Math.max(...rawX, 0) - Math.min(...rawX, 0),
+    Math.max(...rawY, 0) - Math.min(...rawY, 0),
+  );
+  const k = Math.min(4, Math.max(1, 420 / extent));
+  const xs = rawX.map((x) => x * k);
+  const ys = rawY.map((y) => y * k);
+  const pad = 120;
   const minX = Math.min(0, ...xs) - pad;
   const minY = Math.min(0, ...ys) - pad;
   const w = Math.max(...xs, 0) - minX + pad;
   const h = Math.max(...ys, 0) - minY + pad;
-  const pos = new Map(scene.nodes.map((n) => [n.node.id, n]));
+  const pos = new Map(
+    scene.nodes.map((n, i) => [n.node.id, { ...n, x: xs[i] ?? 0, y: ys[i] ?? 0 }]),
+  );
   const removedFindings = d.removed.objects?.findings ?? [];
   const added = new Set(d.added.findings);
   const addedFindings = ix.analysis.findings.filter((f) => added.has(f.id));
@@ -87,7 +98,7 @@ export function Diff({ ix, pseudonyms, update }: ViewProps) {
                   </g>
                 );
               })}
-              {scene.nodes.map((n) => (
+              {[...pos.values()].map((n) => (
                 <g
                   key={n.node.id}
                   className={n.change === 'removed' ? 'diff__node--removed' : undefined}
