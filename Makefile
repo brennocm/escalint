@@ -162,8 +162,15 @@ web-visual: ## Visual regression (Chromium; CI runs it in the Playwright contain
 	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:visual
 
 .PHONY: web-visual-update
-web-visual-update: ## Rewrite visual baselines (review the images before committing)
-	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:visual:update
+# Baselines come only from the pinned Playwright container (ADR 0019), the
+# image CI compares against. Without Docker, run the visual-baselines
+# workflow and commit its artifact.
+PLAYWRIGHT_IMAGE := mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+
+web-visual-update: ## Rewrite visual baselines in the Playwright container (Docker; review the images before committing)
+	docker run --rm --ipc=host --user "$$(id -u):$$(id -g)" -e HOME=/tmp -e CI=true \
+	  -v "$(CURDIR)":/work -w /work/web $(PLAYWRIGHT_IMAGE) \
+	  sh -c 'corepack pnpm install --frozen-lockfile && corepack pnpm build && corepack pnpm e2e:visual:update'
 
 .PHONY: web-a11y
 web-a11y: ## axe accessibility checks (WCAG 2.2 AA, every view, both themes)

@@ -17,7 +17,9 @@ uses only self-hosted fonts, but WebGL output depends on the GPU driver.
 - Tolerance: `maxDiffPixelRatio: 0.02`.
 - CI runs the suite in the official Playwright container of the pinned
   version, the same browser build that produced the baselines.
-- Baselines are updated deliberately: `make web-visual-update`, then the
+- Baselines are generated only inside that container and updated
+  deliberately: `make web-visual-update` runs it with Docker; without Docker,
+  the manual `visual-baselines` workflow produces them as an artifact. The
   images are reviewed in the pull request.
 - Accessibility (axe, WCAG 2.2 AA tags) and functional E2E run in the main
   E2E suite on Chromium, Firefox and WebKit; axe runs in Chromium only.
