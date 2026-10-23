@@ -28,6 +28,8 @@ flowchart LR
 | `internal/eval` | policy evaluation with SCPs, RCPs, trust and boundaries |
 | `internal/graph` | can-act-as graph, environment for evaluations |
 | `internal/analysis` | graph algorithms (below) |
+| `internal/rules` | escalation, trust and parse rules; explicit registry |
+| `internal/engine` | runs rules and analyses; findings (critical on a path to Tier 0), fix plan changes, rule selection |
 | `internal/termsafe` | safe terminal output |
 
 ## Analyses
@@ -44,3 +46,13 @@ flowchart LR
 
 All analyses are deterministic: neighbors in ID order, ties by ID, sorted
 outputs; a test runs them 50 times and compares results.
+
+## Engine
+
+`engine.Run` builds the graph, drops assume edges when `EL-PE-014` is
+disabled, applies the enabled rules (primitive pass, then composite pass),
+enumerates paths, assigns tiers, computes blast radius for every principal,
+choke points and the fix plan. Findings are per (rule, edge) for path rules
+and raised to `critical` when the edge lies on an enumerated path; trust and
+parse rules report findings directly. Findings sort by severity, rule ID and
+finding ID; identical results collapse.
