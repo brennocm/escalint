@@ -38,6 +38,11 @@ linters:
       - path: _test\.go
         linters: [gosec]
         text: G304
+      # Tests use seeded math/rand on purpose: generated graphs must be
+      # reproducible, which crypto/rand cannot be.
+      - path: _test\.go
+        linters: [gosec]
+        text: G404
       # Preallocation hints add noise to table-driven tests.
       - path: _test\.go
         linters: [prealloc]
