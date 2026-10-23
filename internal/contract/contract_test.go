@@ -75,7 +75,7 @@ func analyze(t *testing.T, path string, opts engine.Options) []byte {
 	return data
 }
 
-var goldens = map[string]string{ // #nosec G101 -- fixture paths, not credentials
+var goldens = map[string]string{
 	"passrole-lambda": "../rules/testdata/EL-PE-022/vulnerable/snapshot.json",
 	"modify-role":     "../rules/testdata/EL-PE-020/vulnerable/snapshot.json",
 	"diagnostics":     "../snapshot/testdata/authz-diagnostics.json",

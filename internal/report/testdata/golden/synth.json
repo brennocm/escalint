@@ -19,7 +19,7 @@
   "summary": {
     "critical": 3,
     "high": 38,
-    "medium": 6,
+    "medium": 7,
     "low": 0,
     "info": 0,
     "suppressed": 0,
@@ -1011,6 +1011,27 @@
         "line": 427
       },
       "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_5fda188b4bd52cb9",
+      "rule_id": "EL-TR-004",
+      "severity": "medium",
+      "title": "Trust to an external account outside the allowlist",
+      "message": "arn:aws:iam::402251546283:role/search-reporting-staging trusts account 890110102814, which is neither analyzed nor listed in trusted_accounts (conditional: sts:externalid not evaluated)",
+      "node_id": "n_4e1c05f0757ffa2c",
+      "edge_id": "e_f74229c59ea0ef93",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "402251546283",
+        "entity": "arn:aws:iam::402251546283:role/search-reporting-staging",
+        "policy": "trust:arn:aws:iam::402251546283:role/search-reporting-staging",
+        "statement_index": 0,
+        "path": "",
+        "line": 572
+      },
+      "remediation": "Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy.",
       "suppressed": null
     }
   ],

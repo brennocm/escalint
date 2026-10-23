@@ -39,6 +39,12 @@ func All() []Rule {
 		elPE028(),
 		elPE029(),
 		elPE030(),
+		elTR001(),
+		elTR002(),
+		elTR003(),
+		elTR004(),
+		elTR005(),
+		elTR006(),
 	}
 	sort.Slice(list, func(i, j int) bool { return list[i].Meta().ID < list[j].Meta().ID })
 	return list

@@ -886,6 +886,158 @@
                   "external/cwe/cwe-266"
                 ]
               }
+            },
+            {
+              "id": "EL-TR-001",
+              "name": "RoleTrustsAnyAWSPrincipal",
+              "shortDescription": {
+                "text": "Role trusts any AWS principal"
+              },
+              "fullDescription": {
+                "text": "Role trusts any AWS principal. Name the accounts or roles that may assume the role in \"Principal\", or add a condition on aws:PrincipalOrgID, aws:PrincipalAccount or aws:PrincipalArn."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-TR-001.md",
+              "help": {
+                "text": "Role trusts any AWS principal\n\nRemediation: Name the accounts or roles that may assume the role in \"Principal\", or add a condition on aws:PrincipalOrgID, aws:PrincipalAccount or aws:PrincipalArn.",
+                "markdown": "# EL-TR-001 — Role trusts any AWS principal\n\n| | |\n| --- | --- |\n| Severity | critical |\n| Category | trust |\n| Status | stable |\n| Subject | the role whose trust policy is too broad |\n| Required actions | `sts:AssumeRole` |\n\n## Description\n\nThe trust policy names `\"*\"` (or `{\"AWS\": \"*\"}`) as principal with no condition that restricts it to your organization, account or specific roles. Any AWS identity in any account can call `sts:AssumeRole` on the role.\n\nThe finding is reported only when escalint's evaluator lets the principal assume the role: explicit denies, resource control policies and the condition keys escalint evaluates are applied first.\n\n## Why it matters\n\nThe role is effectively public: anyone with an AWS account who learns its ARN (ARNs leak in logs, CloudFormation templates, error messages) obtains its permissions. When the role is privileged, this is an unauthenticated path to administrator.\n\n## Attack chain\n\n1. An attacker creates or uses any AWS account.\n2. The attacker calls `sts:AssumeRole` with the role ARN and receives temporary credentials.\n3. The attacker acts with the role's permissions.\n\n## Vulnerable example\n\nTrust policy:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"*\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"*\"\n      },\n      \"Action\": \"sts:AssumeRole\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:PrincipalOrgID\": \"o-exampleorg1\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Remediation\n\nName the accounts or roles that may assume the role in `Principal`, or add a condition on `aws:PrincipalOrgID`, `aws:PrincipalAccount` or `aws:PrincipalArn`. escalint evaluates these three keys, so a restricted trust produces no finding.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html\n- https://cwe.mitre.org/data/definitions/284.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "trust",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-284"
+                ]
+              }
+            },
+            {
+              "id": "EL-TR-002",
+              "name": "GitHubActionsOIDCTrustWithoutASubCondition",
+              "shortDescription": {
+                "text": "GitHub Actions OIDC trust without a sub condition"
+              },
+              "fullDescription": {
+                "text": "GitHub Actions OIDC trust without a sub condition. Add \"Condition\": {\"StringEquals\": {\"token.actions.githubusercontent.com:sub\": \"repo:\u003corg\u003e/\u003crepo\u003e:ref:refs/heads/main\"}} (or an environment) together with the aud condition."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-TR-002.md",
+              "help": {
+                "text": "GitHub Actions OIDC trust without a sub condition\n\nRemediation: Add \"Condition\": {\"StringEquals\": {\"token.actions.githubusercontent.com:sub\": \"repo:\u003corg\u003e/\u003crepo\u003e:ref:refs/heads/main\"}} (or an environment) together with the aud condition.",
+                "markdown": "# EL-TR-002 — GitHub Actions OIDC trust without a sub condition\n\n| | |\n| --- | --- |\n| Severity | critical |\n| Category | trust |\n| Status | stable |\n| Subject | the role whose trust policy is too broad |\n| Required actions | `sts:AssumeRoleWithWebIdentity` |\n\n## Description\n\nThe role trusts the GitHub Actions OIDC provider (`token.actions.githubusercontent.com`) and no statement restricts the `token.actions.githubusercontent.com:sub` claim. The `aud` condition alone only proves the token was issued for AWS STS, not which repository asked for it.\n\nThe finding is reported only when escalint's evaluator lets the principal assume the role: explicit denies, resource control policies and the condition keys escalint evaluates are applied first.\n\n## Why it matters\n\nEvery GitHub repository, including ones the attacker creates for free, can obtain an OIDC token from the same issuer. Without a `sub` condition any of their workflows can call `sts:AssumeRoleWithWebIdentity` and receive the role's credentials.\n\n## Attack chain\n\n1. The attacker creates a public repository with a workflow that requests an OIDC token (`permissions: id-token: write`).\n2. The workflow calls `sts:AssumeRoleWithWebIdentity` with the victim's role ARN.\n3. STS accepts the token because only `aud` is checked; the workflow now acts as the role.\n\n## Vulnerable example\n\nTrust policy:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\",\n          \"token.actions.githubusercontent.com:sub\": \"repo:example-org/deploy:ref:refs/heads/main\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Remediation\n\nAdd a `token.actions.githubusercontent.com:sub` condition pinned to one repository and a branch, tag or environment, together with the `aud` condition.\n\n## References\n\n- https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\n- https://cwe.mitre.org/data/definitions/284.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "trust",
+                  "external/attack/t1199",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-284"
+                ]
+              }
+            },
+            {
+              "id": "EL-TR-003",
+              "name": "GitHubActionsOIDCTrustWithABroadSubPattern",
+              "shortDescription": {
+                "text": "GitHub Actions OIDC trust with a broad sub pattern"
+              },
+              "fullDescription": {
+                "text": "GitHub Actions OIDC trust with a broad sub pattern. Pin the sub condition to one repository and a branch, tag or environment, for example \"repo:\u003corg\u003e/\u003crepo\u003e:environment:production\"; avoid wildcards in the organization or repository part."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-TR-003.md",
+              "help": {
+                "text": "GitHub Actions OIDC trust with a broad sub pattern\n\nRemediation: Pin the sub condition to one repository and a branch, tag or environment, for example \"repo:\u003corg\u003e/\u003crepo\u003e:environment:production\"; avoid wildcards in the organization or repository part.",
+                "markdown": "# EL-TR-003 — GitHub Actions OIDC trust with a broad sub pattern\n\n| | |\n| --- | --- |\n| Severity | high |\n| Category | trust |\n| Status | stable |\n| Subject | the role whose trust policy is too broad |\n| Required actions | `sts:AssumeRoleWithWebIdentity` |\n\n## Description\n\nThe role trusts GitHub Actions and restricts `sub`, but the pattern admits many repositories or every ref of a repository: `*`, `repo:*`, `repo:\u003corg\u003e/*`, or `repo:\u003corg\u003e/\u003crepo\u003e` followed by nothing or `:*`.\n\nThe finding is reported only when escalint's evaluator lets the principal assume the role: explicit denies, resource control policies and the condition keys escalint evaluates are applied first.\n\n## Why it matters\n\nA wildcard in the organization lets other GitHub organizations in; a wildcard in the repository lets any repository of the organization (including forks and new, less protected repositories) in; a wildcard ref lets any branch, including unreviewed pull request branches, deploy with the role.\n\n## Attack chain\n\n1. The attacker gains write access to any repository or branch the pattern covers (or creates one when the organization part is a wildcard).\n2. A workflow there requests an OIDC token and calls `sts:AssumeRoleWithWebIdentity`.\n3. The `sub` claim matches the broad pattern and the workflow acts as the role.\n\n## Vulnerable example\n\nTrust policy:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\"\n        },\n        \"StringLike\": {\n          \"token.actions.githubusercontent.com:sub\": \"repo:example-org/*\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\",\n          \"token.actions.githubusercontent.com:sub\": \"repo:example-org/deploy:environment:production\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Remediation\n\nPin `sub` to one repository and a protected branch, tag or GitHub environment (environments can require reviewers). Avoid wildcards in the organization and repository parts.\n\n## References\n\n- https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect\n- https://cwe.mitre.org/data/definitions/284.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "trust",
+                  "external/attack/t1199",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-284"
+                ]
+              }
+            },
+            {
+              "id": "EL-TR-004",
+              "name": "TrustToAnExternalAccountOutsideTheAllowlist",
+              "shortDescription": {
+                "text": "Trust to an external account outside the allowlist"
+              },
+              "fullDescription": {
+                "text": "Trust to an external account outside the allowlist. Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-TR-004.md",
+              "help": {
+                "text": "Trust to an external account outside the allowlist\n\nRemediation: Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy.",
+                "markdown": "# EL-TR-004 — Trust to an external account outside the allowlist\n\n| | |\n| --- | --- |\n| Severity | medium |\n| Category | trust |\n| Status | stable |\n| Subject | the role whose trust policy is too broad |\n| Required actions | `sts:AssumeRole` |\n\n## Description\n\nThe trust policy names an AWS account (or a principal in it) that is not part of the snapshot and is not listed in `trusted_accounts` or `third_party_accounts` of `.escalint.yaml`.\n\nThe finding is reported only when escalint's evaluator lets the principal assume the role: explicit denies, resource control policies and the condition keys escalint evaluates are applied first.\n\n## Why it matters\n\nEvery identity in that account that is allowed to call `sts:AssumeRole` can act as the role. Unknown accounts in trust policies are often leftovers from old vendors, mergers or tests, and nobody reviews who controls them today.\n\n## Attack chain\n\n1. An identity in the external account calls `sts:AssumeRole` on the role.\n2. The trust policy admits the account; the identity obtains the role's credentials.\n\n## Vulnerable example\n\nTrust policy:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::999999999999:root\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::222222222222:role/deployer\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nConfirm who owns the account. List it in `trusted_accounts` (your organization) or `third_party_accounts` (vendors, then EL-TR-005 checks `sts:ExternalId`), or remove it from the trust policy. Prefer naming a specific role over the account root.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_aws-accounts.html\n- https://cwe.mitre.org/data/definitions/284.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "warning",
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "trust",
+                  "external/attack/t1199",
+                  "external/cwe/cwe-284"
+                ]
+              }
+            },
+            {
+              "id": "EL-TR-005",
+              "name": "ThirdPartyTrustWithoutStsExternalId",
+              "shortDescription": {
+                "text": "Third-party trust without sts:ExternalId"
+              },
+              "fullDescription": {
+                "text": "Third-party trust without sts:ExternalId. Add \"Condition\": {\"StringEquals\": {\"sts:ExternalId\": \"\u003cvalue the vendor gave you\u003e\"}} to the statement that trusts the vendor account."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-TR-005.md",
+              "help": {
+                "text": "Third-party trust without sts:ExternalId\n\nRemediation: Add \"Condition\": {\"StringEquals\": {\"sts:ExternalId\": \"\u003cvalue the vendor gave you\u003e\"}} to the statement that trusts the vendor account.",
+                "markdown": "# EL-TR-005 — Third-party trust without sts:ExternalId\n\n| | |\n| --- | --- |\n| Severity | high |\n| Category | trust |\n| Status | stable |\n| Subject | the role whose trust policy is too broad |\n| Required actions | `sts:AssumeRole` |\n\n## Description\n\nAn account listed in `third_party_accounts` of `.escalint.yaml` can assume the role and the trusting statement has no `sts:ExternalId` condition.\n\nThe finding is reported only when escalint's evaluator lets the principal assume the role: explicit denies, resource control policies and the condition keys escalint evaluates are applied first.\n\n## Why it matters\n\nVendors assume roles in many customers' accounts. Without an external ID, any other customer of the same vendor can ask the vendor to access *your* role ARN, and the vendor's identity will succeed: the confused deputy problem.\n\n## Attack chain\n\n1. The attacker becomes a customer of the same vendor and registers the victim's role ARN as \"their\" role.\n2. The vendor's service calls `sts:AssumeRole` on the victim's role on the attacker's behalf.\n3. Without an `sts:ExternalId` condition the call succeeds and the attacker reads the results through the vendor.\n\n## Vulnerable example\n\nTrust policy:\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::999999999999:root\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::999999999999:root\"\n      },\n      \"Action\": \"sts:AssumeRole\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"sts:ExternalId\": \"vendor-assigned-id\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Remediation\n\nAdd `\"Condition\": {\"StringEquals\": {\"sts:ExternalId\": \"\u003cvalue the vendor gave you\u003e\"}}` to the statement that trusts the vendor account.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html\n- https://cwe.mitre.org/data/definitions/441.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "trust",
+                  "external/attack/t1199",
+                  "external/cwe/cwe-441"
+                ]
+              }
             }
           ]
         }
@@ -2681,6 +2833,44 @@
           },
           "properties": {
             "edge_id": "e_99aba2a92b8f46a1",
+            "latent": false,
+            "severity": "medium"
+          }
+        },
+        {
+          "ruleId": "EL-TR-004",
+          "ruleIndex": 32,
+          "level": "warning",
+          "message": {
+            "text": "arn:aws:iam::402251546283:role/search-reporting-staging trusts account 890110102814, which is neither analyzed nor listed in trusted_accounts (conditional: sts:externalid not evaluated). Fix: Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/synth.json"
+                },
+                "region": {
+                  "startLine": 572
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::402251546283:role/search-reporting-staging",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "trust:arn:aws:iam::402251546283:role/search-reporting-staging",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_5fda188b4bd52cb9"
+          },
+          "properties": {
+            "edge_id": "e_f74229c59ea0ef93",
             "latent": false,
             "severity": "medium"
           }

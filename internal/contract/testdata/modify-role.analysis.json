@@ -57,7 +57,13 @@
       "EL-PE-027",
       "EL-PE-028",
       "EL-PE-029",
-      "EL-PE-030"
+      "EL-PE-030",
+      "EL-TR-001",
+      "EL-TR-002",
+      "EL-TR-003",
+      "EL-TR-004",
+      "EL-TR-005",
+      "EL-TR-006"
     ]
   },
   "rules": [
@@ -1250,6 +1256,218 @@
       "remediation": "Restrict codebuild:StartBuild to the resources the caller owns; separate deployment roles from runtime roles.",
       "references": [
         "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-TR-001",
+      "title": "Role trusts any AWS principal",
+      "category": "trust",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Name the accounts or roles that may assume the role in \"Principal\", or add a condition on aws:PrincipalOrgID, aws:PrincipalAccount or aws:PrincipalArn.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html",
+        "https://cwe.mitre.org/data/definitions/284.html"
+      ]
+    },
+    {
+      "id": "EL-TR-002",
+      "title": "GitHub Actions OIDC trust without a sub condition",
+      "category": "trust",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1199",
+          "name": "Trusted Relationship",
+          "tactics": [
+            "Initial Access"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1199"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Add \"Condition\": {\"StringEquals\": {\"token.actions.githubusercontent.com:sub\": \"repo:\u003corg\u003e/\u003crepo\u003e:ref:refs/heads/main\"}} (or an environment) together with the aud condition.",
+      "references": [
+        "https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html",
+        "https://cwe.mitre.org/data/definitions/284.html"
+      ]
+    },
+    {
+      "id": "EL-TR-003",
+      "title": "GitHub Actions OIDC trust with a broad sub pattern",
+      "category": "trust",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1199",
+          "name": "Trusted Relationship",
+          "tactics": [
+            "Initial Access"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1199"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Pin the sub condition to one repository and a branch, tag or environment, for example \"repo:\u003corg\u003e/\u003crepo\u003e:environment:production\"; avoid wildcards in the organization or repository part.",
+      "references": [
+        "https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect",
+        "https://cwe.mitre.org/data/definitions/284.html"
+      ]
+    },
+    {
+      "id": "EL-TR-004",
+      "title": "Trust to an external account outside the allowlist",
+      "category": "trust",
+      "severity": "medium",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1199",
+          "name": "Trusted Relationship",
+          "tactics": [
+            "Initial Access"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1199"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_aws-accounts.html",
+        "https://cwe.mitre.org/data/definitions/284.html"
+      ]
+    },
+    {
+      "id": "EL-TR-005",
+      "title": "Third-party trust without sts:ExternalId",
+      "category": "trust",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1199",
+          "name": "Trusted Relationship",
+          "tactics": [
+            "Initial Access"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1199"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Add \"Condition\": {\"StringEquals\": {\"sts:ExternalId\": \"\u003cvalue the vendor gave you\u003e\"}} to the statement that trusts the vendor account.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html",
+        "https://cwe.mitre.org/data/definitions/441.html"
+      ]
+    },
+    {
+      "id": "EL-TR-006",
+      "title": "OIDC or SAML trust without an audience or subject condition",
+      "category": "trust",
+      "severity": "medium",
+      "status": "experimental",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [
+        "sts:AssumeRoleWithWebIdentity",
+        "sts:AssumeRoleWithSAML"
+      ],
+      "prerequisites": [],
+      "attack": [
+        {
+          "id": "T1199",
+          "name": "Trusted Relationship",
+          "tactics": [
+            "Initial Access"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1199"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Add a condition on the provider's aud (and sub for OIDC) keys, or SAML:aud for SAML, so only the intended application and identities can assume the role.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html",
+        "https://cwe.mitre.org/data/definitions/284.html"
       ]
     }
   ],

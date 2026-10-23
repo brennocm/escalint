@@ -119,7 +119,7 @@ func TestSelect(t *testing.T) {
 			t.Errorf("experimental rule %s enabled by default", r.Meta().ID)
 		}
 	}
-	got, err := Select(Options{Enable: []string{"EL-PE-026"}, Disable: []string{"EL-PE-0??", "EL-PARSE-*"}})
+	got, err := Select(Options{Enable: []string{"EL-PE-026"}, Disable: []string{"EL-PE-0??", "EL-PARSE-*", "EL-TR-*"}})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 6 medium
+escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
 identifiers are redacted (pseudonyms are stable within this run only)
 
 arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f (role, tier 1)
@@ -262,6 +262,14 @@ arn:aws:iam::314973283544:user/user-e95c9d89 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_e8f6bf351e5d4d8c
+
+arn:aws:iam::314973283544:role/role-047c2d7a (role, tier 3)
+  MEDIUM EL-TR-004 Trust to an external account outside the allowlist
+    arn:aws:iam::314973283544:role/role-047c2d7a trusts account 370645938125, which is neither analyzed nor listed in trusted_accounts (conditional: sts:externalid not evaluated)
+    policy: trust:arn:aws:iam::314973283544:role/role-047c2d7a statement #0 (snapshot line 572)
+    ATT&CK: T1199 Trusted Relationship
+    fix: Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy.
+    id: f_db9bba1f6af645a6
 
 arn:aws:iam::314973283544:role/role-2866557a (role, tier 0)
   MEDIUM EL-PE-014 Assume a more privileged role

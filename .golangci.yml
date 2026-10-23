@@ -45,6 +45,11 @@ linters:
       - path: _test\.go
         linters: [gosec]
         text: G404
+      # Test fixtures are full of IAM condition keys and fake account data
+      # ("token.actions…:aud") that G101's credential heuristics flag.
+      - path: _test\.go
+        linters: [gosec]
+        text: G101
       # Preallocation hints add noise to table-driven tests.
       - path: _test\.go
         linters: [prealloc]

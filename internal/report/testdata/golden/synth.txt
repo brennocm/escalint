@@ -1,4 +1,4 @@
-escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 6 medium
+escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
 
 arn:aws:iam::402251546283:role/service/security-etl-dev (role, tier 1)
   path p_095bd0ae4052fc95 [CRITICAL, allowed, 1 step(s)]
@@ -281,6 +281,14 @@ arn:aws:iam::402251546283:role/growth-etl-dev (role, tier 0)
     ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
     fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
     id: f_fd41cc3ffaf20bd6
+
+arn:aws:iam::402251546283:role/search-reporting-staging (role, tier 3)
+  MEDIUM EL-TR-004 Trust to an external account outside the allowlist
+    arn:aws:iam::402251546283:role/search-reporting-staging trusts account 890110102814, which is neither analyzed nor listed in trusted_accounts (conditional: sts:externalid not evaluated)
+    policy: trust:arn:aws:iam::402251546283:role/search-reporting-staging statement #0 (snapshot line 572)
+    ATT&CK: T1199 Trusted Relationship
+    fix: Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy.
+    id: f_5fda188b4bd52cb9
 
 arn:aws:iam::402251546283:user/service/nadia.smith (user, tier 0)
   MEDIUM EL-PE-014 Assume a more privileged role
