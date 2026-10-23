@@ -1,0 +1,77 @@
+{
+ "accounts": [
+  {
+   "account_id": "111111111111",
+   "authorization_details": {
+    "GroupDetailList": [],
+    "Policies": [
+     {
+      "Arn": "arn:aws:iam::111111111111:policy/S3Only",
+      "DefaultVersionId": "v1",
+      "Path": "/",
+      "PolicyName": "S3Only",
+      "PolicyVersionList": [
+       {
+        "Document": {
+         "Statement": [
+          {
+           "Action": [
+            "s3:*"
+           ],
+           "Effect": "Allow",
+           "Resource": "*"
+          }
+         ],
+         "Version": "2012-10-17"
+        },
+        "IsDefaultVersion": true,
+        "VersionId": "v1"
+       }
+      ]
+     }
+    ],
+    "RoleDetailList": [
+     {
+      "Arn": "arn:aws:iam::111111111111:role/attacker",
+      "AssumeRolePolicyDocument": {
+       "Statement": [
+        {
+         "Action": "sts:AssumeRole",
+         "Effect": "Allow",
+         "Principal": {
+          "Service": "ec2.amazonaws.com"
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "Path": "/",
+      "RoleId": "AROAATTACKER",
+      "RoleName": "attacker",
+      "RolePolicyList": [
+       {
+        "PolicyDocument": {
+         "Statement": [
+          {
+           "Action": [
+            "iam:AttachRolePolicy"
+           ],
+           "Effect": "Allow",
+           "Resource": "*"
+          }
+         ],
+         "Version": "2012-10-17"
+        },
+        "PolicyName": "p"
+       }
+      ]
+     }
+    ],
+    "UserDetailList": []
+   }
+  }
+ ],
+ "collected_at": "2026-10-23T00:00:00Z",
+ "escalint_snapshot": "1",
+ "partition": "aws"
+}

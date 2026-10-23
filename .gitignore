@@ -17,8 +17,8 @@ web/blob-report/
 *.snapshot.json
 snapshot.json
 analysis.json
-!testdata/**/snapshot.json
-!testdata/**/analysis.json
+!**/testdata/**/snapshot.json
+!**/testdata/**/analysis.json
 !examples/**/snapshot.json
 !examples/**/analysis.json
 

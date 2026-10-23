@@ -1,0 +1,74 @@
+{
+ "accounts": [
+  {
+   "account_id": "111111111111",
+   "authorization_details": {
+    "GroupDetailList": [
+     {
+      "Arn": "arn:aws:iam::111111111111:group/devs",
+      "GroupName": "devs",
+      "Path": "/"
+     }
+    ],
+    "Policies": [
+     {
+      "Arn": "arn:aws:iam::111111111111:policy/S3Only",
+      "DefaultVersionId": "v1",
+      "Path": "/",
+      "PolicyName": "S3Only",
+      "PolicyVersionList": [
+       {
+        "Document": {
+         "Statement": [
+          {
+           "Action": [
+            "s3:*"
+           ],
+           "Effect": "Allow",
+           "Resource": "*"
+          }
+         ],
+         "Version": "2012-10-17"
+        },
+        "IsDefaultVersion": true,
+        "VersionId": "v1"
+       }
+      ]
+     }
+    ],
+    "RoleDetailList": [],
+    "UserDetailList": [
+     {
+      "Arn": "arn:aws:iam::111111111111:user/attacker",
+      "GroupList": [
+       "devs"
+      ],
+      "Path": "/",
+      "UserId": "AIDAATTACKER",
+      "UserName": "attacker",
+      "UserPolicyList": [
+       {
+        "PolicyDocument": {
+         "Statement": [
+          {
+           "Action": [
+            "iam:PutGroupPolicy"
+           ],
+           "Effect": "Allow",
+           "Resource": "*"
+          }
+         ],
+         "Version": "2012-10-17"
+        },
+        "PolicyName": "p"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "collected_at": "2026-10-23T00:00:00Z",
+ "escalint_snapshot": "1",
+ "partition": "aws"
+}
