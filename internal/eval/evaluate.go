@@ -13,16 +13,18 @@ const unknownPolicyKey = "escalint:unknown-policy"
 
 // stageResult aggregates the statements of a set of policies.
 type stageResult struct {
-	deny, allow   tri
-	firstDeny     *Step // first statement that denies unconditionally
-	firstAllow    *Step // first statement that allows unconditionally
-	bestGrant     grant // for resource-based policies: best grant among allows
-	grantAllowTri tri   // allow restricted to statements with bestGrant
-	steps         []Step
+	deny, allow tri
+	firstDeny   *Step // first statement that denies unconditionally
+	firstAllow  *Step // first statement that allows unconditionally
+	// byGrant[g] is the allow outcome of the statements that name the
+	// principal with grant g (resource-based policies only). Different grants
+	// need different extra checks, so they are kept apart.
+	byGrant [grantWildcard + 1]tri
+	steps   []Step
 }
 
 func evalStage(policies []Policy, stage PolicyType, level int, req *Request) stageResult {
-	r := stageResult{deny: triFalse, allow: triFalse, grantAllowTri: triFalse}
+	r := stageResult{deny: triFalse, allow: triFalse}
 	denyIdx, allowIdx := -1, -1
 	for _, p := range policies {
 		if p.Doc == nil {
@@ -59,12 +61,7 @@ func evalStage(policies []Policy, stage PolicyType, level int, req *Request) sta
 				allowIdx = len(r.steps) - 1
 			}
 			r.allow = maxTri(r.allow, res.applies)
-			switch {
-			case res.grant > r.bestGrant:
-				r.bestGrant, r.grantAllowTri = res.grant, res.applies
-			case res.grant == r.bestGrant:
-				r.grantAllowTri = maxTri(r.grantAllowTri, res.applies)
-			}
+			r.byGrant[res.grant] = maxTri(r.byGrant[res.grant], res.applies)
 		}
 	}
 	r.firstDeny = stepAt(r.steps, denyIdx)
@@ -152,7 +149,7 @@ func Evaluate(req *Request) Result {
 		note("SCPs not evaluated: no organization data for the account")
 	}
 
-	resource := stageResult{deny: triFalse, allow: triFalse, grantAllowTri: triFalse}
+	resource := stageResult{deny: triFalse, allow: triFalse}
 	if res.Policy != nil {
 		resource = evalStage([]Policy{*res.Policy}, TypeResource, 0, req)
 	}
@@ -195,20 +192,15 @@ func Evaluate(req *Request) Result {
 		// policy (trust) is the only side we can see.
 		access, allowStep = resource.allow, resource.firstAllow
 	case sameAccount:
-		var viaResource tri
-		switch resource.bestGrant {
-		case grantWildcard:
-			viaResource = resource.grantAllowTri
-		case grantDirect:
-			if pr.Kind == PrincipalRole {
-				viaResource = and(resource.grantAllowTri, boundary.allow)
-			} else {
-				viaResource = resource.grantAllowTri
-			}
-		case grantAccount, grantNone: // the account's identity policies must allow too
-			viaResource = and(resource.allow, idAndBoundary)
+		// Each way the trust names the principal has its own requirements;
+		// the request is allowed through the best of them.
+		direct := resource.byGrant[grantDirect]
+		if pr.Kind == PrincipalRole {
+			direct = and(direct, boundary.allow) // role ARN grants are limited by the boundary
 		}
-		access, allowStep = viaResource, resource.firstAllow
+		viaAccount := and(maxTri(resource.byGrant[grantAccount], resource.byGrant[grantNone]), idAndBoundary)
+		access = maxTri(maxTri(resource.byGrant[grantWildcard], direct), viaAccount)
+		allowStep = resource.firstAllow
 	default: // cross-account: both sides must allow
 		access, allowStep = and(resource.allow, idAndBoundary), resource.firstAllow
 	}

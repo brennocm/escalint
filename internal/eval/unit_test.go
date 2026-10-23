@@ -276,3 +276,26 @@ func TestAnyResourceMode(t *testing.T) {
 	nothing := user(acct, "u", identity(t, `{"Statement":{"Effect":"Allow","Action":"s3:GetObject","NotResource":"*"}}`))
 	want(t, ask(nothing, "s3:GetObject", anyRes), ImplicitDeny)
 }
+
+// Regression (review after Phase 5): a conditional "*" statement must not
+// hide an unconditional statement that names the user directly.
+func TestRegressionBestGrantPathWins(t *testing.T) {
+	u := user(acct, "alice")
+	tr := trust(t, `{"Statement":[
+		{"Effect":"Allow","Principal":"*","Action":"sts:AssumeRole","Condition":{"Bool":{"aws:MultiFactorAuthPresent":"true"}}},
+		{"Effect":"Allow","Principal":{"AWS":"`+u.ARN+`"},"Action":"sts:AssumeRole"}]}`)
+	want(t, ask(u, "sts:AssumeRole", roleResource(acct, "r", tr)), Allow)
+
+	// And the reverse: an unconditional wildcard beats a conditional direct grant.
+	tr = trust(t, `{"Statement":[
+		{"Effect":"Allow","Principal":"*","Action":"sts:AssumeRole"},
+		{"Effect":"Allow","Principal":{"AWS":"`+u.ARN+`"},"Action":"sts:AssumeRole","Condition":{"Bool":{"aws:MultiFactorAuthPresent":"true"}}}]}`)
+	want(t, ask(u, "sts:AssumeRole", roleResource(acct, "r", tr)), Allow)
+
+	// A role whose boundary blocks the direct grant can still use an account
+	// grant when its identity policy and boundary allow sts:AssumeRole.
+	r := role(acct, "caller", identity(t, `{"Statement":{"Effect":"Allow","Action":"sts:AssumeRole","Resource":"*"}}`))
+	r.Boundary = boundaryPolicy(t, `{"Statement":{"Effect":"Allow","Action":"sts:*","Resource":"*"}}`)
+	tr = trust(t, `{"Statement":{"Effect":"Allow","Principal":{"AWS":"`+acct+`"},"Action":"sts:AssumeRole"}}`)
+	want(t, ask(r, "sts:AssumeRole", roleResource(acct, "target", tr)), Allow)
+}
