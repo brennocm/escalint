@@ -38,5 +38,13 @@ updates:
       actions-minor:
         update-types: [minor, patch]
 
-  # The docker ecosystem is added with the Dockerfile in Phase 17; listing it
-  # earlier makes every Dependabot run fail.
+  # Base images of Dockerfile and Dockerfile.goreleaser (pinned by digest).
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      docker-images:
+        patterns: ["*"]
