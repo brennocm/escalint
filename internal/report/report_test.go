@@ -185,6 +185,12 @@ func TestHostileNamesAreEscaped(t *testing.T) {
 	if strings.Contains(mmd.String(), "<script>") || strings.Contains(mmd.String(), `"];`) {
 		t.Errorf("Mermaid output not escaped:\n%s", mmd.String())
 	}
+	// Graphs are printed to the terminal by default: no escape sequences.
+	for name, out := range map[string]string{"DOT": dot.String(), "Mermaid": mmd.String()} {
+		if strings.ContainsAny(out, "\x1b\u202e") {
+			t.Errorf("%s output carries control characters", name)
+		}
+	}
 }
 
 func TestGraphSelection(t *testing.T) {

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/brennocm/escalint/internal/contract"
 )
@@ -23,7 +25,23 @@ var dotTierColor = map[int]string{0: "#b42318", 1: "#c4320a", 2: "#b54708", 3: "
 func dotQuote(s string) string { return `"` + dotEscape(s) + `"` }
 
 func dotEscape(s string) string {
-	return strings.NewReplacer(`\`, `\\`, `"`, `\"`, "\n", " ", "\r", " ").Replace(s)
+	return strings.NewReplacer(`\`, `\\`, `"`, `\"`, "\n", " ", "\r", " ").Replace(graphText(s))
+}
+
+// graphText replaces control and Unicode format characters (ANSI escapes,
+// bidirectional overrides) and invalid UTF-8 with U+FFFD. Graphs are often
+// printed straight to a terminal, and names come from the account. Line
+// breaks become spaces so a name stays on its line.
+func graphText(s string) string {
+	return strings.Map(func(r rune) rune {
+		switch {
+		case r == '\n' || r == '\r':
+			return ' '
+		case unicode.IsControl(r) || unicode.Is(unicode.Cf, r):
+			return utf8.RuneError
+		}
+		return r
+	}, s)
 }
 
 func writeDOT(w io.Writer, a *contract.Analysis, opts Options) error {
@@ -74,7 +92,7 @@ func writeDOT(w io.Writer, a *contract.Analysis, opts Options) error {
 func mermaidText(s string) string {
 	r := strings.NewReplacer("#", "#35;", `"`, "#quot;", "<", "#lt;", ">", "#gt;", "&", "#amp;",
 		"\n", " ", "\r", " ", "`", "#96;", "|", "#124;", "[", "#91;", "]", "#93;", "{", "#123;", "}", "#125;")
-	return r.Replace(s)
+	return r.Replace(graphText(s))
 }
 
 var mermaidShape = map[string][2]string{
