@@ -1,0 +1,29 @@
+# Go
+/bin/
+/dist/
+coverage.out
+coverage.html
+*.test
+
+# Web
+web/node_modules/
+web/dist/
+web/coverage/
+web/playwright-report/
+web/test-results/
+web/blob-report/
+
+# Never commit real account data
+*.snapshot.json
+snapshot.json
+analysis.json
+!testdata/**/snapshot.json
+!testdata/**/analysis.json
+!examples/**/snapshot.json
+!examples/**/analysis.json
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
