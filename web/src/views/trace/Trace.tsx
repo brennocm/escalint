@@ -133,8 +133,17 @@ export function Trace({ ix, route, pseudonyms, update }: ViewProps) {
                 />
                 <text className="trace__label" x={midX} y={e.y1 + 18} textAnchor="middle">
                   {edge.kind}
-                  {choke && choke.paths_cut > 1 ? ` · choke ×${String(choke.paths_cut)}` : ''}
                 </text>
+                {choke && choke.paths_cut > 1 && (
+                  <text
+                    className="trace__label trace__label--choke"
+                    x={midX}
+                    y={e.y1 + 32}
+                    textAnchor="middle"
+                  >
+                    choke point ×{choke.paths_cut}
+                  </text>
+                )}
               </g>
             );
           })}

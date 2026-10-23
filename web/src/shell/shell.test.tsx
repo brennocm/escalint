@@ -132,7 +132,8 @@ describe('Legend', () => {
       </ThemeProvider>,
     );
     const toggle = screen.getByRole('button', { name: 'Legend' });
-    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(toggle);
     expect(screen.getByText('Tier 0: effective administrator')).toBeTruthy();
     fireEvent.click(toggle);
     expect(screen.queryByText('Tier 0: effective administrator')).toBeNull();

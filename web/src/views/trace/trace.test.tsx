@@ -20,7 +20,7 @@ describe('trace layout', () => {
     const l = traceLayout(ix, multi);
     expect(l.rows[0]).toBe(multi);
     expect(l.cards.filter((c) => c.row === 0).map((c) => c.id)).toEqual(multi.nodes);
-    for (const c of l.cards) expect(c.x).toBe(16 + c.col * (196 + 92));
+    for (const c of l.cards) expect(c.x).toBe(16 + c.col * (196 + 150));
     expect(l.edges.filter((e) => e.row === 0)).toHaveLength(multi.edges.length);
     expect(traceLayout(ix, multi)).toEqual(l);
     expect(l.width).toBeGreaterThan(196);

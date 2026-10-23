@@ -6,7 +6,7 @@ import type { Indexes } from '../../data/indexes';
 // same position always means the same hop count. Deterministic: rows are
 // the chosen path first, then alternatives by length and ID.
 
-export const card = { width: 196, height: 64, gapX: 92, gapY: 40, pad: 16 } as const;
+export const card = { width: 196, height: 64, gapX: 150, gapY: 40, pad: 16 } as const;
 
 export interface CardBox {
   readonly id: string; // node ID

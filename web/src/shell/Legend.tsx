@@ -20,7 +20,8 @@ const tierText: Record<Tier, string> = {
 /** Always-visible, collapsible legend: glyph = kind, ring = tier, stroke
  * pattern and color = edge kind. Nothing relies on color alone. */
 export function Legend() {
-  const [open, setOpen] = useState(true);
+  // Collapsed by default so it never hides the view; one click opens it.
+  const [open, setOpen] = useState(false);
   return (
     <aside className="legend" aria-label="Legend">
       <button
