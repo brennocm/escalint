@@ -66,6 +66,34 @@
               }
             },
             {
+              "id": "EL-PARSE-003",
+              "name": "SuppressionWithoutAJustification",
+              "shortDescription": {
+                "text": "Suppression without a justification"
+              },
+              "fullDescription": {
+                "text": "Suppression without a justification. Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PARSE-003.md",
+              "help": {
+                "text": "Suppression without a justification\n\nRemediation: Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
+                "markdown": "# EL-PARSE-003 — Suppression without a justification\n\n| | |\n| --- | --- |\n| Severity | info |\n| Category | parse |\n| Status | stable |\n\n## Description\n\nA suppression in `.escalint.yaml` has an empty `reason`. escalint requires a\njustification for every suppression: without one, the suppression is\nrecorded with status `unjustified`, suppresses nothing, and this finding\npoints at it.\n\n## Why it matters\n\nSuppressions hide real escalation paths from reports and CI gates. A reason\n(who accepted the risk, why, and where it was discussed) keeps that decision\nreviewable; an expiry date makes sure it is reviewed again.\n\n## Attack chain\n\nNot an attack by itself; it keeps accepted risks visible and accountable.\n\n## Vulnerable example\n\n```yaml\nversion: 1\nsuppressions:\n  - rule: EL-TR-004\n    arn: \"arn:aws:iam::111111111111:role/legacy-partner\"\n    reason: \"\"\n```\n\n## Fixed example\n\n```yaml\nversion: 1\nsuppressions:\n  - rule: EL-TR-004\n    arn: \"arn:aws:iam::111111111111:role/legacy-partner\"\n    reason: \"Partner integration approved by the security team (SEC-1234)\"\n    expires: 2027-01-31\n```\n\n## References\n\n- https://github.com/brennocm/escalint/blob/main/docs/configuration.md\n"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "note",
+                "security-severity": "0.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "parse"
+                ]
+              }
+            },
+            {
               "id": "EL-PE-001",
               "name": "CreateANewDefaultVersionOfAnAttachedPolicy",
               "shortDescription": {
@@ -1050,7 +1078,7 @@
       "results": [
         {
           "ruleId": "EL-PE-001",
-          "ruleIndex": 2,
+          "ruleIndex": 3,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can act as effective admin of account 402251546283 using iam:CreatePolicyVersion. Fix: Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary."
@@ -1089,7 +1117,7 @@
         },
         {
           "ruleId": "EL-PE-004",
-          "ruleIndex": 5,
+          "ruleIndex": 6,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/platform/diego.silva can act as effective admin of account 402251546283 using iam:AttachUserPolicy. Fix: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached."
@@ -1128,7 +1156,7 @@
         },
         {
           "ruleId": "EL-PE-005",
-          "ruleIndex": 6,
+          "ruleIndex": 7,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/service/security-etl-dev can act as effective admin of account 402251546283 using iam:AttachRolePolicy. Fix: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached."
@@ -1167,7 +1195,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1205,7 +1233,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1243,7 +1271,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1281,7 +1309,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1319,7 +1347,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1357,7 +1385,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1395,7 +1423,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1433,7 +1461,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1471,7 +1499,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1509,7 +1537,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1547,7 +1575,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1585,7 +1613,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1623,7 +1651,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1661,7 +1689,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-ingest-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1699,7 +1727,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/service/security-etl-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1737,7 +1765,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1775,7 +1803,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-api-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1813,7 +1841,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1846,7 +1874,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-gateway-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1884,7 +1912,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1922,7 +1950,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1960,7 +1988,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-api-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1998,7 +2026,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2036,7 +2064,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/service/security-etl-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2074,7 +2102,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2107,7 +2135,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2145,7 +2173,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2183,7 +2211,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2221,7 +2249,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-ingest-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2259,7 +2287,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2297,7 +2325,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2335,7 +2363,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2373,7 +2401,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2411,7 +2439,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2449,7 +2477,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2487,7 +2515,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2525,7 +2553,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-gateway-prod using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2563,7 +2591,7 @@
         },
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -2601,7 +2629,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2639,7 +2667,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/infra-ingest-prod using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2677,7 +2705,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/service/security-etl-dev using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2715,7 +2743,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/infra-ingest-prod using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2753,7 +2781,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2791,7 +2819,7 @@
         },
         {
           "ruleId": "EL-PE-014",
-          "ruleIndex": 15,
+          "ruleIndex": 16,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/service/security-etl-dev using sts:AssumeRole. Fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
@@ -2829,7 +2857,7 @@
         },
         {
           "ruleId": "EL-TR-004",
-          "ruleIndex": 32,
+          "ruleIndex": 33,
           "level": "warning",
           "message": {
             "text": "arn:aws:iam::402251546283:role/search-reporting-staging trusts account 890110102814, which is neither analyzed nor listed in trusted_accounts (conditional: sts:externalid not evaluated). Fix: Confirm the account belongs to your organization or a vendor; add it to trusted_accounts or third_party_accounts in .escalint.yaml, or remove it from the trust policy."

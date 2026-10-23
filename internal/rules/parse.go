@@ -17,6 +17,9 @@ func (r parseRule) Meta() Metadata { return r.meta }
 func (r parseRule) Pass() Pass     { return PassPrimitive }
 
 func (r parseRule) Apply(ctx *Context) []Finding {
+	if r.code == "" {
+		return nil // reported outside the rule engine
+	}
 	var out []Finding
 	for _, d := range ctx.Snap.Diagnostics {
 		if d.Code != r.code {
@@ -53,5 +56,18 @@ func elParse002() Rule {
 		AttackUnmappedReason: unmappedParse,
 		Remediation:          "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
 		References:           []string{"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html"},
+	}}
+}
+
+// elParse003 documents findings about suppressions without a reason; the
+// suppress package reports them (they come from .escalint.yaml, not from
+// the snapshot), so Apply does nothing.
+func elParse003() Rule {
+	return parseRule{code: "", meta: Metadata{
+		ID: "EL-PARSE-003", Title: "Suppression without a justification",
+		Category: ParseCategory, Severity: Info, Status: Stable,
+		AttackUnmappedReason: "Configuration diagnostic about .escalint.yaml, not an adversary behavior.",
+		Remediation:          "Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
+		References:           []string{"https://github.com/brennocm/escalint/blob/main/docs/configuration.md"},
 	}}
 }

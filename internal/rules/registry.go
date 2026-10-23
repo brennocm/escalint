@@ -9,6 +9,7 @@ func All() []Rule {
 	list := []Rule{
 		elParse001(),
 		elParse002(),
+		elParse003(),
 		elPE001(),
 		elPE002(),
 		elPE003(),

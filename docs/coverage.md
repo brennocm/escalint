@@ -59,6 +59,7 @@ These rules have no pathfinding.cloud counterpart.
 | --- | --- | --- | --- |
 | [EL-PARSE-001](rules/EL-PARSE-001.md) | Policy document could not be parsed | info | stable |
 | [EL-PARSE-002](rules/EL-PARSE-002.md) | Referenced policy or group is not in the snapshot | info | stable |
+| [EL-PARSE-003](rules/EL-PARSE-003.md) | Suppression without a justification | info | stable |
 | [EL-TR-001](rules/EL-TR-001.md) | Role trusts any AWS principal | critical | stable |
 | [EL-TR-002](rules/EL-TR-002.md) | GitHub Actions OIDC trust without a sub condition | critical | stable |
 | [EL-TR-003](rules/EL-TR-003.md) | GitHub Actions OIDC trust with a broad sub pattern | high | stable |

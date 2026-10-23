@@ -28,6 +28,7 @@
     "enabled_rules": [
       "EL-PARSE-001",
       "EL-PARSE-002",
+      "EL-PARSE-003",
       "EL-PE-001",
       "EL-PE-002",
       "EL-PE-003",
@@ -99,6 +100,23 @@
       "remediation": "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
       "references": [
         "https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html"
+      ]
+    },
+    {
+      "id": "EL-PARSE-003",
+      "title": "Suppression without a justification",
+      "category": "parse",
+      "severity": "info",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [],
+      "prerequisites": [],
+      "attack": [],
+      "attack_unmapped_reason": "Configuration diagnostic about .escalint.yaml, not an adversary behavior.",
+      "remediation": "Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
+      "references": [
+        "https://github.com/brennocm/escalint/blob/main/docs/configuration.md"
       ]
     },
     {

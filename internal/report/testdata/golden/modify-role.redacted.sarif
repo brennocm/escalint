@@ -66,6 +66,34 @@
               }
             },
             {
+              "id": "EL-PARSE-003",
+              "name": "SuppressionWithoutAJustification",
+              "shortDescription": {
+                "text": "Suppression without a justification"
+              },
+              "fullDescription": {
+                "text": "Suppression without a justification. Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PARSE-003.md",
+              "help": {
+                "text": "Suppression without a justification\n\nRemediation: Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
+                "markdown": "# EL-PARSE-003 — Suppression without a justification\n\n| | |\n| --- | --- |\n| Severity | info |\n| Category | parse |\n| Status | stable |\n\n## Description\n\nA suppression in `.escalint.yaml` has an empty `reason`. escalint requires a\njustification for every suppression: without one, the suppression is\nrecorded with status `unjustified`, suppresses nothing, and this finding\npoints at it.\n\n## Why it matters\n\nSuppressions hide real escalation paths from reports and CI gates. A reason\n(who accepted the risk, why, and where it was discussed) keeps that decision\nreviewable; an expiry date makes sure it is reviewed again.\n\n## Attack chain\n\nNot an attack by itself; it keeps accepted risks visible and accountable.\n\n## Vulnerable example\n\n```yaml\nversion: 1\nsuppressions:\n  - rule: EL-TR-004\n    arn: \"arn:aws:iam::111111111111:role/legacy-partner\"\n    reason: \"\"\n```\n\n## Fixed example\n\n```yaml\nversion: 1\nsuppressions:\n  - rule: EL-TR-004\n    arn: \"arn:aws:iam::111111111111:role/legacy-partner\"\n    reason: \"Partner integration approved by the security team (SEC-1234)\"\n    expires: 2027-01-31\n```\n\n## References\n\n- https://github.com/brennocm/escalint/blob/main/docs/configuration.md\n"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "note",
+                "security-severity": "0.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "parse"
+                ]
+              }
+            },
+            {
               "id": "EL-PE-001",
               "name": "CreateANewDefaultVersionOfAnAttachedPolicy",
               "shortDescription": {
@@ -1050,7 +1078,7 @@
       "results": [
         {
           "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
+          "ruleIndex": 22,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::448151736024:user/user-8c11fbde can act as effective admin of account 448151736024 using iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1089,7 +1117,7 @@
         },
         {
           "ruleId": "EL-PE-013",
-          "ruleIndex": 14,
+          "ruleIndex": 15,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::448151736024:user/user-8c11fbde can act as arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:UpdateAssumeRolePolicy. Fix: Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary."
@@ -1127,7 +1155,7 @@
         },
         {
           "ruleId": "EL-PE-015",
-          "ruleIndex": 16,
+          "ruleIndex": 17,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:AttachRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1165,7 +1193,7 @@
         },
         {
           "ruleId": "EL-PE-016",
-          "ruleIndex": 17,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
@@ -1203,7 +1231,7 @@
         },
         {
           "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
+          "ruleIndex": 19,
           "level": "error",
           "message": {
             "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
