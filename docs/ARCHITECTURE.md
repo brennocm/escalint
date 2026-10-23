@@ -66,3 +66,19 @@ escalation primitive on wildcard resources, a dense worst case). On a
 Rules pre-filter candidates by action and resource before calling the
 evaluator, composite rules only look at the actor's neighbors, and the
 graph sorts adjacency lists lazily per node.
+
+## Web UI
+
+| Area | Files |
+| --- | --- |
+| Data | `web/src/data/load.ts` (inline, `serve`, demo datasets; schema version check), `indexes.ts` (by ID, adjacency, tier, account, findings and paths by node/edge) |
+| State | `web/src/state/store.ts` (own store, ADR 0016), `route.ts` (hash router; all view state in the URL), `app.ts` (location binding) |
+| Search | `web/src/search/fuzzy.ts`: prefix > word start > subsequence, ties by tier |
+| Workers | `web/src/workers/rpc.ts` (typed calls with cancellation), `layout.worker.ts` |
+| Shell | `web/src/shell/`: top bar, command palette, details panel, legend, help, states |
+| Views | Overview, Atlas (WebGL2), Trace, Reach, Exposure, Findings, Fix plan, Diff, policy explainer (`web/src/views`, `web/src/explainer`) |
+| Layout | `web/src/layout/`: force (Barnes–Hut), convex hull areas, label collision, spatial grid |
+
+Rendering layers are described in ADR 0014, layout determinism in ADR 0015,
+visual tests in ADR 0019. Performance budgets are checked by
+`make web-perf` on a synthetic analysis of 10,000 principals.

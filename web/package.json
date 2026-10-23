@@ -22,7 +22,8 @@
     "gen:contract": "go run ../tools/gen-contract-ts -schema ../schema/analysis.v1.schema.json -out src/contract/analysis.ts",
     "size": "node scripts/size-check.mjs dist",
     "e2e:visual": "playwright test -c playwright.visual.config.ts",
-    "e2e:visual:update": "playwright test -c playwright.visual.config.ts --update-snapshots=all"
+    "e2e:visual:update": "playwright test -c playwright.visual.config.ts --update-snapshots=all",
+    "e2e:perf": "playwright test -c playwright.perf.config.ts"
   },
   "dependencies": {
     "react": "19.3.1",

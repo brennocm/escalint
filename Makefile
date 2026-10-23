@@ -142,20 +142,20 @@ web-e2e: ## Playwright E2E (Chromium, Firefox, WebKit)
 	cd $(WEB_DIR) && $(PNPM) e2e
 
 .PHONY: web-visual
-web-visual: ## Visual regression inside the Playwright container
-	$(call not_yet,visual baselines per view arrive in Phase 12 - ADR 0019)
+web-visual: ## Visual regression (Chromium; CI runs it in the Playwright container, ADR 0019)
+	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:visual
 
 .PHONY: web-visual-update
-web-visual-update: ## Update visual baselines inside the Playwright container
-	$(call not_yet,visual baselines per view arrive in Phase 12 - ADR 0019)
+web-visual-update: ## Rewrite visual baselines (review the images before committing)
+	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:visual:update
 
 .PHONY: web-a11y
-web-a11y: ## axe accessibility checks
-	$(call not_yet,accessibility suite arrives in Phase 12)
+web-a11y: ## axe accessibility checks (WCAG 2.2 AA, every view, both themes)
+	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) exec playwright test --project=chromium views
 
 .PHONY: web-perf
-web-perf: ## Performance budgets with synthetic data
-	$(call not_yet,performance suite arrives in Phase 12)
+web-perf: ## Performance budgets with synthetic data (10k principals)
+	cd $(WEB_DIR) && $(PNPM) build && $(PNPM) e2e:perf
 
 .PHONY: size
 size: ## Bundle size budget
