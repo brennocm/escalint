@@ -6,6 +6,12 @@ stdout 'HIGH EL-PE-022'
 stdout 'Fix plan'
 ! stderr .
 
+# The example's .escalint.yaml has a suppression without a reason: it is
+# reported (EL-PARSE-003), so every stable rule fires on the example.
+! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json --config-file $EXAMPLES/vulnerable-account/.escalint.yaml -f json -q
+stdout '"rule_id": "EL-PARSE-003"'
+stdout '"status": "unjustified"'
+
 # --fail-on none always succeeds.
 exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json --fail-on none -q
 stdout 'EL-PE-001'

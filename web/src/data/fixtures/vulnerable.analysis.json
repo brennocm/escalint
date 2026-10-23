@@ -12740,9 +12740,41 @@
       },
       "remediation": "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
       "suppressed": null
+    },
+    {
+      "id": "f_aa396608ebba6d36",
+      "rule_id": "EL-PARSE-003",
+      "severity": "info",
+      "title": "Suppression without a justification",
+      "message": "suppression examples/vulnerable-account/.escalint.yaml#suppressions[0] (rule EL-TR-004, arn arn:aws:iam::111111111111:role/tr004-*) has no reason, so it suppresses none of its 1 finding(s)",
+      "node_id": null,
+      "edge_id": null,
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "",
+        "entity": "",
+        "policy": "examples/vulnerable-account/.escalint.yaml",
+        "statement_index": -1,
+        "path": "suppressions[0]",
+        "line": null
+      },
+      "remediation": "Add a reason to the suppression in .escalint.yaml (who accepted the risk, why, and a ticket), and preferably an expiry date; until then the findings it matches are reported.",
+      "suppressed": null
     }
   ],
-  "suppressions": [],
+  "suppressions": [
+    {
+      "rule": "EL-TR-004",
+      "arn": "arn:aws:iam::111111111111:role/tr004-*",
+      "reason": "",
+      "expires": null,
+      "status": "unjustified",
+      "findings": [
+        "f_7bb3f0633e5fee70"
+      ]
+    }
+  ],
   "choke_points": [
     {
       "edge_id": "e_20a5da8af219f407",
@@ -12947,7 +12979,7 @@
     "nodes": 66,
     "edges": 114,
     "paths": 15,
-    "findings": 106
+    "findings": 107
   },
   "groupings": [],
   "attack": {

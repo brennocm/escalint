@@ -20,7 +20,7 @@ func TestExampleAccounts(t *testing.T) {
 	for _, r := range rules.All() {
 		m := r.Meta()
 		if m.Status != rules.Stable || m.ID == "EL-PARSE-003" {
-			continue // EL-PARSE-003 comes from .escalint.yaml, not the snapshot
+			continue // EL-PARSE-003 comes from .escalint.yaml: cmd/escalint tests it on the example
 		}
 		if fired[m.ID] == 0 {
 			t.Errorf("%s does not fire on the vulnerable account", m.ID)

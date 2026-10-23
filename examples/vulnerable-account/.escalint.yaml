@@ -3,3 +3,9 @@ version: 1
 # 222222222222 is a vendor: EL-TR-005 checks that its trust uses sts:ExternalId.
 third_party_accounts:
   - "222222222222"
+# A suppression without a reason suppresses nothing and is reported
+# (EL-PARSE-003): every suppression needs a justification.
+suppressions:
+  - rule: EL-TR-004
+    arn: "arn:aws:iam::111111111111:role/tr004-*"
+    reason: ""
