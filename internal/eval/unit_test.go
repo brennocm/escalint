@@ -275,6 +275,31 @@ func TestAnyResourceMode(t *testing.T) {
 	want(t, ask(fullDeny, "s3:GetObject", anyRes), ExplicitDeny)
 	nothing := user(acct, "u", identity(t, `{"Statement":{"Effect":"Allow","Action":"s3:GetObject","NotResource":"*"}}`))
 	want(t, ask(nothing, "s3:GetObject", anyRes), ImplicitDeny)
+	// Security review (Phase 19): a deny on every resource of a type, or a
+	// NotResource deny, may block the action; the answer is conditional,
+	// not allowed.
+	for _, deny := range []string{
+		`"Resource":"arn:aws:ec2:*:*:instance/*"`,
+		`"Resource":["arn:aws:s3:::secret/*","arn:aws:lambda:*:*:function:*"]`,
+		`"Resource":"arn:aws:s3:::*"`,
+		`"Resource":"arn:aws:s3:::*/*"`,
+		`"NotResource":"arn:aws:s3:::public/*"`,
+	} {
+		u := user(acct, "u", identity(t, allowAll), identity(t, `{"Statement":{"Effect":"Deny","Action":"*",`+deny+`}}`))
+		want(t, ask(u, "ec2:RunInstances", anyRes), Conditional)
+	}
+	for _, deny := range []string{
+		`"Resource":"arn:aws:ec2:us-east-1:*:instance/*"`,
+		`"Resource":"arn:aws:iam::111111111111:role/*"`,
+		`"Resource":"arn:aws:ec2:*:*:instance/i-*"`,
+		`"Resource":"not-an-arn"`,
+		`"Resource":"arn:aws:s3:::secret/*"`,
+		`"Resource":"arn:aws:lambda:*:*:*:*"`,
+		`"NotResource":"*"`,
+	} {
+		u := user(acct, "u", identity(t, allowAll), identity(t, `{"Statement":{"Effect":"Deny","Action":"*",`+deny+`}}`))
+		want(t, ask(u, "ec2:RunInstances", anyRes), Allow)
+	}
 }
 
 // Regression (review after Phase 5): a conditional "*" statement must not

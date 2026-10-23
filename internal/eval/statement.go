@@ -131,8 +131,9 @@ func evalStatement(st *policy.Statement, req *Request, version string, pt Policy
 	resTri := triTrue
 	if req.Resource.ARN == "" && (st.Resource != nil || st.NotResource != nil) {
 		// "Any resource" mode (Resource.ARN empty): is the action possible on
-		// some resource? An Allow counts if it names any resource; a Deny only
-		// removes the capability when it covers every resource.
+		// some resource? An Allow counts if it names any resource; a Deny
+		// removes the capability when it covers every resource, and may
+		// remove it (unknown) when it covers every resource of a type.
 		resTri = anyResource(st)
 		if resTri == triFalse {
 			return stmtResult{applies: triFalse}
@@ -207,10 +208,53 @@ func anyResource(st *policy.Statement) tri {
 		}
 		return triTrue
 	}
-	if st.Resource != nil && coversAll(st.Resource) {
+	switch {
+	case st.Resource != nil && coversAll(st.Resource):
 		return triTrue
+	case st.Resource != nil:
+		for _, r := range st.Resource {
+			if everyResourceOfAType(r) {
+				// "arn:aws:ec2:*:*:instance/*" blocks RunInstances outright;
+				// without the action's resource types we cannot tell, so
+				// the step becomes conditional instead of allowed.
+				return triUnknown
+			}
+		}
+		return triFalse
+	case st.NotResource != nil && !coversAll(st.NotResource):
+		// "Deny everything except X": X may or may not be what the step needs.
+		return triUnknown
 	}
 	return triFalse
+}
+
+// everyResourceOfAType reports patterns such as "arn:aws:ec2:*:*:instance/*",
+// "arn:aws:lambda:*:*:function:*" or "arn:aws:s3:::*": any region and
+// account, and every resource of one type.
+func everyResourceOfAType(pattern string) bool {
+	parts := strings.SplitN(pattern, ":", 6)
+	if len(parts) != 6 || parts[0] != "arn" {
+		return false
+	}
+	for _, p := range parts[3:5] { // region, account
+		if p != "" && p != "*" {
+			return false
+		}
+	}
+	res := parts[5]
+	if res == "*" {
+		return true
+	}
+	if parts[2] == "s3" {
+		// S3 ARNs carry no resource type: "bucket/*" is one bucket's objects.
+		return res == "*/*"
+	}
+	for _, suffix := range []string{"/*", ":*"} {
+		if prefix, ok := strings.CutSuffix(res, suffix); ok {
+			return prefix != "" && !strings.ContainsAny(prefix, "/:*?")
+		}
+	}
+	return false
 }
 
 func maxTri(a, b tri) tri {
