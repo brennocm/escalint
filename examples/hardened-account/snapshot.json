@@ -1,0 +1,470 @@
+{
+  "escalint_snapshot": "1",
+  "collected_at": "2026-10-01T00:00:00Z",
+  "collector": {
+    "name": "escalint",
+    "version": "example"
+  },
+  "partition": "aws",
+  "accounts": [
+    {
+      "account_id": "111111111111",
+      "authorization_details": {
+        "UserDetailList": [
+          {
+            "Path": "/",
+            "UserName": "alice",
+            "UserId": "AIDAALICE0000000000",
+            "Arn": "arn:aws:iam::111111111111:user/alice",
+            "UserPolicyList": [],
+            "GroupList": [
+              "developers"
+            ],
+            "AttachedManagedPolicies": [],
+            "PermissionsBoundary": {
+              "PermissionsBoundaryType": "Policy",
+              "PermissionsBoundaryArn": "arn:aws:iam::111111111111:policy/DeveloperBoundary"
+            },
+            "Tags": [
+              {
+                "Key": "team",
+                "Value": "app"
+              }
+            ]
+          },
+          {
+            "Path": "/",
+            "UserName": "bob",
+            "UserId": "AIDABOB000000000000",
+            "Arn": "arn:aws:iam::111111111111:user/bob",
+            "UserPolicyList": [],
+            "GroupList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "ReadOnlyAccess",
+                "PolicyArn": "arn:aws:iam::aws:policy/ReadOnlyAccess"
+              }
+            ],
+            "Tags": [
+              {
+                "Key": "team",
+                "Value": "finance"
+              }
+            ]
+          }
+        ],
+        "GroupDetailList": [
+          {
+            "Path": "/",
+            "GroupName": "developers",
+            "GroupId": "AGPADEVELOPERS00000",
+            "Arn": "arn:aws:iam::111111111111:group/developers",
+            "GroupPolicyList": [
+              {
+                "PolicyName": "app-workloads",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "AppData",
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject",
+                        "s3:PutObject",
+                        "s3:ListBucket"
+                      ],
+                      "Resource": [
+                        "arn:aws:s3:::example-app-data",
+                        "arn:aws:s3:::example-app-data/*"
+                      ]
+                    },
+                    {
+                      "Sid": "Observe",
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:GetLogEvents",
+                        "logs:FilterLogEvents",
+                        "lambda:GetFunction",
+                        "lambda:ListFunctions"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": []
+          }
+        ],
+        "RoleDetailList": [
+          {
+            "Path": "/",
+            "RoleName": "admin",
+            "RoleId": "AROAADMIN000000000000",
+            "Arn": "arn:aws:iam::111111111111:role/admin",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::111111111111:saml-provider/corp-idp"
+                  },
+                  "Action": "sts:AssumeRoleWithSAML",
+                  "Condition": {
+                    "StringEquals": {
+                      "SAML:aud": "https://signin.aws.amazon.com/saml"
+                    }
+                  }
+                }
+              ]
+            },
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "AdministratorAccess",
+                "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+              }
+            ],
+            "Tags": [
+              {
+                "Key": "owner",
+                "Value": "platform"
+              }
+            ],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-28T10:00:00Z",
+              "Region": "us-east-1"
+            }
+          },
+          {
+            "Path": "/",
+            "RoleName": "app-runtime",
+            "RoleId": "AROAAPPRUNTIME0000000",
+            "Arn": "arn:aws:iam::111111111111:role/app-runtime",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "AppDataAccess",
+                "PolicyArn": "arn:aws:iam::111111111111:policy/AppDataAccess"
+              }
+            ],
+            "Tags": [
+              {
+                "Key": "owner",
+                "Value": "platform"
+              }
+            ],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-30T08:00:00Z",
+              "Region": "us-east-1"
+            }
+          },
+          {
+            "Path": "/",
+            "RoleName": "ci-artifacts",
+            "RoleId": "AROACIARTIFACTS000000",
+            "Arn": "arn:aws:iam::111111111111:role/ci-artifacts",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                      "token.actions.githubusercontent.com:sub": "repo:example-org/app:environment:production"
+                    }
+                  }
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "publish-artifacts",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "Publish",
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:PutObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-artifacts/app/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": [
+              {
+                "Key": "owner",
+                "Value": "platform"
+              }
+            ],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-30T12:00:00Z",
+              "Region": "us-east-1"
+            }
+          },
+          {
+            "Path": "/",
+            "RoleName": "vendor-audit",
+            "RoleId": "AROAVENDORAUDIT000000",
+            "Arn": "arn:aws:iam::111111111111:role/vendor-audit",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "arn:aws:iam::999999999999:root"
+                  },
+                  "Action": "sts:AssumeRole",
+                  "Condition": {
+                    "StringEquals": {
+                      "sts:ExternalId": "example-external-id"
+                    }
+                  }
+                }
+              ]
+            },
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "ReadOnlyAccess",
+                "PolicyArn": "arn:aws:iam::aws:policy/ReadOnlyAccess"
+              }
+            ],
+            "Tags": [
+              {
+                "Key": "owner",
+                "Value": "platform"
+              }
+            ],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-29T00:00:00Z",
+              "Region": "us-east-1"
+            }
+          },
+          {
+            "Path": "/",
+            "RoleName": "security-audit",
+            "RoleId": "AROASECURITYAUDIT0000",
+            "Arn": "arn:aws:iam::111111111111:role/security-audit",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "arn:aws:iam::222222222222:role/security-team"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "ReadOnlyAccess",
+                "PolicyArn": "arn:aws:iam::aws:policy/ReadOnlyAccess"
+              }
+            ],
+            "Tags": [
+              {
+                "Key": "owner",
+                "Value": "platform"
+              }
+            ],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-29T00:00:00Z",
+              "Region": "us-east-1"
+            }
+          }
+        ],
+        "Policies": [
+          {
+            "PolicyName": "AdministratorAccess",
+            "PolicyId": "ANPAIWMBCKSKIEE64ZLYK",
+            "Arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": "*",
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true
+              }
+            ]
+          },
+          {
+            "PolicyName": "ReadOnlyAccess",
+            "PolicyId": "ANPAILL3HVNFSB6DCOWYQ",
+            "Arn": "arn:aws:iam::aws:policy/ReadOnlyAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "ec2:Describe*",
+                        "s3:ListAllMyBuckets",
+                        "s3:ListBucket",
+                        "logs:Describe*",
+                        "cloudwatch:GetMetricData",
+                        "iam:ListRoles",
+                        "iam:ListUsers",
+                        "iam:GetRole"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true
+              }
+            ]
+          },
+          {
+            "PolicyName": "AppDataAccess",
+            "PolicyId": "ANPAAPPDATAACCESS0001",
+            "Arn": "arn:aws:iam::111111111111:policy/AppDataAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "AppData",
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject",
+                        "s3:PutObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-app-data/*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true
+              }
+            ]
+          },
+          {
+            "PolicyName": "DeveloperBoundary",
+            "PolicyId": "ANPADEVBOUNDARY000001",
+            "Arn": "arn:aws:iam::111111111111:policy/DeveloperBoundary",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "WorkloadServices",
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:*",
+                        "logs:*",
+                        "cloudwatch:*",
+                        "lambda:Get*",
+                        "lambda:List*"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Sid": "NoIdentityChanges",
+                      "Effect": "Deny",
+                      "Action": [
+                        "iam:*",
+                        "sts:AssumeRole",
+                        "organizations:*"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true
+              }
+            ]
+          }
+        ]
+      },
+      "identity_providers": {
+        "oidc": [
+          {
+            "arn": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com",
+            "url": "https://token.actions.githubusercontent.com",
+            "client_ids": [
+              "sts.amazonaws.com"
+            ]
+          }
+        ],
+        "saml": [
+          {
+            "arn": "arn:aws:iam::111111111111:saml-provider/corp-idp"
+          }
+        ]
+      },
+      "extras": {
+        "access_keys": {
+          "arn:aws:iam::111111111111:user/bob": [
+            {
+              "status": "Active"
+            }
+          ]
+        },
+        "login_profiles": {
+          "arn:aws:iam::111111111111:user/alice": true,
+          "arn:aws:iam::111111111111:user/bob": true
+        }
+      },
+      "resources": {
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:111111111111:function:app",
+            "role": "arn:aws:iam::111111111111:role/app-runtime"
+          }
+        ],
+        "ec2": [],
+        "codebuild": []
+      }
+    }
+  ]
+}

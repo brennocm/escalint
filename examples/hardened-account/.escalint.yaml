@@ -1,0 +1,8 @@
+# escalint configuration for the hardened example account.
+version: 1
+# The security team's account may assume audit roles.
+trusted_accounts:
+  - "222222222222"
+# Vendors must use sts:ExternalId (EL-TR-005).
+third_party_accounts:
+  - "999999999999"

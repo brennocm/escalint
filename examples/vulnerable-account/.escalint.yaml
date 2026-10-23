@@ -1,0 +1,5 @@
+# escalint configuration for the vulnerable example account.
+version: 1
+# 222222222222 is a vendor: EL-TR-005 checks that its trust uses sts:ExternalId.
+third_party_accounts:
+  - "222222222222"

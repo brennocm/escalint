@@ -1,0 +1,2137 @@
+{
+  "escalint_snapshot": "1",
+  "collected_at": "2026-10-01T00:00:00Z",
+  "collector": {
+    "name": "escalint",
+    "version": "example"
+  },
+  "partition": "aws",
+  "accounts": [
+    {
+      "account_id": "111111111111",
+      "authorization_details": {
+        "UserDetailList": [
+          {
+            "Path": "/",
+            "UserName": "parse-broken-policy",
+            "UserId": "AIDAPARSEBROKEN",
+            "Arn": "arn:aws:iam::111111111111:user/parse-broken-policy",
+            "UserPolicyList": [
+              {
+                "PolicyName": "typo",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Alow",
+                      "Action": "s3:GetObject",
+                      "Resource": "*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "GroupList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "NotCollected",
+                "PolicyArn": "arn:aws:iam::111111111111:policy/NotCollected"
+              }
+            ],
+            "Tags": []
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe001-attacker",
+            "AttachedManagedPolicies": [
+              {
+                "PolicyArn": "arn:aws:iam::111111111111:policy/pe001-AppPolicy-attacker",
+                "PolicyName": "pe001-AppPolicy-attacker"
+              }
+            ],
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE001",
+            "UserName": "pe001-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:CreatePolicyVersion"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe001-AppPolicy-attacker",
+                        "arn:aws:iam::111111111111:policy/pe001-S3Only",
+                        "arn:aws:iam::111111111111:user/pe001-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe003-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE003",
+            "UserName": "pe003-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PutUserPolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe003-S3Only",
+                        "arn:aws:iam::111111111111:user/pe003-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe004-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE004",
+            "UserName": "pe004-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachUserPolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe004-S3Only",
+                        "arn:aws:iam::111111111111:user/pe004-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe006-attacker",
+            "GroupList": [
+              "pe006-devs"
+            ],
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE006",
+            "UserName": "pe006-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachGroupPolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:group/pe006-devs",
+                        "arn:aws:iam::111111111111:policy/pe006-S3Only",
+                        "arn:aws:iam::111111111111:user/pe006-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe007-attacker",
+            "GroupList": [
+              "pe007-devs"
+            ],
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE007",
+            "UserName": "pe007-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PutGroupPolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:group/pe007-devs",
+                        "arn:aws:iam::111111111111:policy/pe007-S3Only",
+                        "arn:aws:iam::111111111111:user/pe007-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe008-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE008",
+            "UserName": "pe008-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AddUserToGroup"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:group/pe008-admins",
+                        "arn:aws:iam::111111111111:policy/pe008-S3Only",
+                        "arn:aws:iam::111111111111:user/pe008-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe009-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE009",
+            "UserName": "pe009-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:CreateAccessKey"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe009-S3Only",
+                        "arn:aws:iam::111111111111:user/pe009-attacker",
+                        "arn:aws:iam::111111111111:user/pe009-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe009-victim",
+            "Path": "/",
+            "UserName": "pe009-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe010-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE010",
+            "UserName": "pe010-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:CreateAccessKey",
+                        "iam:DeleteAccessKey"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe010-S3Only",
+                        "arn:aws:iam::111111111111:user/pe010-attacker",
+                        "arn:aws:iam::111111111111:user/pe010-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe010-victim",
+            "Path": "/",
+            "UserName": "pe010-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe011-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE011",
+            "UserName": "pe011-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:CreateLoginProfile"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe011-S3Only",
+                        "arn:aws:iam::111111111111:user/pe011-attacker",
+                        "arn:aws:iam::111111111111:user/pe011-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe011-victim",
+            "Path": "/",
+            "UserName": "pe011-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe012-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE012",
+            "UserName": "pe012-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:UpdateLoginProfile"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe012-S3Only",
+                        "arn:aws:iam::111111111111:user/pe012-attacker",
+                        "arn:aws:iam::111111111111:user/pe012-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe012-victim",
+            "Path": "/",
+            "UserName": "pe012-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe013-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE013",
+            "UserName": "pe013-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:UpdateAssumeRolePolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe013-S3Only",
+                        "arn:aws:iam::111111111111:role/pe013-victim-role",
+                        "arn:aws:iam::111111111111:user/pe013-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe015-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE015",
+            "UserName": "pe015-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachRolePolicy",
+                        "sts:AssumeRole"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe015-S3Only",
+                        "arn:aws:iam::111111111111:policy/pe015-VictimPolicy",
+                        "arn:aws:iam::111111111111:role/pe015-victim-role",
+                        "arn:aws:iam::111111111111:user/pe015-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe016-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE016",
+            "UserName": "pe016-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:CreatePolicyVersion",
+                        "sts:AssumeRole"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe016-S3Only",
+                        "arn:aws:iam::111111111111:policy/pe016-VictimPolicy",
+                        "arn:aws:iam::111111111111:role/pe016-victim-role",
+                        "arn:aws:iam::111111111111:user/pe016-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe017-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE017",
+            "UserName": "pe017-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PutRolePolicy",
+                        "sts:AssumeRole"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe017-S3Only",
+                        "arn:aws:iam::111111111111:policy/pe017-VictimPolicy",
+                        "arn:aws:iam::111111111111:role/pe017-victim-role",
+                        "arn:aws:iam::111111111111:user/pe017-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe018-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE018",
+            "UserName": "pe018-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachUserPolicy",
+                        "iam:CreateAccessKey"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe018-S3Only",
+                        "arn:aws:iam::111111111111:user/pe018-attacker",
+                        "arn:aws:iam::111111111111:user/pe018-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe018-victim",
+            "Path": "/",
+            "UserName": "pe018-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe019-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE019",
+            "UserName": "pe019-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PutUserPolicy",
+                        "iam:CreateAccessKey"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe019-S3Only",
+                        "arn:aws:iam::111111111111:user/pe019-attacker",
+                        "arn:aws:iam::111111111111:user/pe019-victim"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe019-victim",
+            "Path": "/",
+            "UserName": "pe019-victim"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe020-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE020",
+            "UserName": "pe020-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachRolePolicy",
+                        "iam:CreatePolicyVersion",
+                        "iam:PutRolePolicy",
+                        "iam:UpdateAssumeRolePolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe020-S3Only",
+                        "arn:aws:iam::111111111111:policy/pe020-VictimPolicy",
+                        "arn:aws:iam::111111111111:role/pe020-victim-role",
+                        "arn:aws:iam::111111111111:user/pe020-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe021-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE021",
+            "UserName": "pe021-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "ec2:RunInstances"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe022-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE022",
+            "UserName": "pe022-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "lambda:CreateFunction",
+                        "lambda:InvokeFunction"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe023-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE023",
+            "UserName": "pe023-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "cloudformation:CreateStack"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe024-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE024",
+            "UserName": "pe024-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "codebuild:CreateProject",
+                        "codebuild:StartBuild"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe025-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE025",
+            "UserName": "pe025-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "glue:CreateJob",
+                        "glue:StartJobRun"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe027-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE027",
+            "UserName": "pe027-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PassRole",
+                        "sagemaker:CreateNotebookInstance"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:user/pe028-attacker",
+            "Path": "/",
+            "UserId": "AIDAATTACKERPE028",
+            "UserName": "pe028-attacker",
+            "UserPolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "lambda:UpdateFunctionCode",
+                        "lambda:InvokeFunction"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          }
+        ],
+        "GroupDetailList": [
+          {
+            "Arn": "arn:aws:iam::111111111111:group/pe006-devs",
+            "GroupName": "pe006-devs",
+            "Path": "/"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:group/pe007-devs",
+            "GroupName": "pe007-devs",
+            "Path": "/"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:group/pe008-admins",
+            "GroupName": "pe008-admins",
+            "Path": "/"
+          }
+        ],
+        "RoleDetailList": [
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe002-attacker",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleId": "AROAATTACKERPE002",
+            "RoleName": "pe002-attacker",
+            "RolePolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:PutRolePolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe002-S3Only",
+                        "arn:aws:iam::111111111111:role/pe002-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe005-attacker",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleId": "AROAATTACKERPE005",
+            "RoleName": "pe005-attacker",
+            "RolePolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "iam:AttachRolePolicy"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe005-S3Only",
+                        "arn:aws:iam::111111111111:role/pe005-attacker"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe013-victim-role",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe013-victim-role"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe014-attacker",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleId": "AROAATTACKERPE014",
+            "RoleName": "pe014-attacker",
+            "RolePolicyList": [
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "sts:AssumeRole"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "arn:aws:iam::111111111111:policy/pe014-S3Only",
+                        "arn:aws:iam::111111111111:role/pe014-attacker",
+                        "arn:aws:iam::111111111111:role/pe014-target"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "p"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe014-target",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::111111111111:role/pe014-attacker"
+                    ]
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe014-target"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe015-victim-role",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::111111111111:user/pe015-attacker"
+                    ]
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [
+              {
+                "PolicyArn": "arn:aws:iam::111111111111:policy/pe015-VictimPolicy",
+                "PolicyName": "pe015-VictimPolicy"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe015-victim-role"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe016-victim-role",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::111111111111:user/pe016-attacker"
+                    ]
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [
+              {
+                "PolicyArn": "arn:aws:iam::111111111111:policy/pe016-VictimPolicy",
+                "PolicyName": "pe016-VictimPolicy"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe016-victim-role"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe017-victim-role",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::111111111111:user/pe017-attacker"
+                    ]
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [
+              {
+                "PolicyArn": "arn:aws:iam::111111111111:policy/pe017-VictimPolicy",
+                "PolicyName": "pe017-VictimPolicy"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe017-victim-role"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe020-victim-role",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [
+              {
+                "PolicyArn": "arn:aws:iam::111111111111:policy/pe020-VictimPolicy",
+                "PolicyName": "pe020-VictimPolicy"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe020-victim-role"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe021-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "InstanceProfileList": [
+              {
+                "Arn": "arn:aws:iam::111111111111:instance-profile/pe021-runtime",
+                "InstanceProfileName": "pe021-runtime"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe021-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe022-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe022-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe023-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "cloudformation.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe023-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe024-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "codebuild.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe024-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe025-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "glue.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe025-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe027-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "sagemaker.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "Path": "/",
+            "RoleName": "pe027-runtime"
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:role/pe028-runtime",
+            "AssumeRolePolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sts:AssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "InstanceProfileList": [
+              {
+                "Arn": "arn:aws:iam::111111111111:instance-profile/pe028-runtime",
+                "InstanceProfileName": "pe028-runtime"
+              }
+            ],
+            "Path": "/",
+            "RoleName": "pe028-runtime"
+          },
+          {
+            "Path": "/",
+            "RoleName": "tr001-public-reports",
+            "RoleId": "AROATR001PUBLICREPORTS",
+            "Arn": "arn:aws:iam::111111111111:role/tr001-public-reports",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "*"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "read-reports",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-reports/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": []
+          },
+          {
+            "Path": "/",
+            "RoleName": "tr002-ci-deploy",
+            "RoleId": "AROATR002CIDEPLOY",
+            "Arn": "arn:aws:iam::111111111111:role/tr002-ci-deploy",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                    }
+                  }
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "read-reports",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-reports/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": []
+          },
+          {
+            "Path": "/",
+            "RoleName": "tr003-ci-any-repo",
+            "RoleId": "AROATR003CIANYREPO",
+            "Arn": "arn:aws:iam::111111111111:role/tr003-ci-any-repo",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                    },
+                    "StringLike": {
+                      "token.actions.githubusercontent.com:sub": "repo:example-org/*"
+                    }
+                  }
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "read-reports",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-reports/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": []
+          },
+          {
+            "Path": "/",
+            "RoleName": "tr004-old-partner",
+            "RoleId": "AROATR004OLDPARTNER",
+            "Arn": "arn:aws:iam::111111111111:role/tr004-old-partner",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "arn:aws:iam::999999999999:root"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "read-reports",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-reports/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": []
+          },
+          {
+            "Path": "/",
+            "RoleName": "tr005-vendor-audit",
+            "RoleId": "AROATR005VENDORAUDIT",
+            "Arn": "arn:aws:iam::111111111111:role/tr005-vendor-audit",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": "arn:aws:iam::222222222222:root"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "RolePolicyList": [
+              {
+                "PolicyName": "read-reports",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Resource": "arn:aws:s3:::example-reports/*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": []
+          }
+        ],
+        "Policies": [
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe001-AppPolicy-attacker",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe001-AppPolicy-attacker",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe001-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe001-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe002-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe002-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe003-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe003-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe004-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe004-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe005-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe005-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe006-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe006-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe007-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe007-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe008-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe008-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe009-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe009-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe010-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe010-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe011-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe011-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe012-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe012-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe013-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe013-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe014-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe014-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe015-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe015-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe015-VictimPolicy",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe015-VictimPolicy",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe016-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe016-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe016-VictimPolicy",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe016-VictimPolicy",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe017-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe017-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe017-VictimPolicy",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe017-VictimPolicy",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe018-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe018-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe019-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe019-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe020-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe020-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe020-VictimPolicy",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe020-VictimPolicy",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:GetObject"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe021-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe021-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe022-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe022-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe023-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe023-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe024-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe024-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe025-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe025-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe027-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe027-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          },
+          {
+            "Arn": "arn:aws:iam::111111111111:policy/pe028-S3Only",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "PolicyName": "pe028-S3Only",
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "s3:*"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": "*"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "IsDefaultVersion": true,
+                "VersionId": "v1"
+              }
+            ]
+          }
+        ]
+      },
+      "identity_providers": {
+        "oidc": [
+          {
+            "arn": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com",
+            "url": "https://token.actions.githubusercontent.com",
+            "client_ids": [
+              "sts.amazonaws.com"
+            ]
+          }
+        ],
+        "saml": []
+      },
+      "extras": {
+        "access_keys": {},
+        "login_profiles": {
+          "arn:aws:iam::111111111111:user/pe011-victim": false,
+          "arn:aws:iam::111111111111:user/pe012-victim": true
+        }
+      },
+      "resources": {
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:111111111111:function:pe028-job",
+            "role": "arn:aws:iam::111111111111:role/pe028-runtime"
+          }
+        ],
+        "ec2": [
+          {
+            "arn": "arn:aws:ec2:us-east-1:111111111111:instance/pe028-i-0123456789abcdef0",
+            "instance_profile": "arn:aws:iam::111111111111:instance-profile/pe028-runtime",
+            "ssm_managed": true
+          }
+        ],
+        "codebuild": [
+          {
+            "arn": "arn:aws:codebuild:us-east-1:111111111111:project/pe028-build",
+            "service_role": "arn:aws:iam::111111111111:role/pe028-runtime"
+          }
+        ]
+      }
+    }
+  ]
+}
