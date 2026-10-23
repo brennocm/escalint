@@ -21,6 +21,8 @@ linters:
       default-signifies-exhaustive: false
     misspell:
       locale: US
+      # MITRE (ATT&CK) is a name, not a misspelling of "miter".
+      ignore-rules: [mitre]
     revive:
       rules:
         - name: exported
