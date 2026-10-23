@@ -2,9 +2,12 @@ package policy
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/brennocm/escalint/internal/jsonx"
 )
 
 // Effect is "Allow" or "Deny", matched exactly as AWS documents it.
@@ -103,8 +106,16 @@ func Parse(data []byte, kind Kind, limits Limits) (*Document, error) {
 			Err: ErrLimitExceeded,
 		}
 	}
-	if err := checkStructure(data, limits.MaxDepth); err != nil {
-		return nil, err
+	if err := jsonx.Check(data, limits.MaxDepth); err != nil {
+		var se *jsonx.Error
+		if errors.As(err, &se) {
+			pe := &ParseError{Path: se.Path, Msg: se.Msg, Err: se.Err}
+			if errors.Is(err, jsonx.ErrTooDeep) {
+				pe.Err = ErrLimitExceeded
+			}
+			return nil, pe
+		}
+		return nil, &ParseError{Msg: "invalid JSON", Err: err}
 	}
 
 	var top map[string]json.RawMessage
@@ -190,7 +201,7 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 
 	if v, ok := raw["Sid"]; ok {
 		if err := json.Unmarshal(v, &st.Sid); err != nil {
-			return st, errorf(joinPath(path, "Sid"), "must be a string")
+			return st, errorf(jsonx.JoinPath(path, "Sid"), "must be a string")
 		}
 	}
 	rawEffect, ok := raw["Effect"]
@@ -199,11 +210,11 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 	}
 	var effect string
 	if err := json.Unmarshal(rawEffect, &effect); err != nil {
-		return st, errorf(joinPath(path, "Effect"), "must be a string")
+		return st, errorf(jsonx.JoinPath(path, "Effect"), "must be a string")
 	}
 	st.Effect = Effect(effect)
 	if st.Effect != Allow && st.Effect != Deny {
-		return st, errorf(joinPath(path, "Effect"), `must be "Allow" or "Deny", got %q`, effect)
+		return st, errorf(jsonx.JoinPath(path, "Effect"), `must be "Allow" or "Deny", got %q`, effect)
 	}
 
 	fields := []struct {
@@ -218,7 +229,7 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 	for _, f := range fields {
 		if v, ok := raw[f.name]; ok {
 			if err := json.Unmarshal(v, f.dst); err != nil {
-				return st, errorf(joinPath(path, f.name), "%v", err)
+				return st, errorf(jsonx.JoinPath(path, f.name), "%v", err)
 			}
 		}
 	}
@@ -229,14 +240,14 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 		if v, ok := raw[f.name]; ok {
 			p := &Principal{}
 			if err := json.Unmarshal(v, p); err != nil {
-				return st, errorf(joinPath(path, f.name), "%v", err)
+				return st, errorf(jsonx.JoinPath(path, f.name), "%v", err)
 			}
 			*f.dst = p
 		}
 	}
 	if v, ok := raw["Condition"]; ok {
 		if err := json.Unmarshal(v, &st.Condition); err != nil {
-			return st, errorf(joinPath(path, "Condition"), "%v", err)
+			return st, errorf(jsonx.JoinPath(path, "Condition"), "%v", err)
 		}
 	}
 
@@ -258,7 +269,7 @@ func validateStatement(st *Statement, raw map[string]json.RawMessage, path strin
 		return errorf(path, "Principal and NotPrincipal cannot both be present")
 	}
 	if has("NotPrincipal") && st.Effect != Deny {
-		return errorf(joinPath(path, "NotPrincipal"), "NotPrincipal is only supported with Deny")
+		return errorf(jsonx.JoinPath(path, "NotPrincipal"), "NotPrincipal is only supported with Deny")
 	}
 
 	switch kind {
