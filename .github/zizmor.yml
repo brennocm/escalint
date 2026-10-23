@@ -1,0 +1,8 @@
+# zizmor configuration (found automatically in .github/).
+rules:
+  superfluous-actions:
+    ignore:
+      # create-pull-request opens the catalog refresh PR with a signed,
+      # verified commit; replacing it with git and gh commands is longer and
+      # easier to get wrong.
+      - catalog.yml

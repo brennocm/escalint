@@ -540,5 +540,8 @@ jobs:
             scan examples/vulnerable-account/snapshot.json \
             --config-file examples/vulnerable-account/.escalint.yaml --fail-on none -q -f sarif > image.sarif
           jq -e '.runs[0].results | length > 0' image.sarif
+          # Written to a file: grep -q would close the pipe on the first match
+          # and fail the report with a broken pipe.
           docker run --rm -v "$PWD/examples:/work/examples:ro" escalint:ci \
-            report --html examples/vulnerable-account/snapshot.json -q -o - | grep -q 'Content-Security-Policy'
+            report --html examples/vulnerable-account/snapshot.json -q -o - > image.html
+          grep -q 'Content-Security-Policy' image.html
