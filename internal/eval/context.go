@@ -24,7 +24,10 @@ func NewContext(pr *Principal, ourOrgID string) map[string][]string {
 		ctx["aws:principalarn"] = []string{pr.ARN}
 		ctx["aws:principalaccount"] = []string{pr.Account}
 		ctx["aws:principalisawsservice"] = []string{"false"}
-		if pr.Kind == PrincipalUser {
+		// Groups are evaluated as "a new member" with the group's ARN
+		// (graph.Env.addGroup): the member's user name and ID are unknown,
+		// so ${aws:username} stays unresolved (Conditional).
+		if pr.Kind == PrincipalUser && strings.Contains(pr.ARN, ":user/") {
 			name := pr.ARN[strings.LastIndex(pr.ARN, "/")+1:]
 			ctx["aws:username"] = []string{name}
 			if pr.ID != "" {

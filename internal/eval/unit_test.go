@@ -324,3 +324,23 @@ func TestRegressionBestGrantPathWins(t *testing.T) {
 	tr = trust(t, `{"Statement":{"Effect":"Allow","Principal":{"AWS":"`+acct+`"},"Action":"sts:AssumeRole"}}`)
 	want(t, ask(r, "sts:AssumeRole", roleResource(acct, "target", tr)), Allow)
 }
+
+// Security review (Phase 19): a group stands in for "a new member", whose
+// user name and ID are unknown; ${aws:username} must not resolve to the
+// group's name.
+func TestGroupContextHasNoUserName(t *testing.T) {
+	g := &Principal{Kind: PrincipalUser, ARN: "arn:aws:iam::" + acct + ":group/devs", ID: "AGPAEXAMPLE", Account: acct}
+	ctx := NewContext(g, "")
+	if _, ok := ctx["aws:username"]; ok {
+		t.Errorf("aws:username = %v for a group", ctx["aws:username"])
+	}
+	if _, ok := ctx["aws:userid"]; ok {
+		t.Errorf("aws:userid = %v for a group", ctx["aws:userid"])
+	}
+	u := NewContext(&Principal{Kind: PrincipalUser, ARN: "arn:aws:iam::" + acct + ":user/a/bob", ID: "AIDAX", Account: acct}, "")
+	if got := u["aws:username"]; len(got) != 1 || got[0] != "bob" {
+		t.Errorf("user aws:username = %v", got)
+	}
+	g.Identity = []Policy{identity(t, `{"Version":"2012-10-17","Statement":{"Effect":"Allow","Action":"s3:GetObject","Resource":"arn:aws:s3:::home/${aws:username}/*"}}`)}
+	want(t, ask(g, "s3:GetObject", &Resource{ARN: "arn:aws:s3:::home/devs/x"}), Conditional)
+}
