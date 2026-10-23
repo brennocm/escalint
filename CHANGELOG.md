@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-23
+
 ### Added
 
 - Repository scaffold: Go module, `escalint version`, embedded web UI with a
@@ -76,3 +78,6 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Write every output file with mode 0600.
 - Hostile-data tests for `serve` and for the HTML report opened from
   `file://`: no script execution, no CSP violation, no external request.
+
+[Unreleased]: https://github.com/brennocm/escalint/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/brennocm/escalint/releases/tag/v0.1.0
