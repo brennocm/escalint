@@ -48,3 +48,8 @@ updates:
     groups:
       docker-images:
         patterns: ["*"]
+    ignore:
+      # The web build stays on the Node.js LTS line of .nvmrc; odd majors
+      # are never LTS. Move to the next LTS by hand with .nvmrc and CI.
+      - dependency-name: node
+        update-types: [version-update:semver-major]
