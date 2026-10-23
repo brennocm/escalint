@@ -1,0 +1,5 @@
+# Without the UI build (tests use -tags noui) the report explains how to get it.
+! exec escalint report --html $EXAMPLES/hardened-account/snapshot.json -o r.html
+stderr 'built without the web UI'
+! exec escalint report $EXAMPLES/hardened-account/snapshot.json
+stderr 'only --html is supported'

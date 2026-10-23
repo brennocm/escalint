@@ -10,6 +10,11 @@ let client: Client<Methods> | null | undefined;
 
 function getClient(): Client<Methods> | null {
   if (client !== undefined) return client;
+  if (import.meta.env.VITE_REPORT === 'true') {
+    // The single-file report has no separate worker file (CSP worker-src 'none').
+    client = null;
+    return client;
+  }
   try {
     // Workers are unavailable in some contexts (the single-file HTML report
     // under file://, tests); the layout then runs on the main thread.
