@@ -2,6 +2,7 @@ package rules
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
@@ -210,8 +211,12 @@ func (r pairRule) Pass() Pass     { return PassPrimitive }
 
 func (r pairRule) Apply(ctx *Context) []Finding {
 	targets := nodesOfKind(ctx, r.targetKind)
+	index := make(map[string]int, len(targets))
+	for i, t := range targets {
+		index[t.ARN] = i
+	}
 	for _, actor := range actors(ctx, r.meta.RequiredActions[0], r.actorKinds...) {
-		for _, target := range targets {
+		for _, target := range candidateTargets(ctx, actor, r.meta.RequiredActions[0], targets, index) {
 			if target.ID == actor.ID {
 				continue
 			}
@@ -233,6 +238,30 @@ func (r pairRule) Apply(ctx *Context) []Finding {
 		}
 	}
 	return nil
+}
+
+// candidateTargets narrows targets to the ones the actor's statements name
+// when they name exact ARNs only (the common, scoped case); askAll would
+// reject every other target. Wildcards keep the full list. The order of
+// targets is kept so the result stays deterministic.
+func candidateTargets(ctx *Context, actor *graph.Node, action string, targets []*graph.Node, index map[string]int) []*graph.Node {
+	exact, wide := graph.ExactResources(ctx.Env.Principal(actor.ID), action)
+	if wide {
+		return targets
+	}
+	picked := make([]int, 0, len(exact))
+	for _, arn := range exact {
+		if i, ok := index[arn]; ok {
+			picked = append(picked, i)
+		}
+	}
+	slices.Sort(picked)
+	picked = slices.Compact(picked)
+	out := make([]*graph.Node, len(picked))
+	for k, i := range picked {
+		out[k] = targets[i]
+	}
+	return out
 }
 
 // notServiceLinked skips service-linked roles, whose trust and permissions

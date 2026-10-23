@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -107,6 +108,54 @@ func TestMayAllow(t *testing.T) {
 		}
 	}
 	if MayAllow(nil, "x") {
+		t.Error("nil principal")
+	}
+}
+
+// ExactResources must agree with MayAllowOn: when the list is exhaustive,
+// MayAllowOn holds exactly for its ARNs.
+func TestExactResourcesAgreesWithMayAllowOn(t *testing.T) {
+	const user = "arn:aws:iam::111111111111:user/"
+	resources := []string{user + "alice", user + "bob", user + "Alice", "arn:aws:iam::222222222222:user/alice", "*"}
+	tests := []struct {
+		name string
+		doc  string // "" is an unknown policy
+		wide bool
+	}{
+		{"exact", `{"Statement":{"Effect":"Allow","Action":"iam:CreateAccessKey","Resource":["` + user + `alice","` + user + `bob"]}}`, false},
+		{"other action", `{"Statement":{"Effect":"Allow","Action":"iam:GetUser","Resource":"*"}}`, false},
+		{"deny is ignored", `{"Statement":{"Effect":"Deny","Action":"iam:*","Resource":"*"}}`, false},
+		{"star", `{"Statement":{"Effect":"Allow","Action":"iam:CreateAccessKey","Resource":"` + user + `*"}}`, true},
+		{"question mark", `{"Statement":{"Effect":"Allow","Action":"iam:CreateAccessKey","Resource":"` + user + `b?b"}}`, true},
+		{"variable", `{"Statement":{"Effect":"Allow","Action":"iam:CreateAccessKey","Resource":"` + user + `${aws:username}"}}`, true},
+		{"not resource", `{"Statement":{"Effect":"Allow","Action":"iam:CreateAccessKey","NotResource":"` + user + `bob"}}`, true},
+		{"unknown policy", "", true},
+	}
+	for _, tc := range tests {
+		pr := &eval.Principal{}
+		if tc.doc == "" {
+			pr.Identity = []eval.Policy{{}}
+		} else {
+			d, err := policy.Parse([]byte(tc.doc), policy.KindIdentity, policy.Limits{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			pr.Identity = []eval.Policy{{Doc: d}}
+		}
+		exact, wide := ExactResources(pr, "iam:CreateAccessKey")
+		if wide != tc.wide {
+			t.Errorf("%s: wide = %v, want %v", tc.name, wide, tc.wide)
+		}
+		if wide {
+			continue
+		}
+		for _, r := range resources[:4] {
+			if want, got := MayAllowOn(pr, "iam:CreateAccessKey", r), slices.Contains(exact, r); got != want {
+				t.Errorf("%s: %s listed = %v, MayAllowOn = %v", tc.name, r, got, want)
+			}
+		}
+	}
+	if exact, wide := ExactResources(nil, "x"); exact != nil || wide {
 		t.Error("nil principal")
 	}
 }

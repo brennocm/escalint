@@ -364,6 +364,39 @@ func MayAllowOn(pr *eval.Principal, action, resource string) bool {
 	return false
 }
 
+// ExactResources lists the resources that MayAllowOn(pr, action, r) can be
+// true for. wide reports that the list is not exhaustive: a statement that
+// may allow the action has a wildcard, a policy variable or NotResource, or
+// a policy is unknown. Otherwise MayAllowOn holds exactly for the listed
+// ARNs, because a pattern without '*', '?' or a variable matches only
+// itself.
+func ExactResources(pr *eval.Principal, action string) (exact []string, wide bool) {
+	if pr == nil {
+		return nil, false
+	}
+	for _, p := range pr.Identity {
+		if p.Doc == nil {
+			return nil, true
+		}
+		for i := range p.Doc.Statements {
+			st := &p.Doc.Statements[i]
+			if st.Effect != "Allow" || !actionMatches(st, action) {
+				continue
+			}
+			if st.NotResource != nil {
+				return nil, true
+			}
+			for _, r := range st.Resource {
+				if strings.ContainsAny(r, "*?") || strings.Contains(r, "${") {
+					return nil, true
+				}
+				exact = append(exact, r)
+			}
+		}
+	}
+	return exact, false
+}
+
 func actionMatches(st *policy.Statement, action string) bool {
 	patterns, negated := st.Actions()
 	for _, pat := range patterns {
