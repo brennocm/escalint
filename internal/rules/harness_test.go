@@ -310,6 +310,9 @@ func edgesOf(g *graph.Graph, ruleID string) []*graph.Edge {
 func TestRulesScenarios(t *testing.T) {
 	for _, r := range All() {
 		m := r.Meta()
+		if m.EdgeKind == "" {
+			continue // trust and parse rules report findings, tested separately
+		}
 		for _, v := range variants {
 			t.Run(m.ID+"/"+v.name, func(t *testing.T) {
 				data, err := json.MarshalIndent(build(r, v).envelope(), "", " ")

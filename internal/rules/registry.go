@@ -7,6 +7,8 @@ import "sort"
 // by side effect.
 func All() []Rule {
 	list := []Rule{
+		elParse001(),
+		elParse002(),
 		elPE001(),
 		elPE002(),
 		elPE003(),
