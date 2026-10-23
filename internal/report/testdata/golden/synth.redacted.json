@@ -300,6 +300,27 @@
       "suppressed": null
     },
     {
+      "id": "f_06e122896859b8e8",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": null,
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "",
+        "statement_index": -1,
+        "path": "",
+        "line": 323
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
       "id": "f_0d294973dcbf379a",
       "rule_id": "EL-PE-017",
       "severity": "high",
@@ -454,27 +475,6 @@
       "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:PutRolePolicy",
       "node_id": "n_398e5a6f582418e4",
       "edge_id": "e_05a28bfd1cd206d7",
-      "path_id": null,
-      "latent": true,
-      "location": {
-        "account": "314973283544",
-        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
-        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
-        "statement_index": 0,
-        "path": "",
-        "line": 334
-      },
-      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
-      "suppressed": null
-    },
-    {
-      "id": "f_eb399dabe0986796",
-      "rule_id": "EL-PE-017",
-      "severity": "high",
-      "title": "Put an inline policy on a role it can assume",
-      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy",
-      "node_id": "n_398e5a6f582418e4",
-      "edge_id": "e_9e931a29faa8ed8d",
       "path_id": null,
       "latent": true,
       "location": {
@@ -657,27 +657,6 @@
       "suppressed": null
     },
     {
-      "id": "f_74d9abddfc692fb0",
-      "rule_id": "EL-PE-020",
-      "severity": "high",
-      "title": "Modify a role's permissions and rewrite its trust",
-      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy",
-      "node_id": "n_398e5a6f582418e4",
-      "edge_id": "e_9e931a29faa8ed8d",
-      "path_id": null,
-      "latent": true,
-      "location": {
-        "account": "314973283544",
-        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
-        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
-        "statement_index": 0,
-        "path": "",
-        "line": 334
-      },
-      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
-      "suppressed": null
-    },
-    {
       "id": "f_8178060ed001c9e0",
       "rule_id": "EL-PE-020",
       "severity": "high",
@@ -820,6 +799,27 @@
         "statement_index": 1,
         "path": "",
         "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_c19fa502ac6cf80c",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": null,
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "",
+        "statement_index": -1,
+        "path": "",
+        "line": 323
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null

@@ -47,26 +47,31 @@ type CapabilityFinder struct {
 	Catalog *catalog.Catalog
 	Env     *graph.Env
 	cache   map[string]Capabilities
+	byNode  map[string]Capabilities
 }
 
 // NewCapabilityFinder returns a finder bound to a graph environment.
 func NewCapabilityFinder(c *catalog.Catalog, env *graph.Env) *CapabilityFinder {
-	return &CapabilityFinder{Catalog: c, Env: env, cache: map[string]Capabilities{}}
+	return &CapabilityFinder{Catalog: c, Env: env, cache: map[string]Capabilities{}, byNode: map[string]Capabilities{}}
 }
 
 // For returns the capabilities of a user, role or group node (nil for
 // other nodes).
 func (f *CapabilityFinder) For(nodeID string) Capabilities {
+	if caps, ok := f.byNode[nodeID]; ok {
+		return caps
+	}
 	pr := f.Env.Principal(nodeID)
 	if pr == nil {
 		return nil
 	}
 	key := cacheKey(pr)
-	if caps, ok := f.cache[key]; ok {
-		return caps
+	caps, ok := f.cache[key]
+	if !ok {
+		caps = f.compute(pr)
+		f.cache[key] = caps
 	}
-	caps := f.compute(pr)
-	f.cache[key] = caps
+	f.byNode[nodeID] = caps
 	return caps
 }
 
@@ -92,7 +97,7 @@ func (f *CapabilityFinder) candidates(pr *eval.Principal) map[string]map[Class][
 			if st.Effect != "Allow" {
 				continue
 			}
-			patterns, negated := st.ActionPatterns()
+			patterns, negated := st.Actions()
 			if negated {
 				// Everything except the listed actions.
 				for _, svc := range f.Catalog.Services() {

@@ -64,7 +64,6 @@ digraph escalint {
   "n_80cab523dcb44e15" -> "n_7bb8cb15df4b896f" [label="modify_permissions EL-PE-016,EL-PE-020", style=dotted, tooltip="iam:CreatePolicyVersion"];
   "n_686573b424faf642" -> "n_be49d609dd0762e5" [label="trust", style=dashed, tooltip="sts:AssumeRoleWithWebIdentity"];
   "n_dad0d9e059156300" -> "n_017b6b67b2533534" [label="admin", style=solid, tooltip=""];
-  "n_398e5a6f582418e4" -> "n_de1c2d1fbe9f0ea4" [label="modify_permissions EL-PE-017,EL-PE-020", style=dotted, tooltip="iam:PutRolePolicy"];
   "n_311c2d14884afd00" -> "n_7bb8cb15df4b896f" [label="modify_permissions EL-PE-016,EL-PE-020", style=dotted, tooltip="iam:CreatePolicyVersion"];
   "n_80cab523dcb44e15" -> "n_79181a6fd84fc3e2" [label="modify_permissions EL-PE-016,EL-PE-020", style=dotted, tooltip="iam:CreatePolicyVersion"];
   "n_311c2d14884afd00" -> "n_79181a6fd84fc3e2" [label="modify_permissions EL-PE-016,EL-PE-020", style=dotted, tooltip="iam:CreatePolicyVersion"];

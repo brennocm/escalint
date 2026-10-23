@@ -1,14 +1,17 @@
 package engine
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/brennocm/escalint/internal/analysis"
 	"github.com/brennocm/escalint/internal/graph"
 	"github.com/brennocm/escalint/internal/rules"
 	"github.com/brennocm/escalint/internal/snapshot"
+	"github.com/brennocm/escalint/internal/synth"
 )
 
 func load(t *testing.T, path string) *snapshot.Snapshot {
@@ -232,5 +235,34 @@ func TestChangeFor(t *testing.T) {
 	}
 	if loc := locationOf(g, &graph.Edge{From: a.ID}); loc.Entity != a.ARN || loc.Statement != -1 {
 		t.Errorf("location without evidence = %+v", loc)
+	}
+}
+
+// BlastAll (condensation) agrees with one unlimited BFS per node.
+func TestBlastAllMatchesBFS(t *testing.T) {
+	for seed := range uint64(4) {
+		gen, err := synth.Generate(synth.Options{Principals: 60, Accounts: 2, Seed: seed, EscalationRate: 0.4})
+		if err != nil {
+			t.Fatal(err)
+		}
+		snap, err := snapshot.Load(bytes.NewReader(gen.JSON), snapshot.Options{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		res := run(t, snap, Options{})
+		finder := analysis.NewCapabilityFinder(res.Catalog, res.Env)
+		for _, n := range res.Graph.Nodes() {
+			want, ok := res.Blast[n.ID]
+			if n.Kind != graph.NodeUser && n.Kind != graph.NodeRole && n.Kind != graph.NodeGroup {
+				if ok {
+					t.Errorf("blast for non-principal %s", n.ID)
+				}
+				continue
+			}
+			got := analysis.BlastRadius(res.Graph, finder, n.ID, 1<<20)
+			if fmt.Sprint(got) != fmt.Sprint(want) {
+				t.Fatalf("seed %d node %s: BFS %+v, BlastAll %+v", seed, n.Name, got, want)
+			}
+		}
 	}
 }

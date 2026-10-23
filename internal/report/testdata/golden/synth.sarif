@@ -1588,44 +1588,6 @@
           "ruleIndex": 18,
           "level": "error",
           "message": {
-            "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "snapshots/synth.json"
-                },
-                "region": {
-                  "startLine": 334
-                }
-              },
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "arn:aws:iam::402251546283:user/otto.mueller-2",
-                  "kind": "resource"
-                },
-                {
-                  "fullyQualifiedName": "inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2",
-                  "kind": "object"
-                }
-              ]
-            }
-          ],
-          "partialFingerprints": {
-            "escalint/v1": "f_47236a7d7c5c7a91"
-          },
-          "properties": {
-            "edge_id": "e_2cde84392d0a2459",
-            "latent": true,
-            "severity": "high"
-          }
-        },
-        {
-          "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
-          "level": "error",
-          "message": {
             "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
           },
           "locations": [
@@ -1846,6 +1808,39 @@
           "properties": {
             "edge_id": "e_9e25d67b7489ead8",
             "latent": true,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-017",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/synth.json"
+                },
+                "region": {
+                  "startLine": 323
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::402251546283:user/otto.mueller-2",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_f3512f2192a4def5"
+          },
+          "properties": {
+            "latent": false,
             "severity": "high"
           }
         },
@@ -2082,6 +2077,39 @@
           "ruleIndex": 21,
           "level": "error",
           "message": {
+            "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/synth.json"
+                },
+                "region": {
+                  "startLine": 323
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::402251546283:user/otto.mueller-2",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_53030bead7cea3d8"
+          },
+          "properties": {
+            "latent": false,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-020",
+          "ruleIndex": 21,
+          "level": "error",
+          "message": {
             "text": "arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
           },
           "locations": [
@@ -2301,44 +2329,6 @@
           },
           "properties": {
             "edge_id": "e_1a2195c234662938",
-            "latent": true,
-            "severity": "high"
-          }
-        },
-        {
-          "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
-          "level": "error",
-          "message": {
-            "text": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "snapshots/synth.json"
-                },
-                "region": {
-                  "startLine": 334
-                }
-              },
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "arn:aws:iam::402251546283:user/otto.mueller-2",
-                  "kind": "resource"
-                },
-                {
-                  "fullyQualifiedName": "inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2",
-                  "kind": "object"
-                }
-              ]
-            }
-          ],
-          "partialFingerprints": {
-            "escalint/v1": "f_90eabd55daf953a7"
-          },
-          "properties": {
-            "edge_id": "e_2cde84392d0a2459",
             "latent": true,
             "severity": "high"
           }

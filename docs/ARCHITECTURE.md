@@ -40,7 +40,7 @@ flowchart LR
 | Paths | `paths.go` | Yen's k shortest simple paths (k = 3) to any tier0 sink, pruned by a reverse BFS from the sinks (ADR 0007) |
 | Cycles | `scc.go` | iterative Tarjan strongly connected components (circular assume chains) |
 | Tiers | `tiers.go` | Tier 0 from the probe set (graph builder), Tier 1 has a path, Tier 2 permission management / escalation primitive / sensitive read, Tier 3 rest (ADR 0008) |
-| Blast radius | `blast.go` | reachable principals, reaches Tier 0, strongest capability class per service of the node and everything it reaches; capabilities use the evaluator in any-resource mode with a cache for identical policy sets |
+| Blast radius | `blast.go`, `blastall.go` | reachable principals, reaches Tier 0, strongest capability class per service of the node and everything it reaches (transitively); computed for all principals at once on the strongly connected components with bitsets; capabilities use the evaluator in any-resource mode with a cache for identical policy sets |
 | Choke points | `chokepoints.go` | number and share of enumerated paths through each edge |
 | Fix plan | `fixplan.go` | greedy hitting set over enumerated paths (ADR 0009) |
 
@@ -56,3 +56,13 @@ choke points and the fix plan. Findings are per (rule, edge) for path rules
 and raised to `critical` when the edge lies on an enumerated path; trust and
 parse rules report findings directly. Findings sort by severity, rule ID and
 finding ID; identical results collapse.
+
+## Performance
+
+`go test -bench BenchmarkRun ./internal/engine/` runs the whole engine on
+synthetic accounts (`internal/synth`, 10% of principals with a planted
+escalation primitive on wildcard resources, a dense worst case). On a
+4-core laptop: 2,000 principals in about 0.3 s, 20,000 in about 10 s.
+Rules pre-filter candidates by action and resource before calling the
+evaluator, composite rules only look at the actor's neighbors, and the
+graph sorts adjacency lists lazily per node.

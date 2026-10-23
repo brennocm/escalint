@@ -1,4 +1,4 @@
-escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
+escalint dev: 1 account(s), 31 node(s), 45 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
 identifiers are redacted (pseudonyms are stable within this run only)
 
 arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f (role, tier 1)
@@ -142,6 +142,11 @@ arn:aws:iam::314973283544:user/user-e95c9d89 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_02536aa55f64ed5f
+  HIGH EL-PE-017 Put an inline policy on a role it can assume
+    arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_06e122896859b8e8
   HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
     arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-5c00fa7d using iam:PutRolePolicy
     policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)
@@ -190,12 +195,6 @@ arn:aws:iam::314973283544:user/user-e95c9d89 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_c4ac0d6b7e78a847
-  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
-    arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy
-    policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)
-    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
-    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
-    id: f_eb399dabe0986796
   HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
     arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:PutRolePolicy
     policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)
@@ -227,12 +226,6 @@ arn:aws:iam::314973283544:user/user-e95c9d89 (user, tier 2)
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_720c53c3b2ff8de1
   HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
-    arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy
-    policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)
-    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
-    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
-    id: f_74d9abddfc692fb0
-  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
     arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:PutRolePolicy
     policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
@@ -250,6 +243,11 @@ arn:aws:iam::314973283544:user/user-e95c9d89 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_9d4de674d8773337
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust
+    arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_c19fa502ac6cf80c
   HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
     arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-5c00fa7d using iam:PutRolePolicy
     policy: inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9 statement #0 (snapshot line 334)

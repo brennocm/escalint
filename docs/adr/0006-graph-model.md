@@ -41,3 +41,6 @@ The detailed semantics are in docs/research.md §6.
 - Paths read as "who becomes whom"; fixes target single edges.
 - Multi-hop "modify then reach" combinations beyond the pathfinding.cloud
   cases are reported as latent edges, not as paths (documented limitation).
+- At most 10 latent edges are kept per (rule, actor); when an actor can
+  modify more principals (a wildcard grant), one extra finding says so
+  instead of thousands of edges.

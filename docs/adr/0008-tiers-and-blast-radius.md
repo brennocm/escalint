@@ -59,3 +59,17 @@ directly or through reachable principals. No derived score in v1.
   the fix visible.
 - Session policies are not modeled, so a role used only with restrictive session
   policies may be over-classified (documented in `docs/research.md` §5).
+
+## Amendment (Phase 8): transitive blast radius
+
+Computing one breadth-first search per principal is quadratic on dense
+accounts (an actor with `iam:CreateAccessKey` on `user/*` reaches every
+user), and took minutes at 20,000 principals. Blast radius is now computed
+for all principals at once on the condensation of the graph (strongly
+connected components), combining reachable-principal bitsets and the best
+class per service bottom-up (`analysis.BlastAll`). Reach for blast radius is
+therefore **transitive, without the depth limit**: an attacker is not bound
+by the path enumeration depth. Path enumeration keeps its depth limit
+(ADR 0007), so a principal can show `reaches_tier0` without an enumerated
+path when the shortest one is longer than the limit.
+

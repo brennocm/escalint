@@ -124,18 +124,26 @@ func EdgeID(from, to string, kind EdgeKind) string {
 // PathID is the stable ID of a path given its edge IDs.
 func PathID(edges []string) string { return hashID("p_", strings.Join(edges, ",")) }
 
-// Graph holds nodes and edges with deterministic iteration order.
+// Graph holds nodes and edges with deterministic iteration order. It is not
+// safe for concurrent use: reads sort adjacency lists lazily.
 type Graph struct {
 	nodes map[string]*Node
 	edges map[string]*Edge
-	out   map[string][]*Edge // sorted by (To, ID) after Freeze
+	out   map[string][]*Edge // sorted by (To, ID) once read
 	in    map[string][]*Edge
-	dirty bool
+	// Adjacency lists changed since they were last sorted.
+	dirtyOut, dirtyIn map[string]bool
+	// Sorted views, rebuilt after inserts.
+	sortedNodes []*Node
+	sortedEdges []*Edge
 }
 
 // New returns an empty graph.
 func New() *Graph {
-	return &Graph{nodes: map[string]*Node{}, edges: map[string]*Edge{}, out: map[string][]*Edge{}, in: map[string][]*Edge{}}
+	return &Graph{
+		nodes: map[string]*Node{}, edges: map[string]*Edge{}, out: map[string][]*Edge{}, in: map[string][]*Edge{},
+		dirtyOut: map[string]bool{}, dirtyIn: map[string]bool{},
+	}
 }
 
 // AddNode inserts n (its ID is derived from Key) or returns the existing
@@ -146,6 +154,7 @@ func (g *Graph) AddNode(n *Node) *Node {
 		return existing
 	}
 	g.nodes[n.ID] = n
+	g.sortedNodes = nil
 	return n
 }
 
@@ -190,7 +199,8 @@ func (g *Graph) AddEdge(e *Edge) *Edge {
 	g.edges[e.ID] = e
 	g.out[e.From] = append(g.out[e.From], e)
 	g.in[e.To] = append(g.in[e.To], e)
-	g.dirty = true
+	g.dirtyOut[e.From], g.dirtyIn[e.To] = true, true
+	g.sortedEdges = nil
 	return e
 }
 
@@ -209,66 +219,74 @@ func (g *Graph) RemoveEdges(ids map[string]bool) *Graph {
 		c.out[e.From] = append(c.out[e.From], e)
 		c.in[e.To] = append(c.in[e.To], e)
 	}
-	c.dirty = true
+	// Edges() is sorted by ID, not by endpoint: re-sort every list.
+	for id := range c.out {
+		c.dirtyOut[id] = true
+	}
+	for id := range c.in {
+		c.dirtyIn[id] = true
+	}
 	return c
 }
 
-func (g *Graph) freeze() {
-	if !g.dirty {
-		return
-	}
-	less := func(list []*Edge, byTo bool) func(i, j int) bool {
-		return func(i, j int) bool {
-			a, b := list[i], list[j]
-			ka, kb := a.To, b.To
-			if !byTo {
-				ka, kb = a.From, b.From
-			}
-			if ka != kb {
-				return ka < kb
-			}
-			return a.ID < b.ID
+// sortList orders an adjacency list by the far endpoint, then edge ID.
+func sortList(list []*Edge, byTo bool) {
+	sort.Slice(list, func(i, j int) bool {
+		a, b := list[i], list[j]
+		ka, kb := a.To, b.To
+		if !byTo {
+			ka, kb = a.From, b.From
 		}
-	}
-	for _, list := range g.out {
-		sort.Slice(list, less(list, true))
-	}
-	for _, list := range g.in {
-		sort.Slice(list, less(list, false))
-	}
-	g.dirty = false
+		if ka != kb {
+			return ka < kb
+		}
+		return a.ID < b.ID
+	})
 }
 
 // Out returns the edges leaving id, sorted by target then edge ID.
 func (g *Graph) Out(id string) []*Edge {
-	g.freeze()
+	if g.dirtyOut[id] {
+		sortList(g.out[id], true)
+		delete(g.dirtyOut, id)
+	}
 	return g.out[id]
 }
 
 // In returns the edges entering id, sorted by source then edge ID.
 func (g *Graph) In(id string) []*Edge {
-	g.freeze()
+	if g.dirtyIn[id] {
+		sortList(g.in[id], false)
+		delete(g.dirtyIn, id)
+	}
 	return g.in[id]
 }
 
-// Nodes returns every node sorted by ID.
+// Nodes returns every node sorted by ID. The slice is shared: callers must
+// not modify it.
 func (g *Graph) Nodes() []*Node {
-	out := make([]*Node, 0, len(g.nodes))
-	for _, n := range g.nodes {
-		out = append(out, n)
+	if g.sortedNodes == nil {
+		g.sortedNodes = make([]*Node, 0, len(g.nodes))
+		for _, n := range g.nodes {
+			g.sortedNodes = append(g.sortedNodes, n)
+		}
+		sort.Slice(g.sortedNodes, func(i, j int) bool { return g.sortedNodes[i].ID < g.sortedNodes[j].ID })
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
-	return out
+	return g.sortedNodes
 }
 
-// Edges returns every edge sorted by ID.
+// Edges returns every edge sorted by ID. The slice is shared: callers must
+// not modify it. Adding edges while iterating is safe: the iteration keeps
+// the old view.
 func (g *Graph) Edges() []*Edge {
-	out := make([]*Edge, 0, len(g.edges))
-	for _, e := range g.edges {
-		out = append(out, e)
+	if g.sortedEdges == nil {
+		g.sortedEdges = make([]*Edge, 0, len(g.edges))
+		for _, e := range g.edges {
+			g.sortedEdges = append(g.sortedEdges, e)
+		}
+		sort.Slice(g.sortedEdges, func(i, j int) bool { return g.sortedEdges[i].ID < g.sortedEdges[j].ID })
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
-	return out
+	return g.sortedEdges
 }
 
 // Sinks returns the tier0 sink nodes sorted by ID.

@@ -1550,6 +1550,39 @@
           "ruleIndex": 18,
           "level": "error",
           "message": {
+            "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/synth.json"
+                },
+                "region": {
+                  "startLine": 323
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::314973283544:user/user-e95c9d89",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_06e122896859b8e8"
+          },
+          "properties": {
+            "latent": false,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-017",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
             "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-5c00fa7d using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
           },
           "locations": [
@@ -1845,44 +1878,6 @@
           },
           "properties": {
             "edge_id": "e_05a28bfd1cd206d7",
-            "latent": true,
-            "severity": "high"
-          }
-        },
-        {
-          "ruleId": "EL-PE-017",
-          "ruleIndex": 18,
-          "level": "error",
-          "message": {
-            "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "snapshots/synth.json"
-                },
-                "region": {
-                  "startLine": 334
-                }
-              },
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "arn:aws:iam::314973283544:user/user-e95c9d89",
-                  "kind": "resource"
-                },
-                {
-                  "fullyQualifiedName": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
-                  "kind": "object"
-                }
-              ]
-            }
-          ],
-          "partialFingerprints": {
-            "escalint/v1": "f_eb399dabe0986796"
-          },
-          "properties": {
-            "edge_id": "e_9e931a29faa8ed8d",
             "latent": true,
             "severity": "high"
           }
@@ -2196,44 +2191,6 @@
           "ruleIndex": 21,
           "level": "error",
           "message": {
-            "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "snapshots/synth.json"
-                },
-                "region": {
-                  "startLine": 334
-                }
-              },
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "arn:aws:iam::314973283544:user/user-e95c9d89",
-                  "kind": "resource"
-                },
-                {
-                  "fullyQualifiedName": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
-                  "kind": "object"
-                }
-              ]
-            }
-          ],
-          "partialFingerprints": {
-            "escalint/v1": "f_74d9abddfc692fb0"
-          },
-          "properties": {
-            "edge_id": "e_9e931a29faa8ed8d",
-            "latent": true,
-            "severity": "high"
-          }
-        },
-        {
-          "ruleId": "EL-PE-020",
-          "ruleIndex": 21,
-          "level": "error",
-          "message": {
             "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
           },
           "locations": [
@@ -2492,6 +2449,39 @@
           "properties": {
             "edge_id": "e_be242de95915d25e",
             "latent": true,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-020",
+          "ruleIndex": 21,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/synth.json"
+                },
+                "region": {
+                  "startLine": 323
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::314973283544:user/user-e95c9d89",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_c19fa502ac6cf80c"
+          },
+          "properties": {
+            "latent": false,
             "severity": "high"
           }
         },

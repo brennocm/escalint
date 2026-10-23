@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -116,6 +117,10 @@ func dedupe(list []string) []string {
 func askAll(ctx *Context, actor *graph.Node, actions []string, resourceARN, resourceAccount string) *check {
 	c := newCheck()
 	pr := ctx.Env.Principal(actor.ID)
+	if len(actions) > 0 && !graph.MayAllowOn(pr, actions[0], resourceARN) {
+		c.ok = false // no identity statement can cover this resource
+		return c
+	}
 	for _, a := range actions {
 		c.add(actor.ID, a, ctx.Env.Ask(pr, a, resourceARN, resourceAccount, "", nil))
 		if !c.ok {
@@ -384,7 +389,13 @@ type compositeRule struct {
 func (r compositeRule) Meta() Metadata { return r.meta }
 func (r compositeRule) Pass() Pass     { return PassComposite }
 
+// LatentLimit caps the latent edges kept per (rule, actor): an actor that
+// can modify the permissions of every role would otherwise add one edge per
+// role. The rule reports the cap in a finding instead.
+const LatentLimit = 10
+
 func (r compositeRule) Apply(ctx *Context) []Finding {
+	var findings []Finding
 	targets := nodesOfKind(ctx, r.targetKind)
 	for _, actor := range ctx.Graph.Nodes() {
 		if actor.Tier == 0 || !kindIn(actor.Kind, iamActors) {
@@ -398,24 +409,27 @@ func (r compositeRule) Apply(ctx *Context) []Finding {
 		if !possible {
 			continue
 		}
-		for _, target := range targets {
-			if target.ID == actor.ID || target.Tier == 0 {
-				continue
+		// Composite edges need an act-as edge, so only the actor's
+		// neighbors are candidates.
+		reachable := map[string]bool{}
+		for _, e := range ctx.Graph.Out(actor.ID) {
+			if t := ctx.Graph.Node(e.To); t != nil && t.Kind == r.targetKind && r.usable(ctx, actor, t) {
+				reachable[t.ID] = true
 			}
-			if tp := ctx.Env.Principal(target.ID); tp != nil && tp.ServiceLinked {
+		}
+		ids := make([]string, 0, len(reachable))
+		for id := range reachable {
+			ids = append(ids, id)
+		}
+		sort.Strings(ids)
+		for _, id := range ids {
+			target := ctx.Graph.Node(id)
+			via := r.actAsEdge(ctx, actor, target)
+			if via == nil {
 				continue
 			}
 			mod, action := r.firstModify(ctx, actor, target)
 			if mod == nil {
-				continue
-			}
-			via := r.actAsEdge(ctx, actor, target)
-			if via == nil {
-				// Reported, never searched: no way to act as the target found.
-				latent := edgeFor(r.meta, actor.ID, target.ID, mod, nil)
-				latent.Kind, latent.Latent = graph.EdgeModifyPermissions, true
-				latent.RequiredActions = []string{action}
-				ctx.Graph.AddEdge(latent)
 				continue
 			}
 			mod.conditional = mod.conditional || via.Status != graph.StatusAllowed
@@ -426,8 +440,40 @@ func (r compositeRule) Apply(ctx *Context) []Finding {
 			e.Actor = actor.ID
 			ctx.Graph.AddEdge(e)
 		}
+		// Latent edges: targets the actor can modify but not act as.
+		kept := 0
+		for _, target := range targets {
+			if reachable[target.ID] && r.actAsEdge(ctx, actor, target) != nil || !r.usable(ctx, actor, target) {
+				continue
+			}
+			mod, action := r.firstModify(ctx, actor, target)
+			if mod == nil {
+				continue
+			}
+			if kept == LatentLimit {
+				findings = append(findings, Finding{
+					RuleID: r.meta.ID, Severity: High, NodeID: actor.ID, Title: r.meta.Title,
+					Message:  fmt.Sprintf("%s can modify the permissions of more than %d %ss with %s; only the first %d are kept as latent edges", actor.ARN, LatentLimit, r.targetKind, action, LatentLimit),
+					Location: Location{Account: actor.Account, Entity: actor.ARN, Statement: -1},
+				})
+				break
+			}
+			kept++
+			latent := edgeFor(r.meta, actor.ID, target.ID, mod, nil)
+			latent.Kind, latent.Latent = graph.EdgeModifyPermissions, true
+			latent.RequiredActions = []string{action}
+			ctx.Graph.AddEdge(latent)
+		}
 	}
-	return nil
+	return findings
+}
+
+func (r compositeRule) usable(ctx *Context, actor, target *graph.Node) bool {
+	if target.ID == actor.ID || target.Tier == 0 {
+		return false
+	}
+	tp := ctx.Env.Principal(target.ID)
+	return tp == nil || !tp.ServiceLinked
 }
 
 // firstModify returns the first modify action the actor may perform on the

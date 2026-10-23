@@ -115,7 +115,7 @@ type stmtResult struct {
 
 // evalStatement checks action, resource, principal and condition.
 func evalStatement(st *policy.Statement, req *Request, version string, pt PolicyType) stmtResult {
-	patterns, negated := st.ActionPatterns()
+	patterns, negated := st.Actions()
 	matched := false
 	for _, p := range patterns {
 		if match.Action(p, req.Action) {

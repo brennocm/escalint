@@ -8,6 +8,7 @@ import (
 	"github.com/brennocm/escalint/internal/arn"
 	"github.com/brennocm/escalint/internal/eval"
 	"github.com/brennocm/escalint/internal/match"
+	"github.com/brennocm/escalint/internal/policy"
 	"github.com/brennocm/escalint/internal/snapshot"
 )
 
@@ -221,6 +222,7 @@ func entryAccount(entry string) string {
 func addAssumeEdges(g *Graph, env *Env) {
 	byARN, byID := map[string]*Node{}, map[string]*Node{}
 	byAccount := map[string][]*Node{}
+	mayAssume := map[string]bool{}
 	var everyone []*Node
 	for _, n := range g.Nodes() {
 		if n.Kind != NodeUser && n.Kind != NodeRole {
@@ -266,7 +268,12 @@ func addAssumeEdges(g *Graph, env *Env) {
 						continue // a specific principal that is not in the snapshot
 					}
 					for _, n := range byAccount[account] {
-						if MayAllow(env.Principal(n.ID), "sts:AssumeRole") {
+						may, ok := mayAssume[n.ID]
+						if !ok {
+							may = MayAllow(env.Principal(n.ID), "sts:AssumeRole")
+							mayAssume[n.ID] = may
+						}
+						if may {
 							candidates[n.ID] = n
 						}
 					}
@@ -309,23 +316,54 @@ func MayAllow(pr *eval.Principal, action string) bool {
 		}
 		for i := range p.Doc.Statements {
 			st := &p.Doc.Statements[i]
-			if st.Effect != "Allow" {
-				continue
-			}
-			patterns, negated := st.ActionPatterns()
-			matched := false
-			for _, pat := range patterns {
-				if match.Action(pat, action) {
-					matched = true
-					break
-				}
-			}
-			if matched != negated {
+			if st.Effect == "Allow" && actionMatches(st, action) {
 				return true
 			}
 		}
 	}
 	return false
+}
+
+// MayAllowOn is MayAllow restricted to statements whose Resource could
+// cover the resource ARN. It ignores conditions and is conservative:
+// NotResource, policy variables and unknown policies count as covering.
+func MayAllowOn(pr *eval.Principal, action, resource string) bool {
+	if pr == nil {
+		return false
+	}
+	if resource == "" || resource == "*" {
+		return MayAllow(pr, action)
+	}
+	for _, p := range pr.Identity {
+		if p.Doc == nil {
+			return true
+		}
+		for i := range p.Doc.Statements {
+			st := &p.Doc.Statements[i]
+			if st.Effect != "Allow" || !actionMatches(st, action) {
+				continue
+			}
+			if st.NotResource != nil {
+				return true
+			}
+			for _, r := range st.Resource {
+				if strings.Contains(r, "${") || match.ARN(r, resource) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func actionMatches(st *policy.Statement, action string) bool {
+	patterns, negated := st.Actions()
+	for _, pat := range patterns {
+		if match.Action(pat, action) {
+			return !negated
+		}
+	}
+	return negated
 }
 
 func rolesOf(g *Graph) []*Node {

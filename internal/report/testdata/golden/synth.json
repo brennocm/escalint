@@ -321,27 +321,6 @@
       "suppressed": null
     },
     {
-      "id": "f_47236a7d7c5c7a91",
-      "rule_id": "EL-PE-017",
-      "severity": "high",
-      "title": "Put an inline policy on a role it can assume",
-      "message": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy",
-      "node_id": "n_437d690a003479f8",
-      "edge_id": "e_2cde84392d0a2459",
-      "path_id": null,
-      "latent": true,
-      "location": {
-        "account": "402251546283",
-        "entity": "arn:aws:iam::402251546283:user/otto.mueller-2",
-        "policy": "inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2",
-        "statement_index": 0,
-        "path": "",
-        "line": 334
-      },
-      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
-      "suppressed": null
-    },
-    {
       "id": "f_4a48eb11801e1f94",
       "rule_id": "EL-PE-017",
       "severity": "high",
@@ -463,6 +442,27 @@
         "statement_index": 0,
         "path": "",
         "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_f3512f2192a4def5",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges",
+      "node_id": "n_437d690a003479f8",
+      "edge_id": null,
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "402251546283",
+        "entity": "arn:aws:iam::402251546283:user/otto.mueller-2",
+        "policy": "",
+        "statement_index": -1,
+        "path": "",
+        "line": 323
       },
       "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
       "suppressed": null
@@ -594,6 +594,27 @@
       "suppressed": null
     },
     {
+      "id": "f_53030bead7cea3d8",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges",
+      "node_id": "n_437d690a003479f8",
+      "edge_id": null,
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "402251546283",
+        "entity": "arn:aws:iam::402251546283:user/otto.mueller-2",
+        "policy": "",
+        "statement_index": -1,
+        "path": "",
+        "line": 323
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
       "id": "f_5d93e9e25a3ed09c",
       "rule_id": "EL-PE-020",
       "severity": "high",
@@ -706,27 +727,6 @@
       "message": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:PutRolePolicy",
       "node_id": "n_437d690a003479f8",
       "edge_id": "e_1a2195c234662938",
-      "path_id": null,
-      "latent": true,
-      "location": {
-        "account": "402251546283",
-        "entity": "arn:aws:iam::402251546283:user/otto.mueller-2",
-        "policy": "inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2",
-        "statement_index": 0,
-        "path": "",
-        "line": 334
-      },
-      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
-      "suppressed": null
-    },
-    {
-      "id": "f_90eabd55daf953a7",
-      "rule_id": "EL-PE-020",
-      "severity": "high",
-      "title": "Modify a role's permissions and rewrite its trust",
-      "message": "arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy",
-      "node_id": "n_437d690a003479f8",
-      "edge_id": "e_2cde84392d0a2459",
       "path_id": null,
       "latent": true,
       "location": {

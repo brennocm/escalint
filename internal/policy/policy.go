@@ -81,6 +81,15 @@ func (s *Statement) HasCondition() bool {
 	return len(s.Condition) > 0
 }
 
+// Actions returns the Action or NotAction list as written and whether it is
+// NotAction, without copying (match.Action ignores case).
+func (s *Statement) Actions() (patterns StringList, negated bool) {
+	if s.NotAction != nil {
+		return s.NotAction, true
+	}
+	return s.Action, false
+}
+
 // ActionPatterns returns the Action or NotAction patterns in lower case and
 // whether they come from NotAction (negated). Action names are
 // case-insensitive in IAM; the original spelling stays in Action/NotAction

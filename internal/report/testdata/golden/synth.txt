@@ -1,4 +1,4 @@
-escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
+escalint dev: 1 account(s), 31 node(s), 45 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 7 medium
 
 arn:aws:iam::402251546283:role/service/security-etl-dev (role, tier 1)
   path p_095bd0ae4052fc95 [CRITICAL, allowed, 1 step(s)]
@@ -148,12 +148,6 @@ arn:aws:iam::402251546283:user/otto.mueller-2 (user, tier 2)
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_338f11be061dda5f
   HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
-    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy
-    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
-    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
-    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
-    id: f_47236a7d7c5c7a91
-  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
     arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy
     policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
@@ -189,6 +183,11 @@ arn:aws:iam::402251546283:user/otto.mueller-2 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_cbb82dc68164d08d
+  HIGH EL-PE-017 Put an inline policy on a role it can assume
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_f3512f2192a4def5
   HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
     arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-gateway-prod using iam:PutRolePolicy
     policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
@@ -219,6 +218,11 @@ arn:aws:iam::402251546283:user/otto.mueller-2 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_4c8e487a3807815b
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of more than 10 roles with iam:PutRolePolicy; only the first 10 are kept as latent edges
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_53030bead7cea3d8
   HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
     arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-ingest-prod using iam:PutRolePolicy
     policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
@@ -237,12 +241,6 @@ arn:aws:iam::402251546283:user/otto.mueller-2 (user, tier 2)
     ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
     fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
     id: f_6bf305e57ff4184a
-  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
-    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy
-    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
-    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
-    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
-    id: f_90eabd55daf953a7
   HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
     arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:PutRolePolicy
     policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)

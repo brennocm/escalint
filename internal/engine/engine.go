@@ -199,17 +199,10 @@ func Run(snap *snapshot.Snapshot, opts Options) (*Result, error) {
 		Paths:       paths,
 		Cycles:      analysis.Cycles(g),
 		ChokePoints: analysis.ChokePoints(paths),
-		Blast:       map[string]analysis.Blast{},
 		Notes:       env.Notes(),
 		Options:     opts,
 	}
-	for _, n := range g.Nodes() {
-		switch n.Kind {
-		case graph.NodeUser, graph.NodeRole, graph.NodeGroup:
-			res.Blast[n.ID] = analysis.BlastRadius(g, finder, n.ID, opts.MaxDepth)
-		case graph.NodeService, graph.NodeExternalAccount, graph.NodeFederated, graph.NodeAnyPrincipal, graph.NodeTier0Sink:
-		}
-	}
+	res.Blast = analysis.BlastAll(g, finder)
 	steps := analysis.FixPlan(paths, func(id string) bool {
 		e := g.Edge(id)
 		return e != nil && e.Kind != graph.EdgeAdmin
