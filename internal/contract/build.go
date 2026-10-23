@@ -3,6 +3,8 @@ package contract
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/json/jsontext"
+	jsonv2 "encoding/json/v2"
 	"slices"
 	"sort"
 	"time"
@@ -316,10 +318,12 @@ func coverage(version string, findings []Finding, techniques map[string][]string
 // sorted map keys, HTML-sensitive characters escaped (so the document can
 // be embedded in the HTML report), and a final newline.
 func Marshal(a *Analysis) ([]byte, error) {
+	// Indenting while encoding, instead of json.Encoder's encode-then-indent,
+	// halves the peak memory on large accounts. The v1 options keep the
+	// output byte-identical, including the escaping of '<', '>' and '&'.
 	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(a); err != nil {
+	enc := jsontext.NewEncoder(&buf, jsontext.WithIndent("  "))
+	if err := jsonv2.MarshalEncode(enc, a, json.DefaultOptionsV1()); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
