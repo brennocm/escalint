@@ -280,7 +280,7 @@ Every rule's **detection logic** is the same template: for each candidate pair (
 | EL-TR-005 | Third-party trust without `sts:ExternalId` | high | account listed as `third_party` in `.escalint.yaml` and no `sts:ExternalId` condition | stable |
 | EL-TR-006 | Generic OIDC/SAML trust without audience/subject condition | medium | `Federated` principal (not GitHub) and no condition on `<provider>:aud`/`:sub` (OIDC) or `SAML:aud` (SAML) | experimental |
 
-Plus `EL-PARSE-001` (policy could not be parsed / invalid element such as E21, E31) — `info`.
+Plus `EL-PARSE-001` (policy could not be parsed / invalid element such as E21, E31) — `info`, and `EL-PARSE-002` (a reference points to nothing in the snapshot: an attached managed policy or boundary that was not collected, or a group that does not exist) — `info`; the evaluator treats the unknown permissions as `conditional`.
 
 ### 7.3 Not covered in v1 (published in `docs/coverage.md`)
 
