@@ -24,7 +24,7 @@ const (
 // Options controls graph construction.
 type Options struct {
 	// Now is the reference time for staleness when the snapshot has no
-	// collection time. Zero means time.Now().
+	// collection time. Zero means "the most recent role use in the snapshot".
 	Now time.Time
 }
 
@@ -33,13 +33,7 @@ type Options struct {
 func Build(snap *snapshot.Snapshot, opts Options) (*Graph, *Env) {
 	g := New()
 	env := newEnv(snap)
-	now := snap.CollectedAt
-	if now.IsZero() {
-		now = opts.Now
-	}
-	if now.IsZero() {
-		now = time.Now().UTC()
-	}
+	now := referenceTime(snap, opts)
 
 	for _, acct := range snap.Accounts {
 		g.AddNode(&Node{Kind: NodeTier0Sink, Key: SinkKey(acct.ID), Name: "Effective admin", Account: acct.ID})
@@ -79,6 +73,28 @@ func Build(snap *snapshot.Snapshot, opts Options) (*Graph, *Env) {
 		sort.Strings(n.Flags)
 	}
 	return g, env
+}
+
+// referenceTime is "now" for staleness: the collection time, else
+// Options.Now, else the most recent role use in the snapshot. The last
+// fallback keeps results deterministic for raw authorization details (which
+// carry no collection time); without any recorded use nothing can be stale.
+func referenceTime(snap *snapshot.Snapshot, opts Options) time.Time {
+	if !snap.CollectedAt.IsZero() {
+		return snap.CollectedAt
+	}
+	if !opts.Now.IsZero() {
+		return opts.Now
+	}
+	var latest time.Time
+	for _, a := range snap.Accounts {
+		for _, r := range a.Roles {
+			if r.LastUsed != nil && r.LastUsed.After(latest) {
+				latest = *r.LastUsed
+			}
+		}
+	}
+	return latest
 }
 
 // SinkKey is the canonical key of an account's tier0 sink.

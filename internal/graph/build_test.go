@@ -226,3 +226,23 @@ func contains(list []string, s string) bool {
 	}
 	return false
 }
+
+// Regression (review after Phase 5): staleness must not depend on the day
+// the analysis runs when the snapshot has no collection time.
+func TestReferenceTimeIsDeterministic(t *testing.T) {
+	snap, err := snapshot.Load(strings.NewReader(testSnapshot), snapshot.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := referenceTime(snap, Options{}); !got.Equal(time.Date(2026, 10, 20, 0, 0, 0, 0, time.UTC)) {
+		t.Errorf("reference = %v, want the latest RoleLastUsed", got)
+	}
+	g, _ := Build(snap, Options{})
+	if direct := nodeByName(t, g, NodeRole, "DirectToAlice"); !contains(direct.Flags, "stale") {
+		t.Error("DirectToAlice was last used 292 days before the latest use: stale")
+	}
+	snap.CollectedAt = time.Date(2026, 1, 5, 0, 0, 0, 0, time.UTC)
+	if got := referenceTime(snap, Options{Now: buildTime}); !got.Equal(snap.CollectedAt) {
+		t.Errorf("collection time must win, got %v", got)
+	}
+}
