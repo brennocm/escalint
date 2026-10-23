@@ -4,12 +4,16 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"testing"
 	"testing/fstest"
 )
 
-const host = "127.0.0.1:43210"
+const (
+	host       = "127.0.0.1:43210"
+	testCookie = CookieName + "_43210"
+)
 
 func handler() *Handler {
 	assets := fstest.MapFS{
@@ -34,7 +38,7 @@ func do(h http.Handler, method, target, hostHeader string, cookie *http.Cookie) 
 	return w
 }
 
-var session = &http.Cookie{Name: CookieName, Value: "session-value"}
+var session = &http.Cookie{Name: testCookie, Value: "session-value"}
 
 func TestAccessControl(t *testing.T) {
 	h := handler()
@@ -48,7 +52,7 @@ func TestAccessControl(t *testing.T) {
 	}{
 		{"no token", http.MethodGet, "/", host, nil, http.StatusUnauthorized},
 		{"wrong token", http.MethodGet, "/?token=guess", host, nil, http.StatusUnauthorized},
-		{"wrong cookie", http.MethodGet, "/analysis.json", host, &http.Cookie{Name: CookieName, Value: "guess"}, http.StatusUnauthorized},
+		{"wrong cookie", http.MethodGet, "/analysis.json", host, &http.Cookie{Name: testCookie, Value: "guess"}, http.StatusUnauthorized},
 		{"rebinding host", http.MethodGet, "/", "evil.example:43210", session, http.StatusMisdirectedRequest},
 		{"post", http.MethodPost, "/", host, session, http.StatusMethodNotAllowed},
 		{"put", http.MethodPut, "/analysis.json", host, session, http.StatusMethodNotAllowed},
@@ -105,7 +109,7 @@ func TestTokenExchange(t *testing.T) {
 		t.Fatalf("cookies = %+v", cookies)
 	}
 	c := cookies[0]
-	if c.Name != CookieName || !c.HttpOnly || c.SameSite != http.SameSiteStrictMode || c.Path != "/" {
+	if c.Name != testCookie || !c.HttpOnly || c.SameSite != http.SameSiteStrictMode || c.Path != "/" {
 		t.Errorf("cookie = %+v", c)
 	}
 	if !strings.Contains(w.Header().Get("Set-Cookie"), "SameSite=Strict") {
@@ -124,7 +128,7 @@ func TestTokenExchange(t *testing.T) {
 	if reopen := do(h, http.MethodGet, "/?token=secret-token", host, c); reopen.Code != http.StatusSeeOther {
 		t.Errorf("reopening the URL with a session: %d", reopen.Code)
 	}
-	if tokenAsCookie := do(h, http.MethodGet, "/", host, &http.Cookie{Name: CookieName, Value: "secret-token"}); tokenAsCookie.Code != http.StatusUnauthorized {
+	if tokenAsCookie := do(h, http.MethodGet, "/", host, &http.Cookie{Name: testCookie, Value: "secret-token"}); tokenAsCookie.Code != http.StatusUnauthorized {
 		t.Errorf("the token works as a cookie: %d", tokenAsCookie.Code)
 	}
 	if fresh := New(nil, nil, "t", nil); len(fresh.session) < 26 || fresh.session == New(nil, nil, "t", nil).session {
@@ -151,6 +155,15 @@ func TestHostsAndLoopback(t *testing.T) {
 	if got := Hosts(&net.TCPAddr{IP: net.IPv4(192, 168, 1, 2), Port: 80}); len(got) != 1 || got[0] != "192.168.1.2:80" {
 		t.Errorf("lan hosts = %v", got)
 	}
+	wild := Hosts(&net.TCPAddr{IP: net.IPv4zero, Port: 80}, "my-host", "10.0.0.1")
+	for _, h := range []string{"127.0.0.1:80", "localhost:80", "my-host:80"} {
+		if !slices.Contains(wild, h) {
+			t.Errorf("wildcard hosts = %v, missing %s", wild, h)
+		}
+	}
+	if slices.Contains(wild, "10.0.0.1:80") && !hasInterface(t, "10.0.0.1") {
+		t.Errorf("an IP name is not a host name: %v", wild)
+	}
 	if got := Hosts(&net.UnixAddr{Name: "/tmp/s", Net: "unix"}); got[0] != "/tmp/s" {
 		t.Errorf("unix = %v", got)
 	}
@@ -162,5 +175,29 @@ func TestHostsAndLoopback(t *testing.T) {
 	tok, err := NewToken()
 	if err != nil || len(tok) != 43 {
 		t.Errorf("token = %q %v", tok, err)
+	}
+}
+
+func hasInterface(t *testing.T, ip string) bool {
+	t.Helper()
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, a := range addrs {
+		if ipn, ok := a.(*net.IPNet); ok && ipn.IP.String() == ip {
+			return true
+		}
+	}
+	return false
+}
+
+// Two servers on loopback share the browser's cookie jar (cookies ignore
+// the port): their session cookies must not collide.
+func TestCookieNamePerPort(t *testing.T) {
+	a := New(nil, nil, "t", []string{"127.0.0.1:1111"})
+	b := New(nil, nil, "t", []string{"127.0.0.1:2222"})
+	if a.cookie == b.cookie || a.cookie != CookieName+"_1111" {
+		t.Errorf("cookie names %q and %q", a.cookie, b.cookie)
 	}
 }

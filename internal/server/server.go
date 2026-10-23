@@ -25,7 +25,9 @@ import (
 const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; " +
 	"connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
 
-// CookieName holds the session after the token exchange.
+// CookieName prefixes the session cookie set by the token exchange. The
+// listener port is appended: browsers do not scope cookies by port, so two
+// servers on 127.0.0.1 would otherwise overwrite each other's session.
 const CookieName = "escalint_session"
 
 // NewToken returns 32 random bytes, base64url-encoded.
@@ -46,6 +48,7 @@ type Handler struct {
 	// accepted once: a URL that leaks after use (shell history, a screen
 	// share) opens nothing.
 	session string
+	cookie  string // cookie name, CookieName plus the port
 	used    atomic.Bool
 	// allowedHosts are the Host header values accepted (host:port).
 	allowedHosts map[string]bool
@@ -54,7 +57,12 @@ type Handler struct {
 // New builds the handler. hosts lists the accepted Host header values.
 func New(assets fs.FS, analysis []byte, token string, hosts []string) *Handler {
 	// crypto/rand.Text never fails (it crashes the program instead).
-	h := &Handler{assets: assets, analysis: analysis, token: token, session: rand.Text(), allowedHosts: map[string]bool{}}
+	h := &Handler{assets: assets, analysis: analysis, token: token, session: rand.Text(), cookie: CookieName, allowedHosts: map[string]bool{}}
+	if len(hosts) > 0 {
+		if _, port, err := net.SplitHostPort(hosts[0]); err == nil {
+			h.cookie += "_" + port
+		}
+	}
 	for _, host := range hosts {
 		h.allowedHosts[strings.ToLower(host)] = true
 	}
@@ -63,16 +71,34 @@ func New(assets fs.FS, analysis []byte, token string, hosts []string) *Handler {
 
 // Hosts returns the Host values a browser sends for a listener address:
 // the address itself and, on loopback, localhost and the other loopback
-// spelling.
-func Hosts(addr net.Addr) []string {
+// spelling. A wildcard address (0.0.0.0, ::) accepts every local interface
+// address. names are host names the listener was asked for (--listen
+// my-host:8080). Attacker-chosen names are still rejected, which is what
+// defeats DNS rebinding.
+func Hosts(addr net.Addr, names ...string) []string {
 	tcp, ok := addr.(*net.TCPAddr)
 	if !ok {
 		return []string{addr.String()}
 	}
 	port := fmt.Sprint(tcp.Port)
 	out := []string{net.JoinHostPort(tcp.IP.String(), port)}
-	if tcp.IP.IsLoopback() {
+	if tcp.IP.IsLoopback() || tcp.IP.IsUnspecified() {
 		out = append(out, net.JoinHostPort("localhost", port), net.JoinHostPort("127.0.0.1", port), net.JoinHostPort("::1", port))
+	}
+	if tcp.IP.IsUnspecified() {
+		addrs, err := net.InterfaceAddrs()
+		if err == nil { // without the list only loopback and the names work
+			for _, a := range addrs {
+				if ipn, ok := a.(*net.IPNet); ok {
+					out = append(out, net.JoinHostPort(ipn.IP.String(), port))
+				}
+			}
+		}
+	}
+	for _, n := range names {
+		if n != "" && net.ParseIP(n) == nil {
+			out = append(out, net.JoinHostPort(n, port))
+		}
 	}
 	return out
 }
@@ -93,7 +119,7 @@ func equal(candidate, secret string) bool {
 }
 
 func (h *Handler) validSession(r *http.Request) bool {
-	c, err := r.Cookie(CookieName)
+	c, err := r.Cookie(h.cookie)
 	return err == nil && equal(c.Value, h.session)
 }
 
@@ -125,7 +151,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// #nosec G124 -- plain HTTP on loopback: a Secure cookie would not be
 		// sent back by every browser; HttpOnly and SameSite=Strict are set.
 		http.SetCookie(w, &http.Cookie{
-			Name: CookieName, Value: h.session, Path: "/", HttpOnly: true, SameSite: http.SameSiteStrictMode,
+			Name: h.cookie, Value: h.session, Path: "/", HttpOnly: true, SameSite: http.SameSiteStrictMode,
 			Expires: time.Now().Add(12 * time.Hour),
 		})
 		http.Redirect(w, r, "/", http.StatusSeeOther)

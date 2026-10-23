@@ -15,7 +15,8 @@ browser, by every web page the user visits (CSRF, DNS rebinding).
 - **Token:** 32 random bytes (base64url) in the first URL, printed on
   stderr only, accepted **once**. The first request exchanges it for a
   cookie holding a separate random session value (`HttpOnly`,
-  `SameSite=Strict`, path `/`, 12 hours) and redirects to `/` so the token
+  `SameSite=Strict`, path `/`, 12 hours, named `escalint_session_<port>` so
+  two servers on loopback do not overwrite each other's session) and redirects to `/` so the token
   leaves the address bar and history; a leaked URL opens nothing after
   that (the browser that has the session is simply redirected).
   Comparisons are constant-time. Without a valid cookie every request is
@@ -23,8 +24,9 @@ browser, by every web page the user visits (CSRF, DNS rebinding).
   loopback. Cookies are not scoped by port, so the browser also sends it
   to other services on `127.0.0.1`; the value is useless to them.
 - **Host check:** only `127.0.0.1:<port>`, `localhost:<port>`,
-  `[::1]:<port>` (or the explicit listen address) are accepted; anything
-  else is 421, which defeats DNS rebinding.
+  `[::1]:<port>` (or the explicit listen address: its host name, or every
+  interface address for a wildcard such as `0.0.0.0`) are accepted;
+  anything else is 421, which defeats DNS rebinding.
 - **Read-only:** only `GET`; everything else is 405 with `Allow: GET`.
 - **Headers on every response:** the CSP of project.md §3.7
   (`default-src 'none'; script-src 'self'; …; frame-ancestors 'none'`),

@@ -53,10 +53,11 @@ Pages demo, the GitHub Action and the release pipeline.
 - **A snapshot is a point in time.** Changes after collection are invisible.
 - **The resource inventory is regional and taken as complete.** Resources
   in regions that were not collected produce no `update_code` edges.
-- **`serve --listen 0.0.0.0` is not a remote-access mode.** The Host check
-  accepts only the listen address itself, so wildcard binds answer 421 to
-  remote clients; remote use needs a concrete address with
-  `--allow-remote`, and is discouraged (use the HTML report).
+- **`serve --allow-remote` is plain HTTP.** The Host check accepts the
+  listen address (every local interface address for a wildcard bind such as
+  `0.0.0.0`, the given name for `--listen my-host:port`), but the token and
+  the analysis cross the network unencrypted. Remote use is discouraged (use
+  the HTML report).
 - **Shared reports are trusted by their readers.** escalint cannot stop a
   modified HTML file from doing harm once someone opens it; the CSP limits
   what the original file can do, not what an attacker writes into a new one.

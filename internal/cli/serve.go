@@ -60,7 +60,7 @@ func newServeCommand() *cobra.Command {
 				fmt.Fprintf(cmd.ErrOrStderr(), "escalint: WARNING: listening on %s, beyond loopback; protect the token and stop the server when done\n", ln.Addr())
 			}
 			srv := &http.Server{
-				Handler:           server.New(assets, data, token, server.Hosts(ln.Addr())),
+				Handler:           server.New(assets, data, token, server.Hosts(ln.Addr(), listenHost(listen))),
 				ReadHeaderTimeout: 5 * time.Second,
 				ReadTimeout:       10 * time.Second,
 				WriteTimeout:      30 * time.Second,
@@ -68,7 +68,7 @@ func newServeCommand() *cobra.Command {
 				MaxHeaderBytes:    16 << 10,
 			}
 			host := ln.Addr().String()
-			if tcp, ok := ln.Addr().(*net.TCPAddr); ok && tcp.IP.IsLoopback() {
+			if tcp, ok := ln.Addr().(*net.TCPAddr); ok && (tcp.IP.IsLoopback() || tcp.IP.IsUnspecified()) {
 				host = net.JoinHostPort("127.0.0.1", fmt.Sprint(tcp.Port))
 			}
 			fmt.Fprintf(cmd.ErrOrStderr(), "escalint: open http://%s/?token=%s (Ctrl+C to stop)\n", host, token)
@@ -93,6 +93,15 @@ func newServeCommand() *cobra.Command {
 	cmd.Flags().StringVar(&listen, "listen", "127.0.0.1:0", "address to listen on (default: loopback, random port)")
 	cmd.Flags().BoolVar(&allowRemote, "allow-remote", false, "allow a --listen address beyond loopback")
 	return cmd
+}
+
+// listenHost is the host part of --listen ("" when it has none).
+func listenHost(listen string) string {
+	host, _, err := net.SplitHostPort(listen)
+	if err != nil {
+		return ""
+	}
+	return host
 }
 
 func cmdContext(cmd *cobra.Command) context.Context {
