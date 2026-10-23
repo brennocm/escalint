@@ -50,6 +50,8 @@ The AWS documentation describes this order ([denyallow]):
 6. **Permissions boundary** — present and no `Allow` → Deny.
 7. **Session policy** — v1 does not model sessions (see §5).
 
+> Correction (Phase 4, 2026-10-23): the Phase 0 table said a `"*"` trust needs an identity allow in the same account. The Principal documentation says the opposite; the row above and edge case E37 follow the documentation.
+
 > Note on the order in the spec (§3.4 of `project.md`): it listed SCP before RCP and boundary before identity. Steps 2–6 are a logical **AND** (apart from the resource-policy shortcut in step 4), so the order only changes the *trace*, never the decision. The trace will follow the AWS order above.
 
 The evaluator returns one of `Allow`, `ExplicitDeny`, `ImplicitDeny`, `Conditional` plus a trace: every policy/statement consulted, the step it belongs to, and which statement decided.
@@ -78,7 +80,7 @@ Combined with step 4 of §2.1, the `assume` edge X → role Y is decided as:
 | X's ARN, X is a **user** | allowed by trust alone (identity and boundary not needed); SCP of X's account and RCP of Y's account still apply | trust **and** X's identity must allow |
 | X's ARN, X is a **role** | trust + X's **boundary** must allow (identity not needed) | trust **and** X's identity (+ boundary) |
 | X's account (`"123…"` or `:root`) | trust **and** X's identity (+ boundary) | trust **and** X's identity (+ boundary) |
-| `"*"` / `{"AWS":"*"}` | same as account (identity needed) for in-account principals; any external principal whose own account allows it | idem |
+| `"*"` / `{"AWS":"*"}` | allowed by trust alone for in-account users and roles, and **not** limited by an implicit deny in a boundary ([principal]: "For IAM users and role principals within your account, no other permissions are required"; "Permissions boundaries … do not limit permissions granted using … a wildcard (*) in the Principal element") | trust **and** the caller's identity (+ boundary) |
 
 Other facts:
 - Principals in trust policies are **converted to unique IDs** when saved; if the principal was deleted, the trust shows an ID like `AROA…`/`AIDA…` that matches nothing ([principal]).
@@ -112,6 +114,7 @@ Proposal: a **minimal set** of condition keys whose value is known statically; e
 | `aws:PrincipalOrgID` | organization data in the snapshot; unknown → `Conditional` | fixed when org data present |
 | `aws:PrincipalIsAWSService` | `true` only for `service` nodes | fixed |
 | `iam:PassedToService` | the service principal of the rule being checked | fixed by the rule |
+| `aws:username`, `aws:userid` | the IAM user under evaluation (also used by policy variables such as `${aws:username}`) | fixed by the snapshot (added in Phase 4) |
 
 Deliberately **not** evaluated (become `Conditional`):
 - `aws:PrincipalTag/*`, `aws:ResourceTag/*` — session tags can override principal tags; tags can be changed with `iam:Tag*`.
@@ -148,6 +151,7 @@ Operator semantics implemented for the evaluated keys: all String/ARN operators,
 | E16 | Same account: trust names account root; U without identity allow | ImplicitDeny | [AssumeRole] |
 | E17 | Cross-account: trust names U's ARN; U without identity allow | ImplicitDeny | [cross-account] |
 | E18 | Trust `"Principal":"*"` + `StringEquals aws:PrincipalOrgID o-x`; org data present, caller in org | Allow; external caller → ImplicitDeny | [principal] |
+| E37 | Same account: trust `"Principal":"*"` (no condition); caller has no identity allow and a boundary without sts:AssumeRole | Allow (wildcard grants need no identity allow and ignore the boundary's implicit deny) | [principal] |
 | E19 | E18 without org data in snapshot | Conditional (`aws:PrincipalOrgID`) | §2.7 |
 | E20 | Trust with principal unique ID `AROA…` (deleted role) | matches nothing; reported as info | [principal] |
 | E21 | `Principal: {"AWS":"arn:aws:iam::111111111111:role/*"}` | invalid (partial wildcard); parse finding, never matches | [principal] |
