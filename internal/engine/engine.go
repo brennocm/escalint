@@ -263,7 +263,9 @@ func findings(g *graph.Graph, paths []analysis.Path, byID map[string]rules.Rule,
 			}
 		}
 		if p, ok := shortest[d.EdgeID]; ok && d.EdgeID != "" {
+			// A weak trust on a path to Tier 0 lets an outsider become admin.
 			f.PathID = p.ID
+			f.Severity = rules.Critical
 		}
 		out = append(out, f)
 	}

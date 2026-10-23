@@ -49,8 +49,12 @@ func Locate(data []byte) (*Locator, error) {
 			continue
 		}
 		ptr := string(dec.StackPointer())
-		l.starts[ptr] = skipSeparators(data, before)
 		parent, key := splitPointer(ptr)
+		// Only containers and policy documents kept as strings are looked
+		// up by Find; skipping other scalars keeps the index small.
+		if tok.Kind() == '{' || tok.Kind() == '[' || tok.Kind() == '"' && documentKeys[key] {
+			l.starts[ptr] = skipSeparators(data, before)
+		}
 		switch {
 		case tok.Kind() == '"' && (key == "Arn" || key == "arn"):
 			if _, dup := l.arnAt[tok.String()]; !dup {
@@ -67,6 +71,10 @@ func Locate(data []byte) (*Locator, error) {
 	}
 	return l, nil
 }
+
+// documentKeys name the members that hold policy documents, which the SDK
+// returns as URL-encoded strings.
+var documentKeys = map[string]bool{"PolicyDocument": true, "Document": true, "AssumeRolePolicyDocument": true, "document": true}
 
 // skipSeparators moves from the end of the previous token to the start of
 // the next value.

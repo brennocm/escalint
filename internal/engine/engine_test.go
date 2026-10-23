@@ -266,3 +266,20 @@ func TestBlastAllMatchesBFS(t *testing.T) {
 		}
 	}
 }
+
+// A trust finding whose edge lies on a path to Tier 0 is critical.
+func TestTrustFindingOnPathIsCritical(t *testing.T) {
+	res := run(t, load(t, "../../examples/vulnerable-account/snapshot.json"), Options{})
+	found := false
+	for _, f := range res.Findings {
+		if f.RuleID == "EL-TR-004" {
+			found = true
+			if (f.PathID != "") != (f.Severity == rules.Critical) {
+				t.Errorf("EL-TR-004 path %q severity %s", f.PathID, f.Severity)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("EL-TR-004 missing")
+	}
+}
