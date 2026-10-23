@@ -1,10 +1,16 @@
-# Keep the build context small and free of local data.
-.git
-bin
-dist
-coverage.out
-coverage.html
-*.test
+# Allowlist: only what the build needs enters the context, so local notes,
+# snapshots and build outputs never do.
+*
+!go.mod
+!go.sum
+!cmd/
+!internal/
+!schema/
+!docs/embed.go
+!docs/rules/
+!web/
+**/testdata
+**/*_test.go
 web/node_modules
 web/dist
 web/dist-demo
@@ -12,7 +18,4 @@ web/coverage
 web/test-results
 web/playwright-report
 web/blob-report
-*.snapshot.json
-project.md
-prompt-attack-cloudtrail.md
-CLAUDE.md
+web/tests

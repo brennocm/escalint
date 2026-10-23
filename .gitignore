@@ -28,3 +28,6 @@ analysis.json
 .idea/
 .vscode/
 *.swp
+
+# pnpm store created when node_modules lives on another file system
+.pnpm-store/
