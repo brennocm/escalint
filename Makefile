@@ -92,8 +92,8 @@ fuzz-run:
 	done
 
 .PHONY: golden-update
-golden-update: ## Rewrite golden files
-	$(call not_yet,golden files arrive in Phase 7)
+golden-update: ## Rewrite golden files (review the diff before committing)
+	$(GO) test $(GO_TEST_FLAGS) ./internal/contract/ ./internal/report/ -run Golden -update
 
 .PHONY: gen
 gen: ## Regenerate generated data (downloads the AWS service reference and ATT&CK)
@@ -102,8 +102,12 @@ gen: ## Regenerate generated data (downloads the AWS service reference and ATT&C
 # The catalog needs the network and changes with AWS, so it is not part of
 # gen-check; the monthly catalog workflow (Phase 14) proposes updates.
 .PHONY: gen-check
-gen-check: ## Fail if offline-generated files are stale
-	$(call not_yet,offline generated files (TS contract) arrive in Phase 7)
+gen-check: gen-contract ## Fail if offline-generated files are stale
+	git diff --exit-code -- web/src/contract/
+
+.PHONY: gen-contract
+gen-contract: ## Generate the TypeScript contract from the JSON Schema
+	$(GO) run ./tools/gen-contract-ts -schema schema/analysis.v1.schema.json -out web/src/contract/analysis.ts
 
 ## ---- Web ---------------------------------------------------------------
 

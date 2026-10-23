@@ -18,7 +18,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
-    "design:screenshots": "playwright test -c playwright.design.config.ts"
+    "design:screenshots": "playwright test -c playwright.design.config.ts",
+    "gen:contract": "go run ../tools/gen-contract-ts -schema ../schema/analysis.v1.schema.json -out src/contract/analysis.ts"
   },
   "dependencies": {
     "react": "19.3.1",

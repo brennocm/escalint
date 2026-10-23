@@ -1,0 +1,1297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/brennocm/escalint/schema/analysis.v1.schema.json",
+  "title": "escalint analysis",
+  "description": "analysis.json, schema_version 1: the contract between the escalint engine and its web UI (ADR 0003).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "attack",
+    "catalogs",
+    "choke_points",
+    "cycles",
+    "edges",
+    "findings",
+    "fix_plan",
+    "generator",
+    "groupings",
+    "nodes",
+    "notes",
+    "options",
+    "paths",
+    "rules",
+    "schema_version",
+    "snapshot",
+    "stats",
+    "suppressions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit",
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "const": "escalint"
+        },
+        "version": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string"
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accounts",
+        "collected_at",
+        "format",
+        "organization",
+        "partition",
+        "redacted"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "envelope",
+            "authorization-details"
+          ]
+        },
+        "collected_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "partition": {
+          "type": "string"
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "organization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "catalogs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attack",
+        "pathfinding",
+        "service_reference"
+      ],
+      "properties": {
+        "service_reference": {
+          "type": "string"
+        },
+        "pathfinding": {
+          "type": "string"
+        },
+        "attack": {
+          "type": "string"
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled_rules",
+        "experimental",
+        "k_paths",
+        "max_depth",
+        "min_severity"
+      ],
+      "properties": {
+        "max_depth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "k_paths": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "experimental": {
+          "type": "boolean"
+        },
+        "min_severity": {
+          "type": "string",
+          "enum": [
+            "",
+            "critical",
+            "high",
+            "medium",
+            "low",
+            "info"
+          ]
+        },
+        "enabled_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/path"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "suppressions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/suppression"
+      }
+    },
+    "choke_points": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chokePoint"
+      }
+    },
+    "cycles": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "minItems": 2
+      }
+    },
+    "fix_plan": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fixStep"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nodes",
+        "edges",
+        "paths",
+        "findings"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edges": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paths": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Omitted with --deterministic."
+        }
+      }
+    },
+    "diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "added",
+        "base",
+        "removed"
+      ],
+      "properties": {
+        "base": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collected_at",
+            "generator"
+          ],
+          "properties": {
+            "collected_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "generator": {
+              "type": "string"
+            }
+          }
+        },
+        "added": {
+          "$ref": "#/$defs/diffItems"
+        },
+        "removed": {
+          "$ref": "#/$defs/diffItems"
+        }
+      },
+      "description": "Present only in the output of escalint diff."
+    },
+    "groupings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/grouping"
+      }
+    },
+    "attack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "techniques",
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "techniques": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/techniqueCount"
+          }
+        }
+      },
+      "description": "ATT&CK techniques exhibited by the findings and paths."
+    }
+  },
+  "$defs": {
+    "nodeId": {
+      "type": "string",
+      "pattern": "^n_[0-9a-f]{16}$"
+    },
+    "edgeId": {
+      "type": "string",
+      "pattern": "^e_[0-9a-f]{16}$"
+    },
+    "pathId": {
+      "type": "string",
+      "pattern": "^p_[0-9a-f]{16}$"
+    },
+    "findingId": {
+      "type": "string",
+      "pattern": "^f_[0-9a-f]{16}$"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ]
+    },
+    "edgeStatus": {
+      "type": "string",
+      "enum": [
+        "allowed",
+        "conditional"
+      ]
+    },
+    "technique": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "tactics",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tactics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://attack\\.mitre\\.org/techniques/"
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attack",
+        "attack_unmapped_reason",
+        "category",
+        "edge_kind",
+        "id",
+        "pathfinding_ids",
+        "prerequisites",
+        "references",
+        "remediation",
+        "required_actions",
+        "severity",
+        "status",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^EL-(PE|TR|PARSE)-[0-9]{3}$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "self-escalation",
+            "principal-access",
+            "new-passrole",
+            "existing-passrole",
+            "trust",
+            "parse"
+          ]
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "experimental"
+          ]
+        },
+        "edge_kind": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "assume",
+            "trust",
+            "credential",
+            "modify_permissions",
+            "modify_trust",
+            "passrole_compute",
+            "update_code",
+            "member_of",
+            "admin",
+            null
+          ]
+        },
+        "pathfinding_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "required_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "attack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/technique"
+          }
+        },
+        "attack_unmapped_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "permission_management",
+        "read",
+        "write"
+      ],
+      "properties": {
+        "permission_management": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "write": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "read": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "blast": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capabilities",
+        "reachable_principals",
+        "reaches_tier0"
+      ],
+      "properties": {
+        "reachable_principals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reaches_tier0": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilities"
+        }
+      },
+      "description": "Blast radius vector (ADR 0008); never a single number."
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "account",
+        "arn",
+        "blast",
+        "flags",
+        "group",
+        "id",
+        "kind",
+        "last_used",
+        "name",
+        "path",
+        "service_linked",
+        "tags",
+        "tier",
+        "tier_conditional"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "user",
+            "role",
+            "group",
+            "service",
+            "external_account",
+            "federated",
+            "any_principal",
+            "tier0_sink"
+          ]
+        },
+        "arn": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "account": {
+          "type": "string"
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tier": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "tier_conditional": {
+          "type": "boolean"
+        },
+        "service_linked": {
+          "type": "boolean"
+        },
+        "blast": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/blast"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_used": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "stale",
+              "external_trust",
+              "no_boundary",
+              "service_linked"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "group": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "effect",
+        "policy",
+        "principal",
+        "sid",
+        "stage",
+        "statement_index"
+      ],
+      "properties": {
+        "principal": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "action": {
+          "type": "string"
+        },
+        "policy": {
+          "type": "string"
+        },
+        "statement_index": {
+          "type": "integer",
+          "minimum": -1
+        },
+        "sid": {
+          "type": "string"
+        },
+        "effect": {
+          "type": "string",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "stage": {
+          "type": "string"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_fields",
+        "kind",
+        "name",
+        "notes",
+        "region",
+        "source"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "management",
+            "data"
+          ]
+        },
+        "key_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "region": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "detection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blind_spots",
+        "events",
+        "requires_data_events",
+        "status",
+        "visibility"
+      ],
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/event"
+          }
+        },
+        "blind_spots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requires_data_events": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "experimental"
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "visible",
+            "partial",
+            "blind"
+          ]
+        }
+      },
+      "description": "CloudTrail detection hints (ADR 0022)."
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor",
+        "attack",
+        "conditions_unevaluated",
+        "detection",
+        "evidence",
+        "from",
+        "id",
+        "kind",
+        "latent",
+        "pathfinding_ids",
+        "prerequisites_unverified",
+        "required_actions",
+        "rule_ids",
+        "status",
+        "to"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/edgeId"
+        },
+        "from": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "to": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "assume",
+            "trust",
+            "credential",
+            "modify_permissions",
+            "modify_trust",
+            "passrole_compute",
+            "update_code",
+            "member_of",
+            "admin"
+          ]
+        },
+        "rule_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "pathfinding_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "status": {
+          "$ref": "#/$defs/edgeStatus"
+        },
+        "required_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "conditions_unevaluated": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prerequisites_unverified": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "latent": {
+          "type": "boolean"
+        },
+        "actor": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nodeId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attack": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "detection": {
+          "$ref": "#/$defs/detection"
+        }
+      }
+    },
+    "path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edges",
+        "id",
+        "length",
+        "nodes",
+        "severity",
+        "source",
+        "status",
+        "target"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/pathId"
+        },
+        "source": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "target": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edgeId"
+          },
+          "minItems": 1
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nodeId"
+          },
+          "minItems": 2
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "$ref": "#/$defs/edgeStatus"
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "account",
+        "entity",
+        "path",
+        "policy",
+        "statement_index"
+      ],
+      "properties": {
+        "account": {
+          "type": "string"
+        },
+        "entity": {
+          "type": "string"
+        },
+        "policy": {
+          "type": "string"
+        },
+        "statement_index": {
+          "type": "integer",
+          "minimum": -1
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "suppressed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expires",
+        "reason",
+        "source"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "expires": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "id",
+        "latent",
+        "location",
+        "message",
+        "node_id",
+        "path_id",
+        "remediation",
+        "rule_id",
+        "severity",
+        "suppressed",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/findingId"
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/severity"
+        },
+        "title": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "node_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nodeId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "edge_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/edgeId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "path_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/pathId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latent": {
+          "type": "boolean"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "suppressed": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/suppressed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "suppression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arn",
+        "expires",
+        "findings",
+        "reason",
+        "rule",
+        "status"
+      ],
+      "properties": {
+        "rule": {
+          "type": "string"
+        },
+        "arn": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "expires": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "expired",
+            "unjustified"
+          ]
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/findingId"
+          }
+        }
+      }
+    },
+    "chokePoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge_id",
+        "paths_cut",
+        "share"
+      ],
+      "properties": {
+        "edge_id": {
+          "$ref": "#/$defs/edgeId"
+        },
+        "paths_cut": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "fixStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change",
+        "edge_id",
+        "order",
+        "paths_cut",
+        "target"
+      ],
+      "properties": {
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "edge_id": {
+          "$ref": "#/$defs/edgeId"
+        },
+        "change": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "paths_cut": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathId"
+          }
+        }
+      }
+    },
+    "grouping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "nodes"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nodeId"
+          }
+        }
+      }
+    },
+    "techniqueCount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findings",
+        "id",
+        "paths"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paths": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "diffItems": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edges",
+        "paths",
+        "findings",
+        "nodes"
+      ],
+      "properties": {
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edgeId"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathId"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/findingId"
+          }
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nodeId"
+          }
+        },
+        "objects": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "edges",
+            "findings",
+            "nodes",
+            "paths"
+          ],
+          "properties": {
+            "nodes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/node"
+              }
+            },
+            "edges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/edge"
+              }
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/finding"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

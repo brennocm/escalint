@@ -77,8 +77,7 @@ type Result struct {
 	Blast       map[string]analysis.Blast // user, role and group nodes
 	Findings    []Finding
 	Notes       []string
-	MaxDepth    int
-	K           int
+	Options     Options // with defaults applied
 }
 
 // ErrUnknownRule is returned when Enable or Disable names no rule.
@@ -202,8 +201,7 @@ func Run(snap *snapshot.Snapshot, opts Options) (*Result, error) {
 		ChokePoints: analysis.ChokePoints(paths),
 		Blast:       map[string]analysis.Blast{},
 		Notes:       env.Notes(),
-		MaxDepth:    opts.MaxDepth,
-		K:           opts.K,
+		Options:     opts,
 	}
 	for _, n := range g.Nodes() {
 		switch n.Kind {
@@ -245,8 +243,12 @@ func findings(g *graph.Graph, paths []analysis.Path, byID map[string]rules.Rule,
 			m := r.Meta()
 			f := Finding{
 				ID: findingID(id, e.ID), RuleID: id, Severity: m.Severity, Title: m.Title,
-				Message: edgeMessage(g, e), NodeID: e.From, EdgeID: e.ID, Latent: e.Latent,
+				Message: edgeMessage(g, e, ruleActions(e, m)), NodeID: e.From, EdgeID: e.ID, Latent: e.Latent,
 				Location: locationOf(g, e), Remediation: m.Remediation,
+			}
+			if e.Latent && f.Severity.Rank() < rules.High.Rank() {
+				// A latent edge needs another step to be used (research §5.10).
+				f.Severity = rules.High
 			}
 			if p, ok := shortest[e.ID]; ok {
 				f.PathID = p.ID
@@ -306,7 +308,22 @@ func nodeLabel(g *graph.Graph, id string) string {
 	}
 }
 
-func edgeMessage(g *graph.Graph, e *graph.Edge) string {
+// ruleActions are the edge's required actions that belong to the rule (an
+// edge merges every rule that produced it).
+func ruleActions(e *graph.Edge, m rules.Metadata) []string {
+	var out []string
+	for _, a := range e.RequiredActions {
+		if slices.Contains(m.RequiredActions, a) {
+			out = append(out, a)
+		}
+	}
+	if len(out) == 0 {
+		return e.RequiredActions
+	}
+	return out
+}
+
+func edgeMessage(g *graph.Graph, e *graph.Edge, actions []string) string {
 	actor := ""
 	if e.Actor != "" && e.Actor != e.From {
 		actor = " (performed by " + nodeLabel(g, e.Actor) + ")"
@@ -315,7 +332,7 @@ func edgeMessage(g *graph.Graph, e *graph.Edge) string {
 	if e.Latent {
 		verb = "can modify the permissions of"
 	}
-	msg := fmt.Sprintf("%s %s %s%s using %s", nodeLabel(g, e.From), verb, nodeLabel(g, e.To), actor, strings.Join(e.RequiredActions, ", "))
+	msg := fmt.Sprintf("%s %s %s%s using %s", nodeLabel(g, e.From), verb, nodeLabel(g, e.To), actor, strings.Join(actions, ", "))
 	if e.Status == graph.StatusConditional {
 		var why []string
 		if len(e.ConditionsUnevaluated) > 0 {
@@ -396,7 +413,27 @@ func ChangeFor(g *graph.Graph, e *graph.Edge) (change, target string) {
 		return fmt.Sprintf("Restrict %s of the trust policy of %s so it no longer admits %s", statementLabel(ev), nodeLabel(g, e.To), nodeLabel(g, e.From)), target
 	case slices.Contains(actions, "iam:PassRole"):
 		return fmt.Sprintf("Scope iam:PassRole in %s of %s to the roles that must be passed (exclude %s) and add an iam:PassedToService condition", statementLabel(ev), ev.Policy, nodeLabel(g, e.To)), target
-	default:
-		return fmt.Sprintf("Remove %s from %s of %s, or scope its Resource to exclude %s", strings.Join(actions, ", "), statementLabel(ev), ev.Policy, nodeLabel(g, e.To)), target
 	}
+	victim := nodeLabel(g, e.To)
+	if n := g.Node(e.To); n != nil && n.Kind == graph.NodeTier0Sink {
+		victim = compositeTarget(e)
+	}
+	if victim == "" {
+		return fmt.Sprintf("Remove %s from %s of %s", strings.Join(actions, ", "), statementLabel(ev), ev.Policy), target
+	}
+	return fmt.Sprintf("Remove %s from %s of %s, or scope its Resource to exclude %s", strings.Join(actions, ", "), statementLabel(ev), ev.Policy, victim), target
+}
+
+// compositeTarget names the principal a composite edge modifies, from the
+// trust evidence the composite rules record ("trust:<arn>" or
+// "rewritten-trust:<arn>").
+func compositeTarget(e *graph.Edge) string {
+	for _, ev := range e.Evidence {
+		for _, prefix := range []string{"trust:", "rewritten-trust:"} {
+			if arn, ok := strings.CutPrefix(ev.Policy, prefix); ok {
+				return arn
+			}
+		}
+	}
+	return ""
 }

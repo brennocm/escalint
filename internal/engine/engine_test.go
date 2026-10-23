@@ -224,7 +224,7 @@ func TestChangeFor(t *testing.T) {
 		From: a.ID, To: sink.ID, Kind: graph.EdgeModifyPermissions, Latent: true, Actor: r.ID, Status: graph.StatusConditional,
 		RequiredActions: []string{"iam:AttachRolePolicy"}, ConditionsUnevaluated: []string{"aws:SourceIp"}, PrerequisitesUnverified: []string{"a cluster exists"},
 	}
-	msg := edgeMessage(g, cond)
+	msg := edgeMessage(g, cond, cond.RequiredActions)
 	for _, want := range []string{"can modify the permissions of", "effective admin of account 111111111111", "performed by", "aws:SourceIp", "a cluster exists"} {
 		if !strings.Contains(msg, want) {
 			t.Errorf("message %q lacks %q", msg, want)

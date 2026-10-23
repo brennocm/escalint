@@ -1,0 +1,1544 @@
+{
+  "schema_version": "1",
+  "generator": {
+    "name": "escalint",
+    "version": "dev",
+    "commit": "none"
+  },
+  "snapshot": {
+    "format": "envelope",
+    "collected_at": "2026-10-23T00:00:00Z",
+    "partition": "aws",
+    "accounts": [
+      "111111111111"
+    ],
+    "redacted": false,
+    "organization": null
+  },
+  "catalogs": {
+    "service_reference": "2026-10-23",
+    "pathfinding": "ecc3d092e7e409497474c8d39eb92f61810d815f",
+    "attack": "20.0"
+  },
+  "options": {
+    "max_depth": 6,
+    "k_paths": 3,
+    "experimental": true,
+    "min_severity": "",
+    "enabled_rules": [
+      "EL-PARSE-001",
+      "EL-PARSE-002",
+      "EL-PE-001",
+      "EL-PE-002",
+      "EL-PE-003",
+      "EL-PE-004",
+      "EL-PE-005",
+      "EL-PE-006",
+      "EL-PE-007",
+      "EL-PE-008",
+      "EL-PE-009",
+      "EL-PE-010",
+      "EL-PE-011",
+      "EL-PE-012",
+      "EL-PE-013",
+      "EL-PE-014",
+      "EL-PE-015",
+      "EL-PE-016",
+      "EL-PE-017",
+      "EL-PE-018",
+      "EL-PE-019",
+      "EL-PE-020",
+      "EL-PE-021",
+      "EL-PE-022",
+      "EL-PE-023",
+      "EL-PE-024",
+      "EL-PE-025",
+      "EL-PE-026",
+      "EL-PE-027",
+      "EL-PE-028",
+      "EL-PE-029",
+      "EL-PE-030"
+    ]
+  },
+  "rules": [
+    {
+      "id": "EL-PARSE-001",
+      "title": "Policy document could not be parsed",
+      "category": "parse",
+      "severity": "info",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [],
+      "prerequisites": [],
+      "attack": [],
+      "attack_unmapped_reason": "Parser diagnostic about the input, not an adversary behavior.",
+      "remediation": "Fix the policy so it is valid IAM JSON (AWS itself rejects most of these documents); until then, paths that depend on it are not analyzed.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_grammar.html"
+      ]
+    },
+    {
+      "id": "EL-PARSE-002",
+      "title": "Referenced policy or group is not in the snapshot",
+      "category": "parse",
+      "severity": "info",
+      "status": "stable",
+      "edge_kind": null,
+      "pathfinding_ids": [],
+      "required_actions": [],
+      "prerequisites": [],
+      "attack": [],
+      "attack_unmapped_reason": "Parser diagnostic about the input, not an adversary behavior.",
+      "remediation": "Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html"
+      ]
+    },
+    {
+      "id": "EL-PE-001",
+      "title": "Create a new default version of an attached policy",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-001"
+      ],
+      "required_actions": [
+        "iam:CreatePolicyVersion"
+      ],
+      "prerequisites": [
+        "a customer managed policy is attached to the actor (directly or through a group)"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicyVersion.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-002",
+      "title": "Put an inline policy on its own role",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-005"
+      ],
+      "required_actions": [
+        "iam:PutRolePolicy"
+      ],
+      "prerequisites": [
+        "the actor is a role allowed iam:PutRolePolicy on its own ARN"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove iam:PutRolePolicy from the role's policies, or scope its Resource to roles other than itself and add a permissions boundary that denies it.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-003",
+      "title": "Put an inline policy on its own user",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-007"
+      ],
+      "required_actions": [
+        "iam:PutUserPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a user allowed iam:PutUserPolicy on its own ARN"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove iam:PutUserPolicy, or limit it with Resource and a permissions boundary so users cannot target themselves.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutUserPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-004",
+      "title": "Attach a managed policy to its own user",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-008"
+      ],
+      "required_actions": [
+        "iam:AttachUserPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a user"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-005",
+      "title": "Attach a managed policy to its own role",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-009"
+      ],
+      "required_actions": [
+        "iam:AttachRolePolicy"
+      ],
+      "prerequisites": [
+        "the actor is a role"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-006",
+      "title": "Attach a managed policy to its own group",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-010"
+      ],
+      "required_actions": [
+        "iam:AttachGroupPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a member of the group"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachGroupPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-007",
+      "title": "Put an inline policy on its own group",
+      "category": "self-escalation",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-011"
+      ],
+      "required_actions": [
+        "iam:PutGroupPolicy"
+      ],
+      "prerequisites": [
+        "the actor is a member of the group"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutGroupPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-008",
+      "title": "Add itself to a more privileged group",
+      "category": "self-escalation",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-013"
+      ],
+      "required_actions": [
+        "iam:AddUserToGroup"
+      ],
+      "prerequisites": [
+        "the actor is a user that is not yet a member"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:AddUserToGroup to specific groups and never allow it on groups with administrative policies.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AddUserToGroup.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-009",
+      "title": "Create an access key for another user",
+      "category": "principal-access",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "credential",
+      "pathfinding_ids": [
+        "iam-002"
+      ],
+      "required_actions": [
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the target user has fewer than 2 access keys"
+      ],
+      "attack": [
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:CreateAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-010",
+      "title": "Rotate out and create an access key for another user",
+      "category": "principal-access",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "credential",
+      "pathfinding_ids": [
+        "iam-003"
+      ],
+      "required_actions": [
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey"
+      ],
+      "prerequisites": [
+        "the target is an IAM user"
+      ],
+      "attack": [
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-011",
+      "title": "Create a console password for another user",
+      "category": "principal-access",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "credential",
+      "pathfinding_ids": [
+        "iam-004"
+      ],
+      "required_actions": [
+        "iam:CreateLoginProfile"
+      ],
+      "prerequisites": [
+        "the target user has no console password yet"
+      ],
+      "attack": [
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:CreateLoginProfile to the caller's own user and require MFA for console access.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateLoginProfile.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-012",
+      "title": "Change another user's console password",
+      "category": "principal-access",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "credential",
+      "pathfinding_ids": [
+        "iam-006"
+      ],
+      "required_actions": [
+        "iam:UpdateLoginProfile"
+      ],
+      "prerequisites": [
+        "the target user has a console password",
+        "MFA on the target may still block console use"
+      ],
+      "attack": [
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:UpdateLoginProfile to the caller's own user and enforce MFA for every console user.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateLoginProfile.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-013",
+      "title": "Rewrite a role's trust policy",
+      "category": "principal-access",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "modify_trust",
+      "pathfinding_ids": [
+        "iam-012"
+      ],
+      "required_actions": [
+        "iam:UpdateAssumeRolePolicy"
+      ],
+      "prerequisites": [
+        "the target role is not service-linked",
+        "the actor can assume the role once the trust names it"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateAssumeRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-014",
+      "title": "Assume a more privileged role",
+      "category": "principal-access",
+      "severity": "medium",
+      "status": "stable",
+      "edge_kind": "assume",
+      "pathfinding_ids": [
+        "sts-001"
+      ],
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the role's trust policy accepts the actor (docs/research.md §2.4)"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        },
+        {
+          "id": "T1078.004",
+          "name": "Valid Accounts: Cloud Accounts",
+          "tactics": [
+            "Initial Access",
+            "Persistence",
+            "Privilege Escalation",
+            "Stealth"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1078/004"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "references": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-015",
+      "title": "Attach a policy to a role it can assume",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-014"
+      ],
+      "required_actions": [
+        "iam:AttachRolePolicy",
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the actor can already assume the role"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        },
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-016",
+      "title": "Create a new policy version for a role it can assume",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-016"
+      ],
+      "required_actions": [
+        "iam:CreatePolicyVersion",
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "a customer managed policy is attached to the role",
+        "the actor can already assume the role"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        },
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicyVersion.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-017",
+      "title": "Put an inline policy on a role it can assume",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-017"
+      ],
+      "required_actions": [
+        "iam:PutRolePolicy",
+        "sts:AssumeRole"
+      ],
+      "prerequisites": [
+        "the actor can already assume the role"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        },
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-018",
+      "title": "Attach a policy to a user and create its access key",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-015"
+      ],
+      "required_actions": [
+        "iam:AttachUserPolicy",
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the actor can create credentials for the user"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        },
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-019",
+      "title": "Put an inline policy on a user and create its access key",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-018"
+      ],
+      "required_actions": [
+        "iam:PutUserPolicy",
+        "iam:CreateAccessKey"
+      ],
+      "prerequisites": [
+        "the actor can create credentials for the user"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        },
+        {
+          "id": "T1098.001",
+          "name": "Account Manipulation: Additional Cloud Credentials",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/001"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutUserPolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-020",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "category": "principal-access",
+      "severity": "critical",
+      "status": "stable",
+      "edge_kind": "modify_permissions",
+      "pathfinding_ids": [
+        "iam-019",
+        "iam-020",
+        "iam-021"
+      ],
+      "required_actions": [
+        "iam:AttachRolePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:PutRolePolicy",
+        "iam:UpdateAssumeRolePolicy"
+      ],
+      "prerequisites": [
+        "one of the permission actions plus iam:UpdateAssumeRolePolicy on the role"
+      ],
+      "attack": [
+        {
+          "id": "T1098.003",
+          "name": "Account Manipulation: Additional Cloud Roles",
+          "tactics": [
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1098/003"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateAssumeRolePolicy.html",
+        "https://cwe.mitre.org/data/definitions/269.html"
+      ]
+    },
+    {
+      "id": "EL-PE-021",
+      "title": "Pass a role to a new EC2 instance",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "ec2-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "ec2:RunInstances"
+      ],
+      "prerequisites": [
+        "the role trusts ec2.amazonaws.com",
+        "the role is in an instance profile"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"ec2.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-022",
+      "title": "Pass a role to a new Lambda function and invoke it",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "lambda-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "prerequisites": [
+        "the role trusts lambda.amazonaws.com"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        },
+        {
+          "id": "T1648",
+          "name": "Serverless Execution",
+          "tactics": [
+            "Execution"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1648"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-023",
+      "title": "Pass a role to a new CloudFormation stack",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "cloudformation-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "cloudformation:CreateStack"
+      ],
+      "prerequisites": [
+        "the role trusts cloudformation.amazonaws.com"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"cloudformation.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-024",
+      "title": "Pass a role to a new CodeBuild project",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "codebuild-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "codebuild:CreateProject",
+        "codebuild:StartBuild"
+      ],
+      "prerequisites": [
+        "the role trusts codebuild.amazonaws.com"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"codebuild.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-025",
+      "title": "Pass a role to a new Glue job",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "glue-003"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "glue:CreateJob",
+        "glue:StartJobRun"
+      ],
+      "prerequisites": [
+        "the role trusts glue.amazonaws.com"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"glue.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-026",
+      "title": "Pass a role to a new ECS task",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "experimental",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "ecs-002",
+        "ecs-004"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "ecs:RegisterTaskDefinition",
+        "ecs:RunTask"
+      ],
+      "prerequisites": [
+        "the role trusts ecs-tasks.amazonaws.com",
+        "an ECS cluster exists or can be created"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"ecs-tasks.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-027",
+      "title": "Pass a role to a new SageMaker notebook",
+      "category": "new-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "passrole_compute",
+      "pathfinding_ids": [
+        "sagemaker-001"
+      ],
+      "required_actions": [
+        "iam:PassRole",
+        "sagemaker:CreateNotebookInstance"
+      ],
+      "prerequisites": [
+        "the role trusts sagemaker.amazonaws.com"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"sagemaker.amazonaws.com\"}} only for those roles.",
+      "references": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html",
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-028",
+      "title": "Update the code of an existing Lambda function and invoke it",
+      "category": "existing-passrole",
+      "severity": "high",
+      "status": "stable",
+      "edge_kind": "update_code",
+      "pathfinding_ids": [
+        "lambda-004"
+      ],
+      "required_actions": [
+        "lambda:UpdateFunctionCode",
+        "lambda:InvokeFunction"
+      ],
+      "prerequisites": [
+        "a Lambda function runs with the role"
+      ],
+      "attack": [
+        {
+          "id": "T1648",
+          "name": "Serverless Execution",
+          "tactics": [
+            "Execution"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1648"
+        },
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-029",
+      "title": "Run a command on an instance that has a role",
+      "category": "existing-passrole",
+      "severity": "high",
+      "status": "experimental",
+      "edge_kind": "update_code",
+      "pathfinding_ids": [
+        "ssm-002"
+      ],
+      "required_actions": [
+        "ssm:SendCommand"
+      ],
+      "prerequisites": [
+        "an SSM-managed EC2 instance runs with the role"
+      ],
+      "attack": [
+        {
+          "id": "T1651",
+          "name": "Cloud Administration Command",
+          "tactics": [
+            "Execution"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1651"
+        },
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Restrict ssm:SendCommand to the resources the caller owns; separate deployment roles from runtime roles.",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    },
+    {
+      "id": "EL-PE-030",
+      "title": "Start a build of an existing CodeBuild project",
+      "category": "existing-passrole",
+      "severity": "high",
+      "status": "experimental",
+      "edge_kind": "update_code",
+      "pathfinding_ids": [
+        "codebuild-002"
+      ],
+      "required_actions": [
+        "codebuild:StartBuild"
+      ],
+      "prerequisites": [
+        "a CodeBuild project runs with the role"
+      ],
+      "attack": [
+        {
+          "id": "T1548.005",
+          "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+          "tactics": [
+            "Privilege Escalation"
+          ],
+          "url": "https://attack.mitre.org/techniques/T1548/005"
+        }
+      ],
+      "attack_unmapped_reason": null,
+      "remediation": "Restrict codebuild:StartBuild to the resources the caller owns; separate deployment roles from runtime roles.",
+      "references": [
+        "https://cwe.mitre.org/data/definitions/266.html"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n_25cf40f6ffbacdff",
+      "kind": "role",
+      "arn": "arn:aws:iam::111111111111:role/runtime",
+      "name": "runtime",
+      "account": "111111111111",
+      "path": "/",
+      "tags": {},
+      "tier": 3,
+      "tier_conditional": false,
+      "service_linked": false,
+      "blast": {
+        "reachable_principals": 0,
+        "reaches_tier0": false,
+        "capabilities": {
+          "permission_management": [],
+          "write": [],
+          "read": [],
+          "list": []
+        }
+      },
+      "last_used": null,
+      "flags": [
+        "no_boundary"
+      ],
+      "group": null
+    },
+    {
+      "id": "n_5691abfa2d238c62",
+      "kind": "service",
+      "arn": null,
+      "name": "lambda.amazonaws.com",
+      "account": "",
+      "path": null,
+      "tags": {},
+      "tier": 3,
+      "tier_conditional": false,
+      "service_linked": false,
+      "blast": null,
+      "last_used": null,
+      "flags": [],
+      "group": null
+    },
+    {
+      "id": "n_79a4ee97268448d4",
+      "kind": "user",
+      "arn": "arn:aws:iam::111111111111:user/attacker",
+      "name": "attacker",
+      "account": "111111111111",
+      "path": "/",
+      "tags": {},
+      "tier": 2,
+      "tier_conditional": false,
+      "service_linked": false,
+      "blast": {
+        "reachable_principals": 1,
+        "reaches_tier0": false,
+        "capabilities": {
+          "permission_management": [],
+          "write": [
+            "iam",
+            "lambda"
+          ],
+          "read": [],
+          "list": []
+        }
+      },
+      "last_used": null,
+      "flags": [
+        "no_boundary"
+      ],
+      "group": null
+    },
+    {
+      "id": "n_d175b3293ae2fde2",
+      "kind": "tier0_sink",
+      "arn": null,
+      "name": "Effective admin",
+      "account": "111111111111",
+      "path": null,
+      "tags": {},
+      "tier": 0,
+      "tier_conditional": false,
+      "service_linked": false,
+      "blast": null,
+      "last_used": null,
+      "flags": [],
+      "group": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_1d7e49319b57e517",
+      "from": "n_79a4ee97268448d4",
+      "to": "n_25cf40f6ffbacdff",
+      "kind": "passrole_compute",
+      "rule_ids": [
+        "EL-PE-022"
+      ],
+      "pathfinding_ids": [
+        "lambda-001"
+      ],
+      "status": "allowed",
+      "required_actions": [
+        "iam:PassRole",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "evidence": [
+        {
+          "principal": "n_79a4ee97268448d4",
+          "action": "iam:PassRole",
+          "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+          "statement_index": 0,
+          "sid": "",
+          "effect": "Allow",
+          "stage": "identity"
+        },
+        {
+          "principal": "n_79a4ee97268448d4",
+          "action": "lambda:CreateFunction",
+          "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+          "statement_index": 0,
+          "sid": "",
+          "effect": "Allow",
+          "stage": "identity"
+        },
+        {
+          "principal": "n_79a4ee97268448d4",
+          "action": "lambda:InvokeFunction",
+          "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+          "statement_index": 0,
+          "sid": "",
+          "effect": "Allow",
+          "stage": "identity"
+        }
+      ],
+      "conditions_unevaluated": [],
+      "prerequisites_unverified": [],
+      "latent": false,
+      "actor": null,
+      "attack": [
+        "T1548.005",
+        "T1648"
+      ],
+      "detection": {
+        "events": [
+          {
+            "source": "lambda.amazonaws.com",
+            "name": "CreateFunction20150331",
+            "kind": "management",
+            "key_fields": [
+              "userIdentity.arn",
+              "requestParameters.functionName",
+              "requestParameters.role"
+            ],
+            "region": "the Region of the call",
+            "notes": "The event name carries a version suffix; Environment and ZipFile are omitted from the log."
+          },
+          {
+            "source": "lambda.amazonaws.com",
+            "name": "Invoke",
+            "kind": "data",
+            "key_fields": [
+              "userIdentity.arn",
+              "resources.ARN"
+            ],
+            "region": "the Region of the call",
+            "notes": "Data event: not logged unless the trail enables Lambda data events."
+          }
+        ],
+        "blind_spots": [
+          "Activity inside the compute resource and credential reads from instance metadata or the runtime environment are not logged; only later API calls made with the role appear (experimental: inferred from the service documentation).",
+          "Invoke is a data event: trails and event data stores do not log it by default, and Event history never shows it.",
+          "The function code and environment variables are not in CloudTrail.",
+          "iam:PassRole is a permission, not an API call: it never appears as its own event. Look for the call that creates the resource, with the role in its request parameters."
+        ],
+        "requires_data_events": true,
+        "status": "verified",
+        "visibility": "partial"
+      }
+    },
+    {
+      "id": "e_71c0edad070da0a2",
+      "from": "n_5691abfa2d238c62",
+      "to": "n_25cf40f6ffbacdff",
+      "kind": "trust",
+      "rule_ids": [],
+      "pathfinding_ids": [],
+      "status": "allowed",
+      "required_actions": [
+        "sts:AssumeRole"
+      ],
+      "evidence": [
+        {
+          "principal": "n_25cf40f6ffbacdff",
+          "action": "sts:AssumeRole",
+          "policy": "trust:arn:aws:iam::111111111111:role/runtime",
+          "statement_index": 0,
+          "sid": "",
+          "effect": "Allow",
+          "stage": "resource"
+        }
+      ],
+      "conditions_unevaluated": [],
+      "prerequisites_unverified": [],
+      "latent": false,
+      "actor": null,
+      "attack": [],
+      "detection": {
+        "events": [
+          {
+            "source": "sts.amazonaws.com",
+            "name": "AssumeRole",
+            "kind": "management",
+            "key_fields": [
+              "userIdentity.arn",
+              "requestParameters.roleArn",
+              "requestParameters.roleSessionName",
+              "sharedEventID",
+              "recipientAccountId"
+            ],
+            "region": "Global STS endpoint: us-east-1; regional STS endpoints: the endpoint's Region.",
+            "notes": "Logged in both accounts for cross-account calls, linked by sharedEventID; readOnly is true."
+          }
+        ],
+        "blind_spots": [
+          "A denied cross-account AssumeRole is not logged in the target account.",
+          "AssumeRole is a read-only event: trails that keep only write management events miss it.",
+          "The external side of the call is outside this account's trails."
+        ],
+        "requires_data_events": false,
+        "status": "verified",
+        "visibility": "partial"
+      }
+    }
+  ],
+  "paths": [],
+  "findings": [
+    {
+      "id": "f_1ff3e4bef228f386",
+      "rule_id": "EL-PE-022",
+      "severity": "high",
+      "title": "Pass a role to a new Lambda function and invoke it",
+      "message": "arn:aws:iam::111111111111:user/attacker can act as arn:aws:iam::111111111111:role/runtime using iam:PassRole, lambda:CreateFunction, lambda:InvokeFunction",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_1d7e49319b57e517",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": ""
+      },
+      "remediation": "Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.",
+      "suppressed": null
+    }
+  ],
+  "suppressions": [],
+  "choke_points": [],
+  "cycles": [],
+  "fix_plan": [],
+  "notes": [],
+  "stats": {
+    "nodes": 4,
+    "edges": 2,
+    "paths": 0,
+    "findings": 1
+  },
+  "groupings": [],
+  "attack": {
+    "version": "20.0",
+    "techniques": [
+      {
+        "id": "T1548.005",
+        "findings": 1,
+        "paths": 0
+      },
+      {
+        "id": "T1648",
+        "findings": 1,
+        "paths": 0
+      }
+    ]
+  }
+}
