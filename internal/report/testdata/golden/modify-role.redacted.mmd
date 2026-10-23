@@ -1,0 +1,17 @@
+flowchart LR
+  n_b2526cc0cb4d920d[/"ec2.amazonaws.com<br/>tier 3"/]
+  n_c2cbe3128ebd6c08(["user/user-8c11fbde<br/>tier 1"])
+  n_f6f451e9882a7155((("effective admin 448151736024<br/>tier 0")))
+  n_ff5b1fb8802ec845["role/role-e2a0fc00<br/>tier 2"]
+  n_b2526cc0cb4d920d -->|"trust"| n_ff5b1fb8802ec845
+  n_c2cbe3128ebd6c08 -.->|"modify_permissions EL-PE-015,EL-PE-016,EL-PE-017"| n_ff5b1fb8802ec845
+  n_c2cbe3128ebd6c08 -->|"modify_permissions EL-PE-020"| n_f6f451e9882a7155
+  n_c2cbe3128ebd6c08 -->|"modify_trust EL-PE-013"| n_ff5b1fb8802ec845
+  classDef tier0 stroke:#b42318,stroke-width:2px
+  classDef tier1 stroke:#c4320a,stroke-width:2px
+  classDef tier2 stroke:#b54708,stroke-width:2px
+  classDef tier3 stroke:#475467,stroke-width:2px
+  class n_b2526cc0cb4d920d tier3
+  class n_c2cbe3128ebd6c08 tier1
+  class n_f6f451e9882a7155 tier0
+  class n_ff5b1fb8802ec845 tier2

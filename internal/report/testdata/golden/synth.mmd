@@ -1,0 +1,113 @@
+flowchart LR
+  n_065a0194899051bb["role/data-gateway-dev<br/>tier 3"]
+  n_10e7defa334f8f6b["role/search-api-prod<br/>tier 3"]
+  n_11175759abed52ec[\"token.actions.githubusercontent.com<br/>tier 3"\]
+  n_12d4ccff46bdd1c4["role/growth-reporting-dev<br/>tier 3"]
+  n_1a9f0796514f5407(["user/otto.mueller<br/>tier 3"])
+  n_1acf06d51a9322b0[["group/growth-oncall<br/>tier 3"]]
+  n_23facf81ce45c624(["user/igor.okafor<br/>tier 3"])
+  n_437d690a003479f8(["user/otto.mueller-2<br/>tier 2"])
+  n_44037a956a34dcfe["role/mobile-deploy-dev<br/>tier 2"]
+  n_4957ac947dce6267{{"890110102814<br/>tier 3"}}
+  n_4ce7bb4447efeafb(["user/nadia.smith<br/>tier 0"])
+  n_4d469c6f15077e7b[/"glue.amazonaws.com<br/>tier 3"/]
+  n_4e1c05f0757ffa2c["role/search-reporting-staging<br/>tier 3"]
+  n_5691abfa2d238c62[/"lambda.amazonaws.com<br/>tier 3"/]
+  n_5d064aec9677d137["role/infra-gateway-prod<br/>tier 3"]
+  n_6283403fe098d3c0(["user/gabriel.mueller<br/>tier 1"])
+  n_65b2407e7ddae77b(["user/fatima.mueller<br/>tier 3"])
+  n_69868d9e68c6e1e7["role/security-etl-dev<br/>tier 1"]
+  n_6e6f467d5abe5d49(["user/marco.silva<br/>tier 3"])
+  n_6e7dee195008b1f3["role/growth-etl-staging<br/>tier 3"]
+  n_968219dd8bbd58f7[/"ecs-tasks.amazonaws.com<br/>tier 3"/]
+  n_98d49ca3b130a133[/"ec2.amazonaws.com<br/>tier 3"/]
+  n_b204547207fbee9e["role/security-api-dev<br/>tier 3"]
+  n_b218e02878f319f1(["user/carla.garcia<br/>tier 3"])
+  n_b82e87df24919d28["role/infra-ingest-prod<br/>tier 3"]
+  n_c7bdb5a8903c6ab3(["user/erin.costa<br/>tier 3"])
+  n_d8b2c9d3e2090079((("effective admin 402251546283<br/>tier 0")))
+  n_e474f17345816eb4(["user/diego.silva<br/>tier 1"])
+  n_efd3cba115f557f0["role/growth-etl-dev<br/>tier 0"]
+  n_faa1501285407040["role/data-api-dev<br/>tier 3"]
+  n_ff03cfd22ebbf4ff[["group/data-oncall<br/>tier 3"]]
+  n_98d49ca3b130a133 -->|"trust"| n_6e7dee195008b1f3
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_12d4ccff46bdd1c4
+  n_6283403fe098d3c0 -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_b204547207fbee9e
+  n_44037a956a34dcfe -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_6e7dee195008b1f3
+  n_4ce7bb4447efeafb -->|"assume EL-PE-014"| n_69868d9e68c6e1e7
+  n_efd3cba115f557f0 -->|"admin"| n_d8b2c9d3e2090079
+  n_5691abfa2d238c62 -->|"trust"| n_efd3cba115f557f0
+  n_6283403fe098d3c0 -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_4e1c05f0757ffa2c
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_5d064aec9677d137
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_b204547207fbee9e
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_44037a956a34dcfe
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_6e7dee195008b1f3
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_faa1501285407040
+  n_44037a956a34dcfe -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_b204547207fbee9e
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_065a0194899051bb
+  n_4ce7bb4447efeafb -->|"assume EL-PE-014"| n_065a0194899051bb
+  n_1a9f0796514f5407 -->|"member_of"| n_1acf06d51a9322b0
+  n_6283403fe098d3c0 -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_12d4ccff46bdd1c4
+  n_b218e02878f319f1 -->|"member_of"| n_ff03cfd22ebbf4ff
+  n_6283403fe098d3c0 -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_6e7dee195008b1f3
+  n_efd3cba115f557f0 -->|"assume EL-PE-014"| n_065a0194899051bb
+  n_65b2407e7ddae77b -->|"member_of"| n_1acf06d51a9322b0
+  n_4d469c6f15077e7b -->|"trust"| n_44037a956a34dcfe
+  n_c7bdb5a8903c6ab3 -->|"member_of"| n_1acf06d51a9322b0
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_4e1c05f0757ffa2c
+  n_44037a956a34dcfe -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_4e1c05f0757ffa2c
+  n_4ce7bb4447efeafb -->|"admin"| n_d8b2c9d3e2090079
+  n_efd3cba115f557f0 -->|"assume EL-PE-014"| n_69868d9e68c6e1e7
+  n_98d49ca3b130a133 -->|"trust"| n_b204547207fbee9e
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_10e7defa334f8f6b
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_b82e87df24919d28
+  n_11175759abed52ec -.->|"trust"| n_10e7defa334f8f6b
+  n_44037a956a34dcfe -.->|"modify_permissions EL-PE-016,EL-PE-020"| n_12d4ccff46bdd1c4
+  n_23facf81ce45c624 -->|"member_of"| n_1acf06d51a9322b0
+  n_98d49ca3b130a133 -->|"trust"| n_12d4ccff46bdd1c4
+  n_e474f17345816eb4 -->|"modify_permissions EL-PE-004"| n_d8b2c9d3e2090079
+  n_efd3cba115f557f0 -->|"assume EL-PE-014"| n_b82e87df24919d28
+  n_6283403fe098d3c0 -->|"modify_permissions EL-PE-001"| n_d8b2c9d3e2090079
+  n_4d469c6f15077e7b -->|"trust"| n_5d064aec9677d137
+  n_69868d9e68c6e1e7 -->|"modify_permissions EL-PE-005"| n_d8b2c9d3e2090079
+  n_4ce7bb4447efeafb -->|"member_of"| n_1acf06d51a9322b0
+  n_6283403fe098d3c0 -->|"member_of"| n_ff03cfd22ebbf4ff
+  n_437d690a003479f8 -.->|"modify_permissions EL-PE-017,EL-PE-020"| n_69868d9e68c6e1e7
+  n_4957ac947dce6267 -.->|"trust"| n_4e1c05f0757ffa2c
+  n_4ce7bb4447efeafb -->|"assume EL-PE-014"| n_b82e87df24919d28
+  n_968219dd8bbd58f7 -->|"trust"| n_faa1501285407040
+  classDef tier0 stroke:#b42318,stroke-width:2px
+  classDef tier1 stroke:#c4320a,stroke-width:2px
+  classDef tier2 stroke:#b54708,stroke-width:2px
+  classDef tier3 stroke:#475467,stroke-width:2px
+  class n_065a0194899051bb tier3
+  class n_10e7defa334f8f6b tier3
+  class n_11175759abed52ec tier3
+  class n_12d4ccff46bdd1c4 tier3
+  class n_1a9f0796514f5407 tier3
+  class n_1acf06d51a9322b0 tier3
+  class n_23facf81ce45c624 tier3
+  class n_437d690a003479f8 tier2
+  class n_44037a956a34dcfe tier2
+  class n_4957ac947dce6267 tier3
+  class n_4ce7bb4447efeafb tier0
+  class n_4d469c6f15077e7b tier3
+  class n_4e1c05f0757ffa2c tier3
+  class n_5691abfa2d238c62 tier3
+  class n_5d064aec9677d137 tier3
+  class n_6283403fe098d3c0 tier1
+  class n_65b2407e7ddae77b tier3
+  class n_69868d9e68c6e1e7 tier1
+  class n_6e6f467d5abe5d49 tier3
+  class n_6e7dee195008b1f3 tier3
+  class n_968219dd8bbd58f7 tier3
+  class n_98d49ca3b130a133 tier3
+  class n_b204547207fbee9e tier3
+  class n_b218e02878f319f1 tier3
+  class n_b82e87df24919d28 tier3
+  class n_c7bdb5a8903c6ab3 tier3
+  class n_d8b2c9d3e2090079 tier0
+  class n_e474f17345816eb4 tier1
+  class n_efd3cba115f557f0 tier0
+  class n_faa1501285407040 tier3
+  class n_ff03cfd22ebbf4ff tier3

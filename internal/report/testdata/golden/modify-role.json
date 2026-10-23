@@ -1,0 +1,165 @@
+{
+  "schema_version": "1",
+  "kind": "escalint.scan",
+  "generator": {
+    "name": "escalint",
+    "version": "dev",
+    "commit": "none"
+  },
+  "snapshot": {
+    "format": "envelope",
+    "collected_at": "2026-10-23T00:00:00Z",
+    "partition": "aws",
+    "accounts": [
+      "111111111111"
+    ],
+    "redacted": false,
+    "organization": null
+  },
+  "summary": {
+    "critical": 1,
+    "high": 4,
+    "medium": 0,
+    "low": 0,
+    "info": 0,
+    "suppressed": 0,
+    "paths": 1
+  },
+  "findings": [
+    {
+      "id": "f_f3a444cda88ece4f",
+      "rule_id": "EL-PE-020",
+      "severity": "critical",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::111111111111:user/attacker can act as effective admin of account 111111111111 using iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_dca794e3b8e4b860",
+      "path_id": "p_892d4eb8041727f7",
+      "latent": false,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": "",
+        "line": 92
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_3c18fbb8bca58cc9",
+      "rule_id": "EL-PE-013",
+      "severity": "high",
+      "title": "Rewrite a role's trust policy",
+      "message": "arn:aws:iam::111111111111:user/attacker can act as arn:aws:iam::111111111111:role/victim-role using iam:UpdateAssumeRolePolicy",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_2063322dc7b43c0f",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": "",
+        "line": 92
+      },
+      "remediation": "Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.",
+      "suppressed": null
+    },
+    {
+      "id": "f_33799fec1fb1d893",
+      "rule_id": "EL-PE-015",
+      "severity": "high",
+      "title": "Attach a policy to a role it can assume",
+      "message": "arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:AttachRolePolicy",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_0984d028716e04d7",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": "",
+        "line": 92
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_8d2be409b6f7d84a",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:CreatePolicyVersion",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_0984d028716e04d7",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": "",
+        "line": 92
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_164b76ce473b4efb",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:PutRolePolicy",
+      "node_id": "n_79a4ee97268448d4",
+      "edge_id": "e_0984d028716e04d7",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "111111111111",
+        "entity": "arn:aws:iam::111111111111:user/attacker",
+        "policy": "inline:arn:aws:iam::111111111111:user/attacker/p",
+        "statement_index": 0,
+        "path": "",
+        "line": 92
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    }
+  ],
+  "paths": [
+    {
+      "id": "p_892d4eb8041727f7",
+      "source": "n_79a4ee97268448d4",
+      "target": "n_d175b3293ae2fde2",
+      "edges": [
+        "e_dca794e3b8e4b860"
+      ],
+      "nodes": [
+        "n_79a4ee97268448d4",
+        "n_d175b3293ae2fde2"
+      ],
+      "length": 1,
+      "status": "allowed",
+      "severity": "critical"
+    }
+  ],
+  "fix_plan": [
+    {
+      "order": 1,
+      "edge_id": "e_dca794e3b8e4b860",
+      "change": "Remove iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:user/attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/victim-role",
+      "target": "inline:arn:aws:iam::111111111111:user/attacker/p#0",
+      "paths_cut": [
+        "p_892d4eb8041727f7"
+      ]
+    }
+  ],
+  "suppressions": [],
+  "notes": []
+}

@@ -1,0 +1,1095 @@
+{
+  "schema_version": "1",
+  "kind": "escalint.scan",
+  "generator": {
+    "name": "escalint",
+    "version": "dev",
+    "commit": "none"
+  },
+  "snapshot": {
+    "format": "envelope",
+    "collected_at": "2026-10-01T00:00:00Z",
+    "partition": "aws",
+    "accounts": [
+      "314973283544"
+    ],
+    "redacted": true,
+    "organization": null
+  },
+  "summary": {
+    "critical": 3,
+    "high": 38,
+    "medium": 6,
+    "low": 0,
+    "info": 0,
+    "suppressed": 0,
+    "paths": 3
+  },
+  "findings": [
+    {
+      "id": "f_f8ce64d1a9363517",
+      "rule_id": "EL-PE-001",
+      "severity": "critical",
+      "title": "Create a new default version of an attached policy",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can act as effective admin of account 314973283544 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_3109671ca45d542c",
+      "path_id": "p_23f2c6fb3a596444",
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary.",
+      "suppressed": null
+    },
+    {
+      "id": "f_164845f0a622bf51",
+      "rule_id": "EL-PE-004",
+      "severity": "critical",
+      "title": "Attach a managed policy to its own user",
+      "message": "arn:aws:iam::314973283544:user/path-8f417928/user-22560ed1 can act as effective admin of account 314973283544 using iam:AttachUserPolicy",
+      "node_id": "n_4fb708b8275c12fb",
+      "edge_id": "e_d9fb19bbc8099ba0",
+      "path_id": "p_8c01160ea2dad7ad",
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-8f417928/user-22560ed1",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-8f417928/user-22560ed1/inline-ad4a762c",
+        "statement_index": 0,
+        "path": "",
+        "line": 55
+      },
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+      "suppressed": null
+    },
+    {
+      "id": "f_9b8e3fa06b0c1d21",
+      "rule_id": "EL-PE-005",
+      "severity": "critical",
+      "title": "Attach a managed policy to its own role",
+      "message": "arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f can act as effective admin of account 314973283544 using iam:AttachRolePolicy",
+      "node_id": "n_ebda0184fa6c3865",
+      "edge_id": "e_5abb59131090082e",
+      "path_id": "p_d23e14daabccc38d",
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f/inline-1ed7f423",
+        "statement_index": 0,
+        "path": "",
+        "line": 764
+      },
+      "remediation": "Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+      "suppressed": null
+    },
+    {
+      "id": "f_05d00299f7fd9335",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_65a05bdc006a79bd",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_5f1f222d9c064d7e",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_ed7a212a80405338",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_80bf949520dfacbb",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_be242de95915d25e",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_9b5e515d25dc06ff",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_eeb3d1c8ede427dc",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_a7e6ef60a22fcb4c",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_9246ce11db2ef126",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_c59c4d2aefbc368b",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_a29877fd49002061",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_d26d58a9033cd911",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_b5978fcc5c9f7960",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_e9597ec6e71d91b6",
+      "rule_id": "EL-PE-016",
+      "severity": "high",
+      "title": "Create a new policy version for a role it can assume",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_b1b348d405ce7d14",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 0,
+        "path": "",
+        "line": 896
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_00e4f7c9dd52078e",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-85678717/role-9003108a using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_889dde52e69b4dd4",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_02536aa55f64ed5f",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-3ef5085b using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_d9106445af283864",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_0d294973dcbf379a",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-5c00fa7d using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_3c1479bc540af82b",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_1c56f30952786978",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_729c48e3c554ec58",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_1d858f65b5fbee74",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-501d0ec0/role-6a9bcec8 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_2054354b670cbcce",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_4227974cb59fbf51",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-d0392a25 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_6024b93aa32ac6c3",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_55004352b7af8de1",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_6f08069e56826a73",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_63e9074b8c470afc",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_dd4164356f30b128",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_ac0d4a70cafd164d",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_26d97de8ab410c68",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_c4ac0d6b7e78a847",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_05a28bfd1cd206d7",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_eb399dabe0986796",
+      "rule_id": "EL-PE-017",
+      "severity": "high",
+      "title": "Put an inline policy on a role it can assume",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_9e931a29faa8ed8d",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_1b768bd4bbddf70b",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_a29877fd49002061",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_23da219db5a9a592",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_05a28bfd1cd206d7",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_32028e2f396560eb",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-85678717/role-9003108a using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_889dde52e69b4dd4",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_34d90cf8594a1336",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_ed7a212a80405338",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_38ebd96aa0883e28",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_729c48e3c554ec58",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_47126faf46e65592",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_65a05bdc006a79bd",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_5594efa5b50049e3",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_26d97de8ab410c68",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_720c53c3b2ff8de1",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-501d0ec0/role-6a9bcec8 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_2054354b670cbcce",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_74d9abddfc692fb0",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-612030d8 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_9e931a29faa8ed8d",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_8178060ed001c9e0",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_6f08069e56826a73",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_8af2ec78a3612368",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_b5978fcc5c9f7960",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_8e1fdce4807e21dc",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-d0392a25 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_6024b93aa32ac6c3",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_9d4de674d8773337",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_dd4164356f30b128",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_ad704ac354bd65be",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/path-9f97834b/role-eabd0409 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_9246ce11db2ef126",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_b00cfd03863811ea",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391 can modify the permissions of arn:aws:iam::314973283544:role/role-047c2d7a using iam:CreatePolicyVersion",
+      "node_id": "n_311c2d14884afd00",
+      "edge_id": "e_eeb3d1c8ede427dc",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+        "statement_index": 1,
+        "path": "",
+        "line": 189
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_b153dbc715aa58b6",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/path-ff03f9cb/role-38cb7e55 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_be242de95915d25e",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 1,
+        "path": "",
+        "line": 905
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_c9295bd3c7ada966",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-5c00fa7d using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_3c1479bc540af82b",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_dd2593a3605b79ae",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a can modify the permissions of arn:aws:iam::314973283544:role/role-cc27ec41 using iam:CreatePolicyVersion",
+      "node_id": "n_80cab523dcb44e15",
+      "edge_id": "e_b1b348d405ce7d14",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/path-85678717/role-9003108a",
+        "policy": "inline:arn:aws:iam::314973283544:role/path-85678717/role-9003108a/inline-ef3d2f60",
+        "statement_index": 0,
+        "path": "",
+        "line": 896
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_e8f6bf351e5d4d8c",
+      "rule_id": "EL-PE-020",
+      "severity": "high",
+      "title": "Modify a role's permissions and rewrite its trust",
+      "message": "arn:aws:iam::314973283544:user/user-e95c9d89 can modify the permissions of arn:aws:iam::314973283544:role/role-3ef5085b using iam:PutRolePolicy",
+      "node_id": "n_398e5a6f582418e4",
+      "edge_id": "e_d9106445af283864",
+      "path_id": null,
+      "latent": true,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/user-e95c9d89",
+        "policy": "inline:arn:aws:iam::314973283544:user/user-e95c9d89/inline-9c7044a9",
+        "statement_index": 0,
+        "path": "",
+        "line": 334
+      },
+      "remediation": "Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+      "suppressed": null
+    },
+    {
+      "id": "f_37b1958d53b66434",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:role/role-2866557a can act as arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f using sts:AssumeRole",
+      "node_id": "n_24f1352e5fc5d0cb",
+      "edge_id": "e_31c4169105a207c9",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/role-2866557a",
+        "policy": "inline:arn:aws:iam::314973283544:role/role-2866557a/inline-8cfa6008",
+        "statement_index": 0,
+        "path": "",
+        "line": 427
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_699d2328a58f02ab",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:role/role-2866557a can act as arn:aws:iam::314973283544:role/role-5c00fa7d using sts:AssumeRole",
+      "node_id": "n_24f1352e5fc5d0cb",
+      "edge_id": "e_8c506b9351a07df5",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/role-2866557a",
+        "policy": "inline:arn:aws:iam::314973283544:role/role-2866557a/inline-8cfa6008",
+        "statement_index": 0,
+        "path": "",
+        "line": 427
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_8f43be1a17e05fc1",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6 can act as arn:aws:iam::314973283544:role/path-501d0ec0/role-6a9bcec8 using sts:AssumeRole",
+      "node_id": "n_dad0d9e059156300",
+      "edge_id": "e_c694c064aeea5641",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-17c96995/user-128edac6/inline-b9c9ce61",
+        "statement_index": 0,
+        "path": "",
+        "line": 25
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_b4c707821be228e8",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6 can act as arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f using sts:AssumeRole",
+      "node_id": "n_dad0d9e059156300",
+      "edge_id": "e_c2ab1fb1901737ab",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-17c96995/user-128edac6/inline-b9c9ce61",
+        "statement_index": 0,
+        "path": "",
+        "line": 25
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_ddf31ba0424e55da",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:role/role-2866557a can act as arn:aws:iam::314973283544:role/path-501d0ec0/role-6a9bcec8 using sts:AssumeRole",
+      "node_id": "n_24f1352e5fc5d0cb",
+      "edge_id": "e_0d99423a42a9d6d5",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:role/role-2866557a",
+        "policy": "inline:arn:aws:iam::314973283544:role/role-2866557a/inline-8cfa6008",
+        "statement_index": 0,
+        "path": "",
+        "line": 427
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    },
+    {
+      "id": "f_ee27a2ac045d91fe",
+      "rule_id": "EL-PE-014",
+      "severity": "medium",
+      "title": "Assume a more privileged role",
+      "message": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6 can act as arn:aws:iam::314973283544:role/role-5c00fa7d using sts:AssumeRole",
+      "node_id": "n_dad0d9e059156300",
+      "edge_id": "e_2216a45a688cfe89",
+      "path_id": null,
+      "latent": false,
+      "location": {
+        "account": "314973283544",
+        "entity": "arn:aws:iam::314973283544:user/path-17c96995/user-128edac6",
+        "policy": "inline:arn:aws:iam::314973283544:user/path-17c96995/user-128edac6/inline-b9c9ce61",
+        "statement_index": 0,
+        "path": "",
+        "line": 25
+      },
+      "remediation": "Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+      "suppressed": null
+    }
+  ],
+  "paths": [
+    {
+      "id": "p_23f2c6fb3a596444",
+      "source": "n_311c2d14884afd00",
+      "target": "n_017b6b67b2533534",
+      "edges": [
+        "e_3109671ca45d542c"
+      ],
+      "nodes": [
+        "n_311c2d14884afd00",
+        "n_017b6b67b2533534"
+      ],
+      "length": 1,
+      "status": "allowed",
+      "severity": "critical"
+    },
+    {
+      "id": "p_8c01160ea2dad7ad",
+      "source": "n_4fb708b8275c12fb",
+      "target": "n_017b6b67b2533534",
+      "edges": [
+        "e_d9fb19bbc8099ba0"
+      ],
+      "nodes": [
+        "n_4fb708b8275c12fb",
+        "n_017b6b67b2533534"
+      ],
+      "length": 1,
+      "status": "allowed",
+      "severity": "critical"
+    },
+    {
+      "id": "p_d23e14daabccc38d",
+      "source": "n_ebda0184fa6c3865",
+      "target": "n_017b6b67b2533534",
+      "edges": [
+        "e_5abb59131090082e"
+      ],
+      "nodes": [
+        "n_ebda0184fa6c3865",
+        "n_017b6b67b2533534"
+      ],
+      "length": 1,
+      "status": "allowed",
+      "severity": "critical"
+    }
+  ],
+  "fix_plan": [
+    {
+      "order": 1,
+      "edge_id": "e_d9fb19bbc8099ba0",
+      "change": "Remove iam:AttachUserPolicy from statement #0 of inline:arn:aws:iam::314973283544:user/path-8f417928/user-22560ed1/inline-ad4a762c",
+      "target": "inline:arn:aws:iam::314973283544:user/path-8f417928/user-22560ed1/inline-ad4a762c#0",
+      "paths_cut": [
+        "p_8c01160ea2dad7ad"
+      ]
+    },
+    {
+      "order": 2,
+      "edge_id": "e_3109671ca45d542c",
+      "change": "Remove iam:CreatePolicyVersion from statement #1 of inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6",
+      "target": "inline:arn:aws:iam::314973283544:user/path-9f97834b/user-2a6a6391/inline-884c77f6#1",
+      "paths_cut": [
+        "p_23f2c6fb3a596444"
+      ]
+    },
+    {
+      "order": 3,
+      "edge_id": "e_5abb59131090082e",
+      "change": "Remove iam:AttachRolePolicy from statement #0 of inline:arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f/inline-1ed7f423",
+      "target": "inline:arn:aws:iam::314973283544:role/path-17c96995/role-80a6022f/inline-1ed7f423#0",
+      "paths_cut": [
+        "p_d23e14daabccc38d"
+      ]
+    }
+  ],
+  "suppressions": [],
+  "notes": []
+}

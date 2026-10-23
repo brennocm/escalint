@@ -1,0 +1,13 @@
+digraph escalint {
+  graph [rankdir=LR, fontname="Helvetica"];
+  node [fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  "n_b2526cc0cb4d920d" [label="ec2.amazonaws.com\ntier 3", shape=component, color="#475467", tooltip="ec2.amazonaws.com"];
+  "n_c2cbe3128ebd6c08" [label="user/user-8c11fbde\ntier 1", shape=ellipse, color="#c4320a", tooltip="arn:aws:iam::448151736024:user/user-8c11fbde"];
+  "n_f6f451e9882a7155" [label="effective admin 448151736024\ntier 0", shape=doublecircle, color="#b42318", tooltip="effective admin (448151736024)"];
+  "n_ff5b1fb8802ec845" [label="role/role-e2a0fc00\ntier 2", shape=box, color="#b54708", tooltip="arn:aws:iam::448151736024:role/role-e2a0fc00"];
+  "n_b2526cc0cb4d920d" -> "n_ff5b1fb8802ec845" [label="trust", style=solid, tooltip="sts:AssumeRole"];
+  "n_c2cbe3128ebd6c08" -> "n_ff5b1fb8802ec845" [label="modify_permissions EL-PE-015,EL-PE-016,EL-PE-017", style=dotted, tooltip="iam:AttachRolePolicy, iam:CreatePolicyVersion, iam:PutRolePolicy"];
+  "n_c2cbe3128ebd6c08" -> "n_f6f451e9882a7155" [label="modify_permissions EL-PE-020", style=solid, tooltip="iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy"];
+  "n_c2cbe3128ebd6c08" -> "n_ff5b1fb8802ec845" [label="modify_trust EL-PE-013", style=solid, tooltip="iam:UpdateAssumeRolePolicy"];
+}

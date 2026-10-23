@@ -30,6 +30,12 @@ apply to the corresponding files.
   (https://docs.aws.amazon.com/service-authorization/latest/reference/service-reference.html).
 - escalint is not affiliated with or endorsed by Amazon Web Services.
 
+## SARIF 2.1.0 JSON schema (test data only)
+
+- File: `internal/report/testdata/sarif-2.1.0.json`, the OASIS SARIF 2.1.0
+  schema as distributed by SchemaStore (Apache License 2.0). Used only by
+  tests to validate SARIF output; not embedded in the binary.
+
 ## Fonts
 
 - Inter (`web/src/assets/fonts/InterVariable-latin.woff2`): SIL Open Font

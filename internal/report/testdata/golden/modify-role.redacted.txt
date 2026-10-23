@@ -1,0 +1,39 @@
+escalint dev: 1 account(s), 4 node(s), 4 edge(s), 1 path(s) to Tier 0; 1 critical, 4 high
+identifiers are redacted (pseudonyms are stable within this run only)
+
+arn:aws:iam::448151736024:user/user-8c11fbde (user, tier 1)
+  path p_d8cf8d85e45f8982 [CRITICAL, allowed, 1 step(s)]
+    1. arn:aws:iam::448151736024:user/user-8c11fbde --[modify_permissions EL-PE-020]--> effective admin (448151736024)
+  CRITICAL EL-PE-020 Modify a role's permissions and rewrite its trust
+    arn:aws:iam::448151736024:user/user-8c11fbde can act as effective admin of account 448151736024 using iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy
+    policy: inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443 statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_e3df706c2747e120
+  HIGH EL-PE-013 Rewrite a role's trust policy
+    arn:aws:iam::448151736024:user/user-8c11fbde can act as arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:UpdateAssumeRolePolicy
+    policy: inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443 statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.
+    id: f_bda73b1656309326
+  HIGH EL-PE-015 Attach a policy to a role it can assume (latent)
+    arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:AttachRolePolicy
+    policy: inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443 statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_97a78fa667267b69
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443 statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_36b6a62274bb3775
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443 statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_654abb3f74ec22ea
+
+Fix plan (cuts every enumerated path)
+  1. Remove iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy from statement #0 of inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443, or scope its Resource to exclude arn:aws:iam::448151736024:role/role-e2a0fc00 (cuts 1 path(s))

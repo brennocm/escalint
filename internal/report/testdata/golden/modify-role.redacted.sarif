@@ -1,0 +1,1098 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "escalint",
+          "version": "dev",
+          "informationUri": "https://github.com/brennocm/escalint",
+          "rules": [
+            {
+              "id": "EL-PARSE-001",
+              "name": "PolicyDocumentCouldNotBeParsed",
+              "shortDescription": {
+                "text": "Policy document could not be parsed"
+              },
+              "fullDescription": {
+                "text": "Policy document could not be parsed. Fix the policy so it is valid IAM JSON (AWS itself rejects most of these documents); until then, paths that depend on it are not analyzed."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PARSE-001.md",
+              "help": {
+                "text": "Policy document could not be parsed\n\nRemediation: Fix the policy so it is valid IAM JSON (AWS itself rejects most of these documents); until then, paths that depend on it are not analyzed.",
+                "markdown": "# EL-PARSE-001 — Policy document could not be parsed\n\n| | |\n| --- | --- |\n| Severity | info |\n| Category | parse |\n| Status | stable |\n\n## Description\n\nA policy in the snapshot is not valid IAM policy JSON: invalid JSON, a\nduplicate key, an unknown element, `null` where a value is required, an\nempty list, `NotPrincipal` with `Allow`, and similar cases (ADR 0023). The\nfinding names the policy and the location inside it.\n\n## Why it matters\n\nescalint never guesses what a broken policy means. The policy contributes\nnothing to the analysis, so an escalation path that depends on one of its\n`Allow` statements may be missing, and a `Deny` in it is not applied. AWS\nrejects most of these documents, so a finding usually means the snapshot was\nedited or produced by a tool with a bug.\n\n## Attack chain\n\nNot an attack by itself. A tampered snapshot could try to hide a path with\nan ambiguous document (for example two `Effect` keys); escalint reports it\ninstead of reading it differently from AWS.\n\n## Vulnerable example\n\n```json\n{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Deny\", \"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\"}}\n```\n\n## Fixed example\n\n```json\n{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Deny\", \"Action\": \"*\", \"Resource\": \"*\"}}\n```\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_grammar.html\n- docs/adr/0023-strict-json-for-untrusted-input.md\n"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "note",
+                "security-severity": "0.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "parse"
+                ]
+              }
+            },
+            {
+              "id": "EL-PARSE-002",
+              "name": "ReferencedPolicyOrGroupIsNotInTheSnapshot",
+              "shortDescription": {
+                "text": "Referenced policy or group is not in the snapshot"
+              },
+              "fullDescription": {
+                "text": "Referenced policy or group is not in the snapshot. Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PARSE-002.md",
+              "help": {
+                "text": "Referenced policy or group is not in the snapshot\n\nRemediation: Collect the snapshot again including AWS managed policies (get-account-authorization-details without filters); decisions that depend on the missing policy are conditional.",
+                "markdown": "# EL-PARSE-002 — Referenced policy or group is not in the snapshot\n\n| | |\n| --- | --- |\n| Severity | info |\n| Category | parse |\n| Status | stable |\n\n## Description\n\nA user, group or role references a managed policy, a permissions boundary\nor a group that the snapshot does not contain. This happens when\nauthorization details were collected with a filter (for example without\n`AWSManagedPolicy`).\n\n## Why it matters\n\nThe permissions of the missing policy are unknown, so every decision that\ndepends on it is `conditional`: it might allow, or deny, what the rest of\nthe policies say.\n\n## Attack chain\n\nNot an attack by itself; it reduces what the analysis can prove.\n\n## Vulnerable example\n\n```json\n{\"UserDetailList\": [{\"UserName\": \"alice\", \"AttachedManagedPolicies\": [{\"PolicyArn\": \"arn:aws:iam::aws:policy/ReadOnlyAccess\"}]}], \"Policies\": []}\n```\n\n## Fixed example\n\n```json\n{\"UserDetailList\": [{\"UserName\": \"alice\", \"AttachedManagedPolicies\": [{\"PolicyArn\": \"arn:aws:iam::aws:policy/ReadOnlyAccess\"}]}],\n \"Policies\": [{\"Arn\": \"arn:aws:iam::aws:policy/ReadOnlyAccess\", \"DefaultVersionId\": \"v1\", \"PolicyVersionList\": [\"…\"]}]}\n```\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html\n"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "note",
+                "security-severity": "0.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "parse"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-001",
+              "name": "CreateANewDefaultVersionOfAnAttachedPolicy",
+              "shortDescription": {
+                "text": "Create a new default version of an attached policy"
+              },
+              "fullDescription": {
+                "text": "Create a new default version of an attached policy. Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-001.md",
+              "help": {
+                "text": "Create a new default version of an attached policy\n\nRemediation: Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary.",
+                "markdown": "# EL-PE-001 — Create a new default version of an attached policy\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:CreatePolicyVersion` |\n| pathfinding.cloud | [iam-001](https://pathfinding.cloud/paths/aws/iam-001) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- a customer managed policy is attached to the actor (directly or through a group)\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:CreatePolicyVersion` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreatePolicyVersion\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:policy/AppPolicy\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreatePolicyVersion\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicyVersion.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-001](https://pathfinding.cloud/paths/aws/iam-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-002",
+              "name": "PutAnInlinePolicyOnItsOwnRole",
+              "shortDescription": {
+                "text": "Put an inline policy on its own role"
+              },
+              "fullDescription": {
+                "text": "Put an inline policy on its own role. Remove iam:PutRolePolicy from the role's policies, or scope its Resource to roles other than itself and add a permissions boundary that denies it."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-002.md",
+              "help": {
+                "text": "Put an inline policy on its own role\n\nRemediation: Remove iam:PutRolePolicy from the role's policies, or scope its Resource to roles other than itself and add a permissions boundary that denies it.",
+                "markdown": "# EL-PE-002 — Put an inline policy on its own role\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:PutRolePolicy` |\n| pathfinding.cloud | [iam-005](https://pathfinding.cloud/paths/aws/iam-005) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a role allowed iam:PutRolePolicy on its own ARN\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:PutRolePolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutRolePolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutRolePolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove iam:PutRolePolicy from the role's policies, or scope its Resource to roles other than itself and add a permissions boundary that denies it.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-005](https://pathfinding.cloud/paths/aws/iam-005)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-003",
+              "name": "PutAnInlinePolicyOnItsOwnUser",
+              "shortDescription": {
+                "text": "Put an inline policy on its own user"
+              },
+              "fullDescription": {
+                "text": "Put an inline policy on its own user. Remove iam:PutUserPolicy, or limit it with Resource and a permissions boundary so users cannot target themselves."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-003.md",
+              "help": {
+                "text": "Put an inline policy on its own user\n\nRemediation: Remove iam:PutUserPolicy, or limit it with Resource and a permissions boundary so users cannot target themselves.",
+                "markdown": "# EL-PE-003 — Put an inline policy on its own user\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:PutUserPolicy` |\n| pathfinding.cloud | [iam-007](https://pathfinding.cloud/paths/aws/iam-007) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a user allowed iam:PutUserPolicy on its own ARN\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:PutUserPolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutUserPolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutUserPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove iam:PutUserPolicy, or limit it with Resource and a permissions boundary so users cannot target themselves.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutUserPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-007](https://pathfinding.cloud/paths/aws/iam-007)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-004",
+              "name": "AttachAManagedPolicyToItsOwnUser",
+              "shortDescription": {
+                "text": "Attach a managed policy to its own user"
+              },
+              "fullDescription": {
+                "text": "Attach a managed policy to its own user. Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-004.md",
+              "help": {
+                "text": "Attach a managed policy to its own user\n\nRemediation: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+                "markdown": "# EL-PE-004 — Attach a managed policy to its own user\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachUserPolicy` |\n| pathfinding.cloud | [iam-008](https://pathfinding.cloud/paths/aws/iam-008) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a user\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:AttachUserPolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachUserPolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachUserPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-008](https://pathfinding.cloud/paths/aws/iam-008)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-005",
+              "name": "AttachAManagedPolicyToItsOwnRole",
+              "shortDescription": {
+                "text": "Attach a managed policy to its own role"
+              },
+              "fullDescription": {
+                "text": "Attach a managed policy to its own role. Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-005.md",
+              "help": {
+                "text": "Attach a managed policy to its own role\n\nRemediation: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.",
+                "markdown": "# EL-PE-005 — Attach a managed policy to its own role\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachRolePolicy` |\n| pathfinding.cloud | [iam-009](https://pathfinding.cloud/paths/aws/iam-009) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:AttachRolePolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachRolePolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachRolePolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-009](https://pathfinding.cloud/paths/aws/iam-009)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-006",
+              "name": "AttachAManagedPolicyToItsOwnGroup",
+              "shortDescription": {
+                "text": "Attach a managed policy to its own group"
+              },
+              "fullDescription": {
+                "text": "Attach a managed policy to its own group. Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-006.md",
+              "help": {
+                "text": "Attach a managed policy to its own group\n\nRemediation: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.",
+                "markdown": "# EL-PE-006 — Attach a managed policy to its own group\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachGroupPolicy` |\n| pathfinding.cloud | [iam-010](https://pathfinding.cloud/paths/aws/iam-010) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a member of the group\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:AttachGroupPolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachGroupPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:group/developers\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachGroupPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachGroupPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-010](https://pathfinding.cloud/paths/aws/iam-010)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-007",
+              "name": "PutAnInlinePolicyOnItsOwnGroup",
+              "shortDescription": {
+                "text": "Put an inline policy on its own group"
+              },
+              "fullDescription": {
+                "text": "Put an inline policy on its own group. Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-007.md",
+              "help": {
+                "text": "Put an inline policy on its own group\n\nRemediation: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.",
+                "markdown": "# EL-PE-007 — Put an inline policy on its own group\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:PutGroupPolicy` |\n| pathfinding.cloud | [iam-011](https://pathfinding.cloud/paths/aws/iam-011) |\n\n## Description\n\nThe principal can change its own permissions. Nothing else is needed to become an administrator of the account.\n\nPrerequisites:\n\n- the actor is a member of the group\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:PutGroupPolicy` on itself (or on a policy/group it already uses) with an administrative policy document.\n2. The new permissions apply immediately: the principal is now an effective administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutGroupPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:group/developers\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutGroupPolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-workers/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutGroupPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-011](https://pathfinding.cloud/paths/aws/iam-011)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-008",
+              "name": "AddItselfToAMorePrivilegedGroup",
+              "shortDescription": {
+                "text": "Add itself to a more privileged group"
+              },
+              "fullDescription": {
+                "text": "Add itself to a more privileged group. Scope iam:AddUserToGroup to specific groups and never allow it on groups with administrative policies."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-008.md",
+              "help": {
+                "text": "Add itself to a more privileged group\n\nRemediation: Scope iam:AddUserToGroup to specific groups and never allow it on groups with administrative policies.",
+                "markdown": "# EL-PE-008 — Add itself to a more privileged group\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | self-escalation |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AddUserToGroup` |\n| pathfinding.cloud | [iam-013](https://pathfinding.cloud/paths/aws/iam-013) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the actor is a user that is not yet a member\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The user calls `iam:AddUserToGroup` to join `arn:aws:iam::111111111111:group/admins`.\n2. The group's policies apply to the user immediately.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AddUserToGroup\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AddUserToGroup\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:group/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:AddUserToGroup to specific groups and never allow it on groups with administrative policies.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AddUserToGroup.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-013](https://pathfinding.cloud/paths/aws/iam-013)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "self-escalation",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-009",
+              "name": "CreateAnAccessKeyForAnotherUser",
+              "shortDescription": {
+                "text": "Create an access key for another user"
+              },
+              "fullDescription": {
+                "text": "Create an access key for another user. Scope iam:CreateAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username})."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-009.md",
+              "help": {
+                "text": "Create an access key for another user\n\nRemediation: Scope iam:CreateAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
+                "markdown": "# EL-PE-009 — Create an access key for another user\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `credential` |\n| Required actions | `iam:CreateAccessKey` |\n| pathfinding.cloud | [iam-002](https://pathfinding.cloud/paths/aws/iam-002) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the target user has fewer than 2 access keys\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:CreateAccessKey` for `arn:aws:iam::111111111111:user/target`.\n2. It signs in or calls AWS as that user, with the user's permissions.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:user/${aws:username}\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:CreateAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-002](https://pathfinding.cloud/paths/aws/iam-002)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.001",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-010",
+              "name": "RotateOutAndCreateAnAccessKeyForAnotherUser",
+              "shortDescription": {
+                "text": "Rotate out and create an access key for another user"
+              },
+              "fullDescription": {
+                "text": "Rotate out and create an access key for another user. Scope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username})."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-010.md",
+              "help": {
+                "text": "Rotate out and create an access key for another user\n\nRemediation: Scope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).",
+                "markdown": "# EL-PE-010 — Rotate out and create an access key for another user\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `credential` |\n| Required actions | `iam:CreateAccessKey`, `iam:DeleteAccessKey` |\n| pathfinding.cloud | [iam-003](https://pathfinding.cloud/paths/aws/iam-003) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the target is an IAM user\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:CreateAccessKey` for `arn:aws:iam::111111111111:user/target`.\n2. It signs in or calls AWS as that user, with the user's permissions.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\",\n        \"iam:DeleteAccessKey\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\",\n        \"iam:DeleteAccessKey\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:user/${aws:username}\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:CreateAccessKey and iam:DeleteAccessKey to the caller's own user (arn:aws:iam::\u003caccount\u003e:user/${aws:username}).\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-003](https://pathfinding.cloud/paths/aws/iam-003)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.001",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-011",
+              "name": "CreateAConsolePasswordForAnotherUser",
+              "shortDescription": {
+                "text": "Create a console password for another user"
+              },
+              "fullDescription": {
+                "text": "Create a console password for another user. Scope iam:CreateLoginProfile to the caller's own user and require MFA for console access."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-011.md",
+              "help": {
+                "text": "Create a console password for another user\n\nRemediation: Scope iam:CreateLoginProfile to the caller's own user and require MFA for console access.",
+                "markdown": "# EL-PE-011 — Create a console password for another user\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `credential` |\n| Required actions | `iam:CreateLoginProfile` |\n| pathfinding.cloud | [iam-004](https://pathfinding.cloud/paths/aws/iam-004) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the target user has no console password yet\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:CreateLoginProfile` for `arn:aws:iam::111111111111:user/target`.\n2. It signs in or calls AWS as that user, with the user's permissions.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateLoginProfile\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateLoginProfile\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:user/${aws:username}\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:CreateLoginProfile to the caller's own user and require MFA for console access.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateLoginProfile.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-004](https://pathfinding.cloud/paths/aws/iam-004)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.001",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-012",
+              "name": "ChangeAnotherUserSConsolePassword",
+              "shortDescription": {
+                "text": "Change another user's console password"
+              },
+              "fullDescription": {
+                "text": "Change another user's console password. Scope iam:UpdateLoginProfile to the caller's own user and enforce MFA for every console user."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-012.md",
+              "help": {
+                "text": "Change another user's console password\n\nRemediation: Scope iam:UpdateLoginProfile to the caller's own user and enforce MFA for every console user.",
+                "markdown": "# EL-PE-012 — Change another user's console password\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `credential` |\n| Required actions | `iam:UpdateLoginProfile` |\n| pathfinding.cloud | [iam-006](https://pathfinding.cloud/paths/aws/iam-006) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the target user has a console password\n- MFA on the target may still block console use\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:UpdateLoginProfile` for `arn:aws:iam::111111111111:user/target`.\n2. It signs in or calls AWS as that user, with the user's permissions.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:UpdateLoginProfile\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:UpdateLoginProfile\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:user/${aws:username}\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:UpdateLoginProfile to the caller's own user and enforce MFA for every console user.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateLoginProfile.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-006](https://pathfinding.cloud/paths/aws/iam-006)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.001",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-013",
+              "name": "RewriteARoleSTrustPolicy",
+              "shortDescription": {
+                "text": "Rewrite a role's trust policy"
+              },
+              "fullDescription": {
+                "text": "Rewrite a role's trust policy. Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-013.md",
+              "help": {
+                "text": "Rewrite a role's trust policy\n\nRemediation: Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.",
+                "markdown": "# EL-PE-013 — Rewrite a role's trust policy\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_trust` |\n| Required actions | `iam:UpdateAssumeRolePolicy` |\n| pathfinding.cloud | [iam-012](https://pathfinding.cloud/paths/aws/iam-012) |\n\n## Description\n\nThe principal can take over another IAM principal by acting on its credentials, trust policy or group membership.\n\nPrerequisites:\n\n- the target role is not service-linked\n- the actor can assume the role once the trust names it\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `iam:UpdateAssumeRolePolicy` on `arn:aws:iam::111111111111:role/target` and makes the trust name itself.\n2. It calls `sts:AssumeRole` on the role and receives its credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:UpdateAssumeRolePolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:UpdateAssumeRolePolicy\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRestrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateAssumeRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-012](https://pathfinding.cloud/paths/aws/iam-012)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-014",
+              "name": "AssumeAMorePrivilegedRole",
+              "shortDescription": {
+                "text": "Assume a more privileged role"
+              },
+              "fullDescription": {
+                "text": "Assume a more privileged role. Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-014.md",
+              "help": {
+                "text": "Assume a more privileged role\n\nRemediation: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.",
+                "markdown": "# EL-PE-014 — Assume a more privileged role\n\n| | |\n| --- | --- |\n| Severity | medium (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `assume` |\n| Required actions | `sts:AssumeRole` |\n| pathfinding.cloud | [sts-001](https://pathfinding.cloud/paths/aws/sts-001) |\n\n## Description\n\nThe principal can assume a role whose permissions exceed its own.\n\nPrerequisites:\n\n- the role's trust policy accepts the actor (docs/research.md §2.4)\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal calls `sts:AssumeRole` on a role whose trust policy accepts it.\n2. It acts with the role's permissions.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::111111111111:root\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::111111111111:role/deployer\"\n      },\n      \"Action\": \"sts:AssumeRole\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:MultiFactorAuthPresent\": \"true\"\n        }\n      }\n    }\n  ]\n}\n```\n\n## Remediation\n\nName only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.\n\n## References\n\n- https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [sts-001](https://pathfinding.cloud/paths/aws/sts-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "warning",
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1548.005",
+                  "external/attack/t1078.004",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-015",
+              "name": "AttachAPolicyToARoleItCanAssume",
+              "shortDescription": {
+                "text": "Attach a policy to a role it can assume"
+              },
+              "fullDescription": {
+                "text": "Attach a policy to a role it can assume. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-015.md",
+              "help": {
+                "text": "Attach a policy to a role it can assume\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-015 — Attach a policy to a role it can assume\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachRolePolicy`, `sts:AssumeRole` |\n| pathfinding.cloud | [iam-014](https://pathfinding.cloud/paths/aws/iam-014) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- the actor can already assume the role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:AttachRolePolicy`).\n2. It becomes that principal (`sts:AssumeRole`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachRolePolicy\",\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-014](https://pathfinding.cloud/paths/aws/iam-014)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-016",
+              "name": "CreateANewPolicyVersionForARoleItCanAssume",
+              "shortDescription": {
+                "text": "Create a new policy version for a role it can assume"
+              },
+              "fullDescription": {
+                "text": "Create a new policy version for a role it can assume. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-016.md",
+              "help": {
+                "text": "Create a new policy version for a role it can assume\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-016 — Create a new policy version for a role it can assume\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:CreatePolicyVersion`, `sts:AssumeRole` |\n| pathfinding.cloud | [iam-016](https://pathfinding.cloud/paths/aws/iam-016) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- a customer managed policy is attached to the role\n- the actor can already assume the role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:CreatePolicyVersion`).\n2. It becomes that principal (`sts:AssumeRole`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreatePolicyVersion\",\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicyVersion.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-016](https://pathfinding.cloud/paths/aws/iam-016)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-017",
+              "name": "PutAnInlinePolicyOnARoleItCanAssume",
+              "shortDescription": {
+                "text": "Put an inline policy on a role it can assume"
+              },
+              "fullDescription": {
+                "text": "Put an inline policy on a role it can assume. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-017.md",
+              "help": {
+                "text": "Put an inline policy on a role it can assume\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-017 — Put an inline policy on a role it can assume\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:PutRolePolicy`, `sts:AssumeRole` |\n| pathfinding.cloud | [iam-017](https://pathfinding.cloud/paths/aws/iam-017) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- the actor can already assume the role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:PutRolePolicy`).\n2. It becomes that principal (`sts:AssumeRole`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutRolePolicy\",\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"sts:AssumeRole\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-017](https://pathfinding.cloud/paths/aws/iam-017)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-018",
+              "name": "AttachAPolicyToAUserAndCreateItsAccessKey",
+              "shortDescription": {
+                "text": "Attach a policy to a user and create its access key"
+              },
+              "fullDescription": {
+                "text": "Attach a policy to a user and create its access key. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-018.md",
+              "help": {
+                "text": "Attach a policy to a user and create its access key\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-018 — Attach a policy to a user and create its access key\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachUserPolicy`, `iam:CreateAccessKey` |\n| pathfinding.cloud | [iam-015](https://pathfinding.cloud/paths/aws/iam-015) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- the actor can create credentials for the user\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:AttachUserPolicy`).\n2. It becomes that principal (`iam:CreateAccessKey`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachUserPolicy\",\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-015](https://pathfinding.cloud/paths/aws/iam-015)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/attack/t1098.001",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-019",
+              "name": "PutAnInlinePolicyOnAUserAndCreateItsAccessKey",
+              "shortDescription": {
+                "text": "Put an inline policy on a user and create its access key"
+              },
+              "fullDescription": {
+                "text": "Put an inline policy on a user and create its access key. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-019.md",
+              "help": {
+                "text": "Put an inline policy on a user and create its access key\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-019 — Put an inline policy on a user and create its access key\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:PutUserPolicy`, `iam:CreateAccessKey` |\n| pathfinding.cloud | [iam-018](https://pathfinding.cloud/paths/aws/iam-018) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- the actor can create credentials for the user\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:PutUserPolicy`).\n2. It becomes that principal (`iam:CreateAccessKey`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PutUserPolicy\",\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:CreateAccessKey\"\n      ],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutUserPolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-018](https://pathfinding.cloud/paths/aws/iam-018)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/attack/t1098.001",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-020",
+              "name": "ModifyARoleSPermissionsAndRewriteItsTrust",
+              "shortDescription": {
+                "text": "Modify a role's permissions and rewrite its trust"
+              },
+              "fullDescription": {
+                "text": "Modify a role's permissions and rewrite its trust. Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-020.md",
+              "help": {
+                "text": "Modify a role's permissions and rewrite its trust\n\nRemediation: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.",
+                "markdown": "# EL-PE-020 — Modify a role's permissions and rewrite its trust\n\n| | |\n| --- | --- |\n| Severity | critical (critical when the edge is on a path to Tier 0) |\n| Category | principal-access |\n| Status | stable |\n| Edge | `modify_permissions` |\n| Required actions | `iam:AttachRolePolicy`, `iam:CreatePolicyVersion`, `iam:PutRolePolicy`, `iam:UpdateAssumeRolePolicy` |\n| pathfinding.cloud | [iam-019](https://pathfinding.cloud/paths/aws/iam-019), [iam-020](https://pathfinding.cloud/paths/aws/iam-020), [iam-021](https://pathfinding.cloud/paths/aws/iam-021) |\n\n## Description\n\nThe principal can raise the permissions of another principal and then act as it, turning a partial privilege into administrator access.\n\nPrerequisites:\n\n- one of the permission actions plus iam:UpdateAssumeRolePolicy on the role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal grants administrative permissions to a principal it can become (`iam:AttachRolePolicy`).\n2. It becomes that principal (`iam:CreatePolicyVersion`, `iam:PutRolePolicy`, `iam:UpdateAssumeRolePolicy`) and acts as an administrator.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:AttachRolePolicy\",\n        \"iam:CreatePolicyVersion\",\n        \"iam:PutRolePolicy\",\n        \"iam:UpdateAssumeRolePolicy\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [],\n      \"Resource\": \"arn:aws:iam::111111111111:role/team-a/*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRemove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateAssumeRolePolicy.html\n- https://cwe.mitre.org/data/definitions/269.html\n- pathfinding.cloud: [iam-019](https://pathfinding.cloud/paths/aws/iam-019), [iam-020](https://pathfinding.cloud/paths/aws/iam-020), [iam-021](https://pathfinding.cloud/paths/aws/iam-021)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "iam",
+                  "principal-access",
+                  "external/attack/t1098.003",
+                  "external/cwe/cwe-269"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-021",
+              "name": "PassARoleToANewEC2Instance",
+              "shortDescription": {
+                "text": "Pass a role to a new EC2 instance"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new EC2 instance. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"ec2.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-021.md",
+              "help": {
+                "text": "Pass a role to a new EC2 instance\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"ec2.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-021 — Pass a role to a new EC2 instance\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `ec2:RunInstances` |\n| pathfinding.cloud | [ec2-001](https://pathfinding.cloud/paths/aws/ec2-001) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts ec2.amazonaws.com\n- the role is in an instance profile\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`ec2:RunInstances`) and passes a privileged role that trusts `ec2.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"ec2:RunInstances\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"ec2.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"ec2:RunInstances\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"ec2.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [ec2-001](https://pathfinding.cloud/paths/aws/ec2-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-022",
+              "name": "PassARoleToANewLambdaFunctionAndInvokeIt",
+              "shortDescription": {
+                "text": "Pass a role to a new Lambda function and invoke it"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new Lambda function and invoke it. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-022.md",
+              "help": {
+                "text": "Pass a role to a new Lambda function and invoke it\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-022 — Pass a role to a new Lambda function and invoke it\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `lambda:CreateFunction`, `lambda:InvokeFunction` |\n| pathfinding.cloud | [lambda-001](https://pathfinding.cloud/paths/aws/lambda-001) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts lambda.amazonaws.com\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`lambda:CreateFunction`, `lambda:InvokeFunction`) and passes a privileged role that trusts `lambda.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"lambda:CreateFunction\",\n        \"lambda:InvokeFunction\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"lambda.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"lambda:CreateFunction\",\n        \"lambda:InvokeFunction\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"lambda.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [lambda-001](https://pathfinding.cloud/paths/aws/lambda-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/attack/t1648",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-023",
+              "name": "PassARoleToANewCloudFormationStack",
+              "shortDescription": {
+                "text": "Pass a role to a new CloudFormation stack"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new CloudFormation stack. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"cloudformation.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-023.md",
+              "help": {
+                "text": "Pass a role to a new CloudFormation stack\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"cloudformation.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-023 — Pass a role to a new CloudFormation stack\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `cloudformation:CreateStack` |\n| pathfinding.cloud | [cloudformation-001](https://pathfinding.cloud/paths/aws/cloudformation-001) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts cloudformation.amazonaws.com\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`cloudformation:CreateStack`) and passes a privileged role that trusts `cloudformation.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"cloudformation:CreateStack\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"cloudformation.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"cloudformation:CreateStack\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"cloudformation.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [cloudformation-001](https://pathfinding.cloud/paths/aws/cloudformation-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-024",
+              "name": "PassARoleToANewCodeBuildProject",
+              "shortDescription": {
+                "text": "Pass a role to a new CodeBuild project"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new CodeBuild project. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"codebuild.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-024.md",
+              "help": {
+                "text": "Pass a role to a new CodeBuild project\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"codebuild.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-024 — Pass a role to a new CodeBuild project\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `codebuild:CreateProject`, `codebuild:StartBuild` |\n| pathfinding.cloud | [codebuild-001](https://pathfinding.cloud/paths/aws/codebuild-001) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts codebuild.amazonaws.com\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`codebuild:CreateProject`, `codebuild:StartBuild`) and passes a privileged role that trusts `codebuild.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"codebuild:CreateProject\",\n        \"codebuild:StartBuild\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"codebuild.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"codebuild:CreateProject\",\n        \"codebuild:StartBuild\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"codebuild.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [codebuild-001](https://pathfinding.cloud/paths/aws/codebuild-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-025",
+              "name": "PassARoleToANewGlueJob",
+              "shortDescription": {
+                "text": "Pass a role to a new Glue job"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new Glue job. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"glue.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-025.md",
+              "help": {
+                "text": "Pass a role to a new Glue job\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"glue.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-025 — Pass a role to a new Glue job\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `glue:CreateJob`, `glue:StartJobRun` |\n| pathfinding.cloud | [glue-003](https://pathfinding.cloud/paths/aws/glue-003) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts glue.amazonaws.com\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`glue:CreateJob`, `glue:StartJobRun`) and passes a privileged role that trusts `glue.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"glue:CreateJob\",\n        \"glue:StartJobRun\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"glue.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"glue:CreateJob\",\n        \"glue:StartJobRun\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"glue.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [glue-003](https://pathfinding.cloud/paths/aws/glue-003)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-027",
+              "name": "PassARoleToANewSageMakerNotebook",
+              "shortDescription": {
+                "text": "Pass a role to a new SageMaker notebook"
+              },
+              "fullDescription": {
+                "text": "Pass a role to a new SageMaker notebook. Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"sagemaker.amazonaws.com\"}} only for those roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-027.md",
+              "help": {
+                "text": "Pass a role to a new SageMaker notebook\n\nRemediation: Scope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"sagemaker.amazonaws.com\"}} only for those roles.",
+                "markdown": "# EL-PE-027 — Pass a role to a new SageMaker notebook\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | new-passrole |\n| Status | stable |\n| Edge | `passrole_compute` |\n| Required actions | `iam:PassRole`, `sagemaker:CreateNotebookInstance` |\n| pathfinding.cloud | [sagemaker-001](https://pathfinding.cloud/paths/aws/sagemaker-001) |\n\n## Description\n\nThe principal can create a compute resource and give it a role it does not hold. Whatever runs on that resource gets the role's permissions.\n\nPrerequisites:\n\n- the role trusts sagemaker.amazonaws.com\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal creates a new resource (`sagemaker:CreateNotebookInstance`) and passes a privileged role that trusts `sagemaker.amazonaws.com`.\n2. Code it controls runs with the role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"iam:PassRole\",\n        \"sagemaker:CreateNotebookInstance\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"iam:PassRole\",\n      \"Resource\": \"arn:aws:iam::111111111111:role/app-runtime-*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"iam:PassedToService\": \"sagemaker.amazonaws.com\"\n        }\n      }\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"sagemaker:CreateNotebookInstance\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nScope iam:PassRole to the roles the caller must pass and add \"Condition\": {\"StringEquals\": {\"iam:PassedToService\": \"sagemaker.amazonaws.com\"}} only for those roles.\n\n## References\n\n- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [sagemaker-001](https://pathfinding.cloud/paths/aws/sagemaker-001)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "new-passrole",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            },
+            {
+              "id": "EL-PE-028",
+              "name": "UpdateTheCodeOfAnExistingLambdaFunctionAndInvokeIt",
+              "shortDescription": {
+                "text": "Update the code of an existing Lambda function and invoke it"
+              },
+              "fullDescription": {
+                "text": "Update the code of an existing Lambda function and invoke it. Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles."
+              },
+              "helpUri": "https://github.com/brennocm/escalint/blob/main/docs/rules/EL-PE-028.md",
+              "help": {
+                "text": "Update the code of an existing Lambda function and invoke it\n\nRemediation: Restrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.",
+                "markdown": "# EL-PE-028 — Update the code of an existing Lambda function and invoke it\n\n| | |\n| --- | --- |\n| Severity | high (critical when the edge is on a path to Tier 0) |\n| Category | existing-passrole |\n| Status | stable |\n| Edge | `update_code` |\n| Required actions | `lambda:UpdateFunctionCode`, `lambda:InvokeFunction` |\n| pathfinding.cloud | [lambda-004](https://pathfinding.cloud/paths/aws/lambda-004) |\n\n## Description\n\nThe principal can change what an existing resource runs, and that resource already has a role. The new code runs with the role's permissions.\n\nPrerequisites:\n\n- a Lambda function runs with the role\n\n## Why it matters\n\nEscalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.\n\n## Attack chain\n\n1. The principal changes what an existing resource runs (`lambda:UpdateFunctionCode`, `lambda:InvokeFunction`).\n2. The resource executes that code with its role's credentials.\n\n## Vulnerable example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"lambda:UpdateFunctionCode\",\n        \"lambda:InvokeFunction\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\n## Fixed example\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"lambda:UpdateFunctionCode\",\n        \"lambda:InvokeFunction\"\n      ],\n      \"Resource\": \"arn:aws:lambda:*:111111111111:function:team-a-*\"\n    }\n  ]\n}\n```\n\n## Remediation\n\nRestrict lambda:UpdateFunctionCode and lambda:InvokeFunction to the resources the caller owns; separate deployment roles from runtime roles.\n\n## References\n\n- https://cwe.mitre.org/data/definitions/266.html\n- pathfinding.cloud: [lambda-004](https://pathfinding.cloud/paths/aws/lambda-004)\n"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "precision": "high",
+                "problem.severity": "error",
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "iam",
+                  "existing-passrole",
+                  "external/attack/t1648",
+                  "external/attack/t1548.005",
+                  "external/cwe/cwe-266"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "EL-PE-020",
+          "ruleIndex": 21,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::448151736024:user/user-8c11fbde can act as effective admin of account 448151736024 using iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/modify-role.json"
+                },
+                "region": {
+                  "startLine": 92
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::448151736024:user/user-8c11fbde",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_e3df706c2747e120"
+          },
+          "properties": {
+            "edge_id": "e_b9723a9d0275f609",
+            "latent": false,
+            "path_id": "p_d8cf8d85e45f8982",
+            "severity": "critical"
+          }
+        },
+        {
+          "ruleId": "EL-PE-013",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::448151736024:user/user-8c11fbde can act as arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:UpdateAssumeRolePolicy. Fix: Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/modify-role.json"
+                },
+                "region": {
+                  "startLine": 92
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::448151736024:user/user-8c11fbde",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_bda73b1656309326"
+          },
+          "properties": {
+            "edge_id": "e_deeddd085578bf99",
+            "latent": false,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-015",
+          "ruleIndex": 16,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:AttachRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/modify-role.json"
+                },
+                "region": {
+                  "startLine": 92
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::448151736024:user/user-8c11fbde",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_97a78fa667267b69"
+          },
+          "properties": {
+            "edge_id": "e_876021195da8f397",
+            "latent": true,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-016",
+          "ruleIndex": 17,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:CreatePolicyVersion. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/modify-role.json"
+                },
+                "region": {
+                  "startLine": 92
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::448151736024:user/user-8c11fbde",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_36b6a62274bb3775"
+          },
+          "properties": {
+            "edge_id": "e_876021195da8f397",
+            "latent": true,
+            "severity": "high"
+          }
+        },
+        {
+          "ruleId": "EL-PE-017",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "arn:aws:iam::448151736024:user/user-8c11fbde can modify the permissions of arn:aws:iam::448151736024:role/role-e2a0fc00 using iam:PutRolePolicy. Fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "snapshots/modify-role.json"
+                },
+                "region": {
+                  "startLine": 92
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "arn:aws:iam::448151736024:user/user-8c11fbde",
+                  "kind": "resource"
+                },
+                {
+                  "fullyQualifiedName": "inline:arn:aws:iam::448151736024:user/user-8c11fbde/inline-107ca443",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "escalint/v1": "f_654abb3f74ec22ea"
+          },
+          "properties": {
+            "edge_id": "e_876021195da8f397",
+            "latent": true,
+            "severity": "high"
+          }
+        }
+      ],
+      "columnKind": "utf16CodeUnits",
+      "properties": {
+        "paths": 1,
+        "redacted": true
+      }
+    }
+  ]
+}

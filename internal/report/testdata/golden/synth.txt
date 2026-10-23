@@ -1,0 +1,308 @@
+escalint dev: 1 account(s), 31 node(s), 46 edge(s), 3 path(s) to Tier 0; 3 critical, 38 high, 6 medium
+
+arn:aws:iam::402251546283:role/service/security-etl-dev (role, tier 1)
+  path p_095bd0ae4052fc95 [CRITICAL, allowed, 1 step(s)]
+    1. arn:aws:iam::402251546283:role/service/security-etl-dev --[modify_permissions EL-PE-005]--> effective admin (402251546283)
+  CRITICAL EL-PE-005 Attach a managed policy to its own role
+    arn:aws:iam::402251546283:role/service/security-etl-dev can act as effective admin of account 402251546283 using iam:AttachRolePolicy
+    policy: inline:arn:aws:iam::402251546283:role/service/security-etl-dev/escalation-scheduler statement #0 (snapshot line 764)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.
+    id: f_55f8f17e0fd5098e
+
+arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller (user, tier 1)
+  path p_bf5b6ad35c382d41 [CRITICAL, allowed, 1 step(s)]
+    1. arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller --[modify_permissions EL-PE-001]--> effective admin (402251546283)
+  CRITICAL EL-PE-001 Create a new default version of an attached policy
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can act as effective admin of account 402251546283 using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove iam:CreatePolicyVersion or scope it to policies that are not attached to the caller; deny it in a permissions boundary.
+    id: f_3151540eeee57d4d
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_37d19097b8ba4757
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_3853ae3d3b22a8d6
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_a8522cf49811757b
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_b5c5550ec6fc1698
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_5d93e9e25a3ed09c
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_5e4724aa472c3623
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_9704bfa2ff50c65e
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker statement #1 (snapshot line 189)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_b39166677803b74e
+
+arn:aws:iam::402251546283:user/teams/platform/diego.silva (user, tier 1)
+  path p_60951fb19205f376 [CRITICAL, allowed, 1 step(s)]
+    1. arn:aws:iam::402251546283:user/teams/platform/diego.silva --[modify_permissions EL-PE-004]--> effective admin (402251546283)
+  CRITICAL EL-PE-004 Attach a managed policy to its own user
+    arn:aws:iam::402251546283:user/teams/platform/diego.silva can act as effective admin of account 402251546283 using iam:AttachUserPolicy
+    policy: inline:arn:aws:iam::402251546283:user/teams/platform/diego.silva/escalation-gateway statement #0 (snapshot line 55)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the action from the principal's policies, scope its Resource to other entities, or add a permissions boundary that denies it. A condition on iam:PolicyARN can limit which policies may be attached.
+    id: f_2d8d362b4696759a
+
+arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev (role, tier 2)
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_2876d27465c747cf
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_603d3c5c20b6b2b1
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #0 (snapshot line 896)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_9e25708e749f22d5
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_f91006c90b2ea909
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_3dcdb4b4497df880
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_60781930e75b0418
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #0 (snapshot line 896)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_b68caa717c6da630
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev/escalation-ingest statement #1 (snapshot line 905)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_f7193b94c2562938
+
+arn:aws:iam::402251546283:user/otto.mueller-2 (user, tier 2)
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_120e96f2c78cb156
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_18b73911d0eae6b5
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_338f11be061dda5f
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_47236a7d7c5c7a91
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_4a48eb11801e1f94
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_4a925b4f2e7c1331
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-ingest-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_59d787ecfcb652c1
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/service/security-etl-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_921e9eae929bf98a
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_ca1380dc8ce80808
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-api-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_cbb82dc68164d08d
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-gateway-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_fbedea0b7dc0a790
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/identity/growth-reporting-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_16fcd7f58db026b2
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/payments/mobile-deploy-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_33b7020cae1746d8
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-api-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_383f15cb3e7c2428
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/service/security-etl-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_4c8e487a3807815b
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-ingest-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_62574bb82753647e
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/search-reporting-staging using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_641af1e13dc6aea2
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/security-api-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_6bf305e57ff4184a
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/data-api-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_90eabd55daf953a7
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/infra/growth-etl-staging using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_94dc1eeb761bb5f0
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_9b14a88e74c88ee5
+  HIGH EL-PE-020 Modify a role's permissions and rewrite its trust (latent)
+    arn:aws:iam::402251546283:user/otto.mueller-2 can modify the permissions of arn:aws:iam::402251546283:role/infra-gateway-prod using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::402251546283:user/otto.mueller-2/escalation-ingest-2 statement #0 (snapshot line 334)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_e98ad394101555c0
+
+arn:aws:iam::402251546283:role/growth-etl-dev (role, tier 0)
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:role/growth-etl-dev/administrator statement #0 (snapshot line 427)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_1f351aec783c60c7
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/infra-ingest-prod using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:role/growth-etl-dev/administrator statement #0 (snapshot line 427)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_76a8364288102d0b
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:role/growth-etl-dev can act as arn:aws:iam::402251546283:role/service/security-etl-dev using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:role/growth-etl-dev/administrator statement #0 (snapshot line 427)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_fd41cc3ffaf20bd6
+
+arn:aws:iam::402251546283:user/service/nadia.smith (user, tier 0)
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/infra-ingest-prod using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:user/service/nadia.smith/administrator-2 statement #0 (snapshot line 25)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_25c952edca7ab405
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/service/security-etl-dev using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:user/service/nadia.smith/administrator-2 statement #0 (snapshot line 25)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_70371c683e45c02e
+  MEDIUM EL-PE-014 Assume a more privileged role
+    arn:aws:iam::402251546283:user/service/nadia.smith can act as arn:aws:iam::402251546283:role/teams/security/data-gateway-dev using sts:AssumeRole
+    policy: inline:arn:aws:iam::402251546283:user/service/nadia.smith/administrator-2 statement #0 (snapshot line 25)
+    ATT&CK: T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access; T1078.004 Valid Accounts: Cloud Accounts
+    fix: Name only the principals that need the role in its trust policy, add conditions (sts:ExternalId, aws:PrincipalOrgID, MFA) and scope sts:AssumeRole in identity policies to specific role ARNs.
+    id: f_c2be97f147e86a4a
+
+Fix plan (cuts every enumerated path)
+  1. Remove iam:AttachUserPolicy from statement #0 of inline:arn:aws:iam::402251546283:user/teams/platform/diego.silva/escalation-gateway (cuts 1 path(s))
+  2. Remove iam:CreatePolicyVersion from statement #1 of inline:arn:aws:iam::402251546283:user/teams/identity/gabriel.mueller/escalation-worker (cuts 1 path(s))
+  3. Remove iam:AttachRolePolicy from statement #0 of inline:arn:aws:iam::402251546283:role/service/security-etl-dev/escalation-scheduler (cuts 1 path(s))

@@ -1,0 +1,38 @@
+escalint dev: 1 account(s), 4 node(s), 4 edge(s), 1 path(s) to Tier 0; 1 critical, 4 high
+
+arn:aws:iam::111111111111:user/attacker (user, tier 1)
+  path p_892d4eb8041727f7 [CRITICAL, allowed, 1 step(s)]
+    1. arn:aws:iam::111111111111:user/attacker --[modify_permissions EL-PE-020]--> effective admin (111111111111)
+  CRITICAL EL-PE-020 Modify a role's permissions and rewrite its trust
+    arn:aws:iam::111111111111:user/attacker can act as effective admin of account 111111111111 using iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy
+    policy: inline:arn:aws:iam::111111111111:user/attacker/p statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_f3a444cda88ece4f
+  HIGH EL-PE-013 Rewrite a role's trust policy
+    arn:aws:iam::111111111111:user/attacker can act as arn:aws:iam::111111111111:role/victim-role using iam:UpdateAssumeRolePolicy
+    policy: inline:arn:aws:iam::111111111111:user/attacker/p statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles
+    fix: Restrict iam:UpdateAssumeRolePolicy to administrators, scope it to specific role ARNs, or deny it in a permissions boundary.
+    id: f_3c18fbb8bca58cc9
+  HIGH EL-PE-015 Attach a policy to a role it can assume (latent)
+    arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:AttachRolePolicy
+    policy: inline:arn:aws:iam::111111111111:user/attacker/p statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_33799fec1fb1d893
+  HIGH EL-PE-016 Create a new policy version for a role it can assume (latent)
+    arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:CreatePolicyVersion
+    policy: inline:arn:aws:iam::111111111111:user/attacker/p statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_8d2be409b6f7d84a
+  HIGH EL-PE-017 Put an inline policy on a role it can assume (latent)
+    arn:aws:iam::111111111111:user/attacker can modify the permissions of arn:aws:iam::111111111111:role/victim-role using iam:PutRolePolicy
+    policy: inline:arn:aws:iam::111111111111:user/attacker/p statement #0 (snapshot line 92)
+    ATT&CK: T1098.003 Account Manipulation: Additional Cloud Roles; T1548.005 Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access
+    fix: Remove the permission-management action on other principals, or deny it in a permissions boundary; also review how the caller can act as the target.
+    id: f_164b76ce473b4efb
+
+Fix plan (cuts every enumerated path)
+  1. Remove iam:AttachRolePolicy, iam:UpdateAssumeRolePolicy from statement #0 of inline:arn:aws:iam::111111111111:user/attacker/p, or scope its Resource to exclude arn:aws:iam::111111111111:role/victim-role (cuts 1 path(s))
