@@ -148,3 +148,13 @@ describe('DemoBanner', () => {
     expect(screen.getByRole('combobox', { name: 'Dataset' })).toBeTruthy();
   });
 });
+
+describe('clip', () => {
+  it('bounds tampered names', async () => {
+    const { clip, maxNameLength } = await import('./names');
+    expect(clip('a'.repeat(10))).toBe('a'.repeat(10));
+    const long = clip('a'.repeat(70_000));
+    expect(long.length).toBe(maxNameLength);
+    expect(long.endsWith('…')).toBe(true);
+  });
+});
