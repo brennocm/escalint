@@ -32,6 +32,12 @@ linters:
   exclusions:
     presets:
       - std-error-handling
+    rules:
+      # Tests read fixtures from testdata/ by name; G304 (file inclusion via a
+      # variable path) does not apply to that.
+      - path: _test\.go
+        linters: [gosec]
+        text: G304
 
 formatters:
   enable:
