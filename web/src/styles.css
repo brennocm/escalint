@@ -1132,3 +1132,33 @@ kbd {
 .json__comma {
   color: var(--color-text-muted);
 }
+
+/* ---- Reach --------------------------------------------------------- */
+
+.reach__canvas {
+  overflow: auto;
+  max-height: 72vh;
+}
+
+.reach__ring {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-dasharray: 2 6;
+}
+
+.reach__node {
+  cursor: pointer;
+  outline: none;
+}
+
+.reach__node:focus-visible {
+  outline: 2px solid var(--color-focus);
+}
+
+.reach__label {
+  fill: var(--color-text);
+  font-size: 11px;
+  paint-order: stroke;
+  stroke: var(--color-bg);
+  stroke-width: 3px;
+}
