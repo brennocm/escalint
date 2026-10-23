@@ -1,0 +1,28 @@
+exec escalint rules list
+stdout '^ID +SEVERITY +STATUS'
+stdout 'EL-PE-022 +high +stable +new-passrole'
+stdout 'EL-TR-006 +medium +experimental'
+
+exec escalint rules list --attack
+stdout 'T1098.003 \(Persistence, Privilege Escalation\)'
+
+exec escalint rules list -f json
+stdout '"id": "EL-PARSE-003"'
+
+exec escalint rules explain el-pe-022
+stdout '^# EL-PE-022'
+stdout '## MITRE ATT&CK'
+stdout '## Detection \(CloudTrail\)'
+stdout 'CreateFunction'
+
+! exec escalint rules explain EL-PE-999
+stderr 'unknown rule'
+
+exec escalint attack coverage
+stdout 'T1098.003'
+exec escalint attack coverage $EXAMPLES/vulnerable-account/snapshot.json -f json
+stdout '"findings": [1-9]'
+
+exec escalint version
+stdout 'escalint dev'
+stdout 'MITRE ATT&CK: 20.0'

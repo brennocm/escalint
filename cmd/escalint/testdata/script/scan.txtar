@@ -1,0 +1,51 @@
+# Text output, exit code 1 on critical findings (default --fail-on high).
+! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json --config-file $EXAMPLES/vulnerable-account/.escalint.yaml
+stdout 'path\(s\) to Tier 0'
+stdout 'CRITICAL EL-PE-004'
+stdout 'HIGH EL-PE-022'
+stdout 'Fix plan'
+! stderr .
+
+# --fail-on none always succeeds.
+exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json --fail-on none -q
+stdout 'EL-PE-001'
+
+# The hardened account passes even with experimental rules.
+exec escalint scan $EXAMPLES/hardened-account/snapshot.json --config-file $EXAMPLES/hardened-account/.escalint.yaml --experimental
+stdout 'no findings'
+
+# --min-severity filters, --disable removes rules.
+! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json --min-severity critical --disable EL-PE-001
+! stdout 'EL-PE-001 '
+! stdout 'MEDIUM'
+
+# JSON and SARIF to files; the summary goes to stderr.
+! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json -f json -o out.json
+stderr 'findings: [0-9]+ critical'
+exists out.json
+grep '"kind": "escalint.scan"' out.json
+! exec escalint scan $EXAMPLES/vulnerable-account/snapshot.json -f sarif -o out.sarif
+grep '"version": "2.1.0"' out.sarif
+grep '"startLine"' out.sarif
+
+# stdin.
+stdin $EXAMPLES/hardened-account/snapshot.json
+exec escalint scan - --config-file $EXAMPLES/hardened-account/.escalint.yaml
+stdout 'no findings'
+
+# Usage errors exit 2.
+! exec escalint scan $EXAMPLES/hardened-account/snapshot.json --format yaml
+stderr 'unknown format "yaml"'
+! exec escalint scan $EXAMPLES/hardened-account/snapshot.json --fail-on urgent
+stderr 'not a severity'
+! exec escalint scan $EXAMPLES/hardened-account/snapshot.json --enable EL-XX-*
+stderr 'unknown rule'
+! exec escalint scan missing.json
+stderr 'no such file'
+! exec escalint scan bad.json
+stderr 'escalint: '
+! exec escalint scan
+stderr 'accepts 1 arg'
+
+-- bad.json --
+{"UserDetailList": [

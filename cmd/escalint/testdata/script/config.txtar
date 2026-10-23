@@ -1,0 +1,51 @@
+# Suppressions need a reason; unjustified ones are reported and suppress nothing.
+! exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json --config-file unjustified.yaml
+stdout 'INFO EL-PARSE-003'
+stdout 'CRITICAL EL-PE-004'
+
+# A justified suppression hides the finding from the gate but keeps it visible.
+exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json --config-file justified.yaml
+stdout 'Suppressed \(1\)'
+stdout 'accepted for the demo'
+
+# Expired suppressions report again.
+! exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json --config-file expired.yaml
+stdout 'CRITICAL EL-PE-004'
+
+# .escalint.yaml in the working directory is read by default.
+cp justified.yaml .escalint.yaml
+exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json
+stdout 'Suppressed \(1\)'
+
+# Invalid configuration files are errors (exit 2).
+! exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json --config-file unknown-key.yaml
+stderr 'field trusted_acounts not found'
+! exec escalint scan $FIXTURES/EL-PE-004/vulnerable/snapshot.json --config-file alias.yaml
+stderr 'anchors and aliases are not allowed'
+
+-- unjustified.yaml --
+version: 1
+suppressions:
+  - rule: EL-PE-004
+    arn: "*"
+    reason: ""
+-- justified.yaml --
+version: 1
+suppressions:
+  - rule: EL-PE-*
+    arn: "arn:aws:iam::111111111111:user/attacker"
+    reason: "accepted for the demo"
+    expires: 2027-01-01
+-- expired.yaml --
+version: 1
+suppressions:
+  - rule: EL-PE-004
+    arn: "*"
+    reason: "was fine last year"
+    expires: 2025-01-01
+-- unknown-key.yaml --
+version: 1
+trusted_acounts: []
+-- alias.yaml --
+version: 1
+trusted_accounts: &a ["222222222222"]

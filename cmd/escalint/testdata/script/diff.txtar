@@ -1,0 +1,19 @@
+# A new escalation path appears between the safe and vulnerable snapshots.
+! exec escalint diff $FIXTURES/EL-PE-004/safe/snapshot.json $FIXTURES/EL-PE-004/vulnerable/snapshot.json
+stdout 'paths: \+1 -0'
+stdout '\+ CRITICAL EL-PE-004'
+
+# Removing it is not a failure.
+exec escalint diff $FIXTURES/EL-PE-004/vulnerable/snapshot.json $FIXTURES/EL-PE-004/safe/snapshot.json
+stdout 'paths: \+0 -1'
+stdout '- CRITICAL EL-PE-004'
+
+# The analysis format carries diff markings for the UI.
+exec escalint diff $FIXTURES/EL-PE-004/safe/snapshot.json $FIXTURES/EL-PE-004/vulnerable/snapshot.json -f analysis --fail-on none -o d.json
+grep '"diff":' d.json
+grep '"added":' d.json
+
+# Redacted analyses cannot be compared.
+exec escalint analyze $FIXTURES/EL-PE-004/safe/snapshot.json --redact -o r.json
+! exec escalint diff r.json $FIXTURES/EL-PE-004/safe/snapshot.json
+stderr 'redacted analyses cannot be compared'

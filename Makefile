@@ -54,7 +54,7 @@ test-race: ## Run Go tests with the race detector
 
 .PHONY: cover
 cover: ## Go coverage profile + HTML report
-	$(GO) test $(GO_TEST_FLAGS) -race -covermode=atomic -coverprofile=$(COVER_OUT) $(GO_PKGS)
+	$(GO) test $(GO_TEST_FLAGS) -race -covermode=atomic -coverpkg=./... -coverprofile=$(COVER_OUT) $(GO_PKGS)
 	$(GO) tool cover -html=$(COVER_OUT) -o coverage.html
 
 .PHONY: cover-check

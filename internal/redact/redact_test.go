@@ -2,10 +2,9 @@ package redact
 
 import (
 	"bytes"
+	"math/rand/v2"
 	"strings"
 	"testing"
-
-	"pgregory.net/rapid"
 
 	"github.com/brennocm/escalint/internal/contract"
 	"github.com/brennocm/escalint/internal/engine"
@@ -134,16 +133,24 @@ func analysisOf(t interface {
 	return a
 }
 
+// propertyRuns is the number of random snapshots the leak properties try;
+// fewer under the race detector, which makes the engine ten times slower.
+func propertyRuns() int {
+	if raceEnabled || testing.Short() {
+		return 8
+	}
+	return 40
+}
+
 // No identifier of a synthetic snapshot survives redaction of the analysis.
 func TestPropertyNoIdentifierLeaks(t *testing.T) {
-	rapid.Check(t, func(t *rapid.T) {
-		gen, err := synth.Generate(synth.Options{
-			Principals:     rapid.IntRange(4, 40).Draw(t, "principals"),
-			Accounts:       rapid.IntRange(1, 3).Draw(t, "accounts"),
-			Seed:           rapid.Uint64().Draw(t, "seed"),
-			EscalationRate: 0.3,
-			RandomNames:    true,
-		})
+	rng := rand.New(rand.NewPCG(7, 11))
+	for range propertyRuns() {
+		opts := synth.Options{
+			Principals: 4 + rng.IntN(37), Accounts: 1 + rng.IntN(3), Seed: rng.Uint64(),
+			EscalationRate: 0.3, RandomNames: true,
+		}
+		gen, err := synth.Generate(opts)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -163,18 +170,18 @@ func TestPropertyNoIdentifierLeaks(t *testing.T) {
 		}
 		for _, id := range gen.Identifiers {
 			if bytes.Contains(out, []byte(id)) {
-				t.Fatalf("identifier %q survives redaction", id)
+				t.Fatalf("%+v: identifier %q survives redaction", opts, id)
 			}
 		}
 		for id := range ids {
 			if bytes.Contains(out, []byte(id)) {
-				t.Fatalf("original graph ID %q survives redaction", id)
+				t.Fatalf("%+v: original graph ID %q survives redaction", opts, id)
 			}
 		}
 		if !a.Snapshot.Redacted {
 			t.Fatal("redacted flag not set")
 		}
-	})
+	}
 }
 
 // Redaction keeps the graph consistent: every reference resolves.

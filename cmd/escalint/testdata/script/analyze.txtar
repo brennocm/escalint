@@ -1,0 +1,33 @@
+# analyze writes analysis.json; --deterministic makes it reproducible.
+exec escalint analyze $EXAMPLES/vulnerable-account/snapshot.json --deterministic -o a1.json
+exec escalint analyze $EXAMPLES/vulnerable-account/snapshot.json --deterministic -o a2.json
+cmp a1.json a2.json
+grep '"schema_version": "1"' a1.json
+! grep 'duration_ms' a1.json
+
+# Without --deterministic the duration is recorded.
+exec escalint analyze $EXAMPLES/hardened-account/snapshot.json
+stdout '"duration_ms"'
+
+# Redaction removes identifiers.
+exec escalint analyze $EXAMPLES/vulnerable-account/snapshot.json --redact --deterministic
+stdout '"redacted": true'
+! stdout '111111111111'
+! stdout 'pe022-attacker'
+
+# An analysis.json is accepted as input by scan and graph.
+! exec escalint scan a1.json
+stdout 'CRITICAL'
+exec escalint graph a1.json --format mermaid --paths-only
+stdout '^flowchart LR'
+
+# Unknown schema versions are refused.
+! exec escalint scan future.json
+stderr 'unsupported analysis schema_version "9"'
+
+# schema prints the JSON Schema.
+exec escalint schema
+stdout '"\$schema": "https://json-schema.org/draft/2020-12/schema"'
+
+-- future.json --
+{"schema_version": "9", "nodes": []}

@@ -1,0 +1,17 @@
+exec escalint graph $FIXTURES/EL-PE-020/vulnerable/snapshot.json
+stdout '^digraph escalint \{'
+stdout 'modify_permissions EL-PE-020'
+
+exec escalint graph $FIXTURES/EL-PE-020/vulnerable/snapshot.json -f mermaid
+stdout '^flowchart LR'
+
+! exec escalint graph $FIXTURES/EL-PE-020/vulnerable/snapshot.json --path p_0000000000000000
+stderr 'unknown path'
+
+! exec escalint graph $FIXTURES/EL-PE-020/vulnerable/snapshot.json -f sarif
+stderr 'unknown format "sarif"'
+
+# synth is hidden but works.
+exec escalint synth --principals 12 --seed 3 -o s.json
+exec escalint scan s.json --fail-on none -q
+stdout 'path\(s\) to Tier 0'

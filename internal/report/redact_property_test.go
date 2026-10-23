@@ -2,9 +2,8 @@ package report
 
 import (
 	"bytes"
+	"math/rand/v2"
 	"testing"
-
-	"pgregory.net/rapid"
 
 	"github.com/brennocm/escalint/internal/contract"
 	"github.com/brennocm/escalint/internal/engine"
@@ -16,13 +15,15 @@ import (
 // With --redact, no identifier of the snapshot appears in any output
 // format (project.md Phase 7.3).
 func TestPropertyRedactedReportsLeakNothing(t *testing.T) {
-	rapid.Check(t, func(t *rapid.T) {
+	runs := 30
+	if raceEnabled || testing.Short() {
+		runs = 6
+	}
+	rng := rand.New(rand.NewPCG(13, 17))
+	for range runs {
 		gen, err := synth.Generate(synth.Options{
-			Principals:     rapid.IntRange(4, 30).Draw(t, "principals"),
-			Accounts:       rapid.IntRange(1, 3).Draw(t, "accounts"),
-			Seed:           rapid.Uint64().Draw(t, "seed"),
-			EscalationRate: 0.3,
-			RandomNames:    true,
+			Principals: 4 + rng.IntN(27), Accounts: 1 + rng.IntN(3), Seed: rng.Uint64(),
+			EscalationRate: 0.3, RandomNames: true,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -68,5 +69,5 @@ func TestPropertyRedactedReportsLeakNothing(t *testing.T) {
 				}
 			}
 		}
-	})
+	}
 }

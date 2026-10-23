@@ -29,7 +29,10 @@ func NewRootCommand(stdout, stderr io.Writer) *cobra.Command {
 	}
 	root.SetOut(stdout)
 	root.SetErr(stderr)
-	root.AddCommand(newVersionCommand())
+	root.AddCommand(
+		newAnalyzeCommand(), newScanCommand(), newDiffCommand(), newGraphCommand(),
+		newRulesCommand(), newAttackCommand(), newSchemaCommand(), newSynthCommand(), newVersionCommand(),
+	)
 	return root
 }
 
