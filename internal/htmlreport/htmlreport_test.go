@@ -109,3 +109,19 @@ func TestBuildErrors(t *testing.T) {
 		t.Error("missing charset accepted")
 	}
 }
+
+func TestScriptBreakersEscaped(t *testing.T) {
+	js := []byte("a='</SCRIPT>';b=/<!--/u;c=`</Script`")
+	got := string(escapeScript(js))
+	want := "a='<\\/SCRIPT>';b=/\\x3C!--/u;c=`<\\/Script`"
+	if got != want {
+		t.Errorf("escapeScript = %s, want %s", got, want)
+	}
+	out, err := Build(ui(string(js)), []byte(`{"schema_version":"1"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := len(regexp.MustCompile(`(?i)</script`).FindAllIndex(out, -1)); n != 2 {
+		t.Errorf("%d script end tags, want 2:\n%s", n, out)
+	}
+}

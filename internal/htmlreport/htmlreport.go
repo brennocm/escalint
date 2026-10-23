@@ -23,7 +23,23 @@ var ErrNoReportBuild = errors.New("this escalint was built without the web UI (r
 var (
 	scriptTag = regexp.MustCompile(`<script type="module" crossorigin src="\./([^"]+\.js)"></script>`)
 	styleTag  = regexp.MustCompile(`<link rel="stylesheet" crossorigin href="\./([^"]+\.css)">`)
+	// Inside an inline <script>, "</script" in any case ends the element and
+	// "<!--" can switch the HTML parser into a state where the real end tag
+	// no longer closes it. Both are escaped: "<\/" and "\x3C" mean "</" and
+	// "<" in JavaScript strings, templates and regular expressions (also with
+	// the u flag); in a module script they cannot appear outside those.
+	scriptBreak = regexp.MustCompile(`(?i)</(script)|<!--`)
+	styleEnd    = regexp.MustCompile(`(?i)</(style)`)
 )
+
+func escapeScript(js []byte) []byte {
+	return scriptBreak.ReplaceAllFunc(js, func(m []byte) []byte {
+		if string(m) == "<!--" {
+			return []byte(`\x3C!--`)
+		}
+		return append([]byte(`<\/`), m[2:]...)
+	})
+}
 
 func hash(b []byte) string {
 	sum := sha256.Sum256(b)
@@ -62,9 +78,8 @@ func Build(ui fs.FS, analysis []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("htmlreport: %w", err)
 	}
-	// "</script" inside the bundle would end the inline element early.
-	js = bytes.ReplaceAll(js, []byte("</script"), []byte(`<\/script`))
-	css = bytes.ReplaceAll(css, []byte("</style"), []byte(`<\/style`))
+	js = escapeScript(js)
+	css = styleEnd.ReplaceAll(css, []byte(`<\/$1`))
 	// Literal replacement (strings.Replace, not regexp) so '$' in the
 	// bundle stays as is.
 	page = strings.Replace(page, sm[0], "", 1)
