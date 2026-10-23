@@ -49,6 +49,15 @@ export default defineConfig(({ mode }) => {
           'src/workers/layout.worker.ts',
         ],
         reporter: ['text', 'html', 'json-summary'],
+        // Definition of Done: logic >= 85%, components >= 70%. The WebGL
+        // renderer only runs in a real browser and is covered by the E2E suite.
+        thresholds: {
+          'src/{data,state,layout,search,design,workers,explainer}/**': {
+            statements: 85,
+            lines: 85,
+          },
+          'src/{shell,views}/**': { statements: 70, lines: 70 },
+        },
       },
     },
   };

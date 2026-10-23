@@ -40,7 +40,7 @@ function reducedMotion(): boolean {
   );
 }
 
-function drawOverlay(
+export function drawOverlay(
   ctx: CanvasRenderingContext2D,
   s: Scene,
   pos: { x: Float32Array; y: Float32Array },
@@ -153,7 +153,7 @@ function drawOverlay(
   ctx.lineWidth = 1;
 }
 
-function drawMinimap(
+export function drawMinimap(
   ctx: CanvasRenderingContext2D,
   s: Scene,
   pos: { x: Float32Array; y: Float32Array },
