@@ -1,0 +1,39 @@
+# 0017 — Security of `escalint serve`
+
+Status: Accepted
+
+## Context
+
+The UI shows who can become administrator in an AWS account. A local web
+server is reachable by every process on the machine and, through the
+browser, by every web page the user visits (CSRF, DNS rebinding).
+
+## Decision
+
+- **Bind** `127.0.0.1` on a random port by default. Another address needs
+  `--listen` *and* `--allow-remote`, and prints a warning.
+- **Token:** 32 random bytes (base64url) in the first URL, printed on
+  stderr only. The first request exchanges it for a cookie
+  (`HttpOnly`, `SameSite=Strict`, path `/`, 12 hours) and redirects to `/`
+  so the token leaves the address bar and history. Comparisons are
+  constant-time. Without a valid cookie every request is 401. The cookie
+  is not `Secure` because the server speaks plain HTTP on loopback.
+- **Host check:** only `127.0.0.1:<port>`, `localhost:<port>`,
+  `[::1]:<port>` (or the explicit listen address) are accepted; anything
+  else is 421, which defeats DNS rebinding.
+- **Read-only:** only `GET`; everything else is 405 with `Allow: GET`.
+- **Headers on every response:** the CSP of project.md §3.7
+  (`default-src 'none'; script-src 'self'; …; frame-ancestors 'none'`),
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`,
+  `Cross-Origin-Opener-Policy` and `Cross-Origin-Resource-Policy:
+  same-origin`, `X-Frame-Options: DENY`, `Cache-Control: no-store` (hashed
+  assets are cacheable).
+- Server timeouts and a 16 KiB header limit bound slow clients.
+
+## Consequences
+
+- Handler tests (`httptest`) cover 401, 421, 405, headers and the exact CSP;
+  a Playwright test runs the real binary and asserts zero CSP violations
+  and zero requests leaving the origin.
+- Sharing a running UI with a colleague is deliberately inconvenient: use
+  `escalint report --html --redact` instead.

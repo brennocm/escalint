@@ -1,5 +1,3 @@
-// Package server implements `escalint serve`. For now it only exposes the
-// embedded frontend; handlers and security controls arrive in Phase 13.
 package server
 
 import (
