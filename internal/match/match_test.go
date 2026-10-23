@@ -243,3 +243,32 @@ func BenchmarkARNHostile(b *testing.B) {
 		ARN(pattern, arn)
 	}
 }
+
+func TestFastAndSlowPathsAgree(t *testing.T) {
+	cases := []struct{ pattern, s string }{
+		{"iam:Pass*", "IAM:PassRole"},
+		{"s3:Get?bject", "s3:GetObject"},
+		{"*", ""},
+		{"a*b*c", "aXXbYYc"},
+		{"é*", "éclair"},
+		{"ÉCLAIR", "éclair"},
+		{"x?", "xé"},
+	}
+	for _, c := range cases {
+		slowGlob := glob([]rune(c.pattern), []rune(c.s))
+		if Glob(c.pattern, c.s) != slowGlob {
+			t.Errorf("Glob(%q, %q) disagrees with rune glob", c.pattern, c.s)
+		}
+		slowAction := glob([]rune(strings.ToLower(c.pattern)), []rune(strings.ToLower(c.s)))
+		if Action(c.pattern, c.s) != slowAction {
+			t.Errorf("Action(%q, %q) disagrees", c.pattern, c.s)
+		}
+	}
+	long := "arn:aws:s3:::" + strings.Repeat("a:", 20) + "end"
+	if !ARN("arn:aws:s3:::*", long) || ARN("arn:aws:s3:::b*", long) {
+		t.Error("ARN with more than 16 segments")
+	}
+	if !ARN("arn:aws:s3:::é*", "arn:aws:s3:::éclair") {
+		t.Error("non-ASCII ARN")
+	}
+}

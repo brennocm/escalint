@@ -154,3 +154,37 @@ func TestClassOf(t *testing.T) {
 		t.Error("rank of unknown class")
 	}
 }
+
+func TestBlastAllMatchesBlastRadius(t *testing.T) {
+	g, f := buildBlast(t)
+	// A cycle between two roles exercises the strongly connected branch.
+	all := BlastAll(g, f)
+	for _, n := range g.Nodes() {
+		want := BlastRadius(g, f, n.ID, 1<<20)
+		got, ok := all[n.ID]
+		if !isPrincipal(n) {
+			if ok {
+				t.Errorf("non-principal %s has a blast radius", n.Name)
+			}
+			continue
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("%s: BlastAll %+v, BlastRadius %+v", n.Name, got, want)
+		}
+	}
+}
+
+func TestTarjanIntCycles(t *testing.T) {
+	// 0 -> 1 -> 2 -> 0, 2 -> 3, 4 -> 4
+	adj := [][]int32{{1}, {2}, {0, 3}, {}, {4}}
+	comp, comps := tarjanInt(adj)
+	if comp[0] != comp[1] || comp[1] != comp[2] || comp[3] == comp[0] || len(comps) != 3 {
+		t.Errorf("comp = %v comps = %v", comp, comps)
+	}
+	if comp[3] > comp[0] {
+		t.Error("successor component must complete first")
+	}
+	if !selfLoop(adj, 4) || selfLoop(adj, 3) {
+		t.Error("self loop detection")
+	}
+}
