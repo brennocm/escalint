@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { AttackBadge } from './AttackBadge';
+import { AttackBadge, attackUrl } from './AttackBadge';
 import { DesignPage } from './DesignPage';
 import { DetectionIndicator } from './DetectionIndicator';
 import { EdgeStroke } from './EdgeStroke';
@@ -91,6 +91,33 @@ describe('AttackBadge', () => {
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
     expect(link.getAttribute('target')).toBe('_blank');
     expect(link.textContent).toContain('Additional Cloud Roles');
+  });
+});
+
+describe('attackUrl', () => {
+  it.each([
+    ['T1098', 'https://attack.mitre.org/techniques/T1098/'],
+    ['T1098.003', 'https://attack.mitre.org/techniques/T1098/003/'],
+  ])('%s', (id, want) => {
+    expect(attackUrl(id)).toBe(want);
+  });
+
+  it.each([
+    '',
+    'T109',
+    'T1098.03',
+    'javascript:alert(1)',
+    'T1098/../../x',
+    ' T1098',
+    'T1098.003\n',
+  ])('rejects %j', (id) => {
+    expect(attackUrl(id)).toBeNull();
+  });
+
+  it('renders an unknown ID as plain text, without a link', () => {
+    render(<AttackBadge techniqueId="javascript:alert(1)" name="x" tactics={[]} />);
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(screen.getByText('javascript:alert(1)')).toBeDefined();
   });
 });
 
