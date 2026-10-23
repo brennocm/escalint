@@ -520,3 +520,25 @@ jobs:
             web/playwright-report
             web/test-results
           if-no-files-found: ignore
+
+  docker:
+    name: Docker image from source
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build
+        run: docker build -t escalint:ci .
+      - name: Smoke test (nonroot, UI embedded)
+        run: |
+          set -euo pipefail
+          test "$(docker image inspect escalint:ci --format '{{.Config.User}}')" = nonroot:nonroot
+          docker run --rm escalint:ci version
+          docker run --rm -v "$PWD/examples:/work/examples:ro" escalint:ci \
+            scan examples/vulnerable-account/snapshot.json \
+            --config-file examples/vulnerable-account/.escalint.yaml --fail-on none -q -f sarif > image.sarif
+          jq -e '.runs[0].results | length > 0' image.sarif
+          docker run --rm -v "$PWD/examples:/work/examples:ro" escalint:ci \
+            report --html examples/vulnerable-account/snapshot.json -q -o - | grep -q 'Content-Security-Policy'

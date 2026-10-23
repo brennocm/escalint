@@ -1,0 +1,12 @@
+# Release image (GoReleaser dockers_v2): copies the binary GoReleaser built
+# for the target platform, with the UI embedded. See Dockerfile for a build
+# from source.
+
+# gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/escalint /usr/bin/escalint
+WORKDIR /work
+USER nonroot:nonroot
+ENTRYPOINT ["/usr/bin/escalint"]
+CMD ["--help"]

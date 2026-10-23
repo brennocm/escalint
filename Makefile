@@ -183,6 +183,18 @@ demo: ## Build the GitHub Pages demo into web/dist-demo (synthetic data only)
 .PHONY: pages
 pages: demo ## Build the GitHub Pages site (the demo) into web/dist-demo
 
+.PHONY: release-check
+release-check: ## Validate .goreleaser.yaml
+	goreleaser check
+
+.PHONY: release-snapshot
+release-snapshot: web-build ## Local GoReleaser build into dist/ (no image, signature, SBOM or publish)
+	goreleaser release --snapshot --clean --skip=docker,sign,sbom,publish
+
+.PHONY: docker
+docker: ## Build the image from source (Dockerfile) as escalint:dev
+	docker build -t escalint:dev --build-arg VERSION=$(VERSION) --build-arg COMMIT=$(COMMIT) --build-arg DATE=$(DATE) .
+
 .PHONY: clean
 clean: ## Remove build outputs
-	rm -rf $(BIN_DIR) $(COVER_OUT) coverage.html $(WEB_DIR)/dist $(WEB_DIR)/dist-demo $(WEB_DIR)/coverage $(WEB_DIR)/playwright-report $(WEB_DIR)/test-results
+	rm -rf $(BIN_DIR) dist $(COVER_OUT) coverage.html $(WEB_DIR)/dist $(WEB_DIR)/dist-demo $(WEB_DIR)/coverage $(WEB_DIR)/playwright-report $(WEB_DIR)/test-results

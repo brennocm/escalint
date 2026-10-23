@@ -1,0 +1,126 @@
+# GoReleaser configuration (https://goreleaser.com). The release workflow
+# builds the frontend into web/dist first, so every binary embeds the UI.
+version: 2
+
+project_name: escalint
+
+before:
+  hooks:
+    # A binary without web/dist would fail to compile (go:embed), but say why.
+    - >-
+      sh -c 'test -f web/dist/index.html && test -f web/dist/report/index.html
+      || { echo "web/dist missing: run make web-build" >&2; exit 1; }'
+
+gomod:
+  proxy: true
+
+builds:
+  - id: escalint
+    main: ./cmd/escalint
+    binary: escalint
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    ldflags:
+      - >-
+        -s -w
+        -X github.com/brennocm/escalint/internal/buildinfo.Version={{ .Version }}
+        -X github.com/brennocm/escalint/internal/buildinfo.Commit={{ .ShortCommit }}
+        -X github.com/brennocm/escalint/internal/buildinfo.Date={{ .CommitDate }}
+
+archives:
+  - id: escalint
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - NOTICE
+      - THIRD_PARTY_NOTICES.md
+      - README.md
+      - CHANGELOG.md
+    builds_info:
+      mtime: "{{ .CommitDate }}"
+
+source:
+  enabled: true
+  name_template: "{{ .ProjectName }}_{{ .Version }}_source"
+
+# SBOMs (syft) of every archive and of the source tarball.
+sboms:
+  - artifacts: archive
+  - id: source
+    artifacts: source
+
+checksum:
+  name_template: checksums.txt
+
+# Keyless signature (Sigstore) of the checksum file; it covers archives and SBOMs.
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum
+    output: true
+
+dockers_v2:
+  - id: escalint
+    ids: [escalint]
+    dockerfile: Dockerfile.goreleaser
+    images:
+      - ghcr.io/brennocm/escalint
+    tags:
+      - "{{ .Tag }}"
+      - "{{ if not .Prerelease }}latest{{ end }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    labels:
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.description: Static analysis of AWS IAM privilege escalation paths
+      org.opencontainers.image.created: "{{ .CommitDate }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.source: https://github.com/brennocm/escalint
+      org.opencontainers.image.licenses: Apache-2.0
+    annotations:
+      org.opencontainers.image.description: Static analysis of AWS IAM privilege escalation paths
+
+docker_signs:
+  - cmd: cosign
+    args:
+      - sign
+      - "${artifact}"
+      - "--yes"
+    output: true
+
+release:
+  github:
+    owner: brennocm
+    name: escalint
+  draft: false
+  prerelease: auto
+  footer: |
+    Verify the checksums with `cosign verify-blob --bundle checksums.txt.sigstore.json
+    --certificate-identity-regexp '^https://github.com/brennocm/escalint/' --certificate-oidc-issuer
+    https://token.actions.githubusercontent.com checksums.txt`, and the provenance with
+    `gh attestation verify <archive> --repo brennocm/escalint`.
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^chore"
+      - "^ci"
+      - "^test"
