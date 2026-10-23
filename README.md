@@ -99,7 +99,8 @@ No credentials at hand? Try the bundled example accounts:
 
 ```sh
 escalint scan examples/vulnerable-account/snapshot.json   # every stable rule fires
-escalint scan examples/hardened-account/snapshot.json     # no findings
+escalint scan examples/hardened-account/snapshot.json \
+  --config-file examples/hardened-account/.escalint.yaml  # no findings
 ```
 
 ![The CLI: rules list, scan, diff against a baseline, and a clean account](docs/media/cli.gif)
