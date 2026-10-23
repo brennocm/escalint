@@ -188,7 +188,9 @@ type Diagnostic struct {
 }
 
 func sortDiagnostics(d []Diagnostic) {
-	sort.Slice(d, func(i, j int) bool {
+	// Every field takes part in the order, so equal-looking diagnostics that
+	// differ only in Path cannot swap places between runs.
+	sort.SliceStable(d, func(i, j int) bool {
 		a, b := d[i], d[j]
 		switch {
 		case a.Account != b.Account:
@@ -199,6 +201,8 @@ func sortDiagnostics(d []Diagnostic) {
 			return a.Policy < b.Policy
 		case a.Code != b.Code:
 			return a.Code < b.Code
+		case a.Path != b.Path:
+			return a.Path < b.Path
 		default:
 			return a.Message < b.Message
 		}

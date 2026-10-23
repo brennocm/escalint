@@ -354,3 +354,71 @@ func FuzzLoadSnapshot(f *testing.F) {
 		}
 	})
 }
+
+// Regression tests for the review of 2026-10-23.
+func TestRegressionWireNamesAreCaseSensitive(t *testing.T) {
+	// encoding/json v1 would have matched "arn" to Arn; v2 does not, so the
+	// lowercase key is ignored and the real Arn is used.
+	in := `{"UserDetailList":[{"arn":"arn:aws:iam::222222222222:user/decoy","Arn":"arn:aws:iam::111111111111:user/real"}]}`
+	snap, err := Load(strings.NewReader(in), Options{})
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if got := snap.Accounts[0].Users[0].ARN; got != "arn:aws:iam::111111111111:user/real" {
+		t.Errorf("ARN = %q", got)
+	}
+}
+
+func TestRegressionDefaultVersionIDIsAuthoritative(t *testing.T) {
+	in := `{"Policies":[{"Arn":"arn:aws:iam::111111111111:policy/p","DefaultVersionId":"v2","PolicyVersionList":[
+		{"VersionId":"v1","IsDefaultVersion":true,"Document":{"Statement":{"Sid":"old","Effect":"Allow","Action":"*","Resource":"*"}}},
+		{"VersionId":"v2","IsDefaultVersion":false,"Document":{"Statement":{"Sid":"current","Effect":"Allow","Action":"s3:GetObject","Resource":"*"}}}]}]}`
+	snap, err := Load(strings.NewReader(in), Options{})
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if sid := snap.Accounts[0].Policies[0].Document.Statements[0].Sid; sid != "current" {
+		t.Errorf("default version Sid = %q, want the DefaultVersionId version", sid)
+	}
+}
+
+func TestRegressionErrorsQuoteSnapshotValues(t *testing.T) {
+	// The duplicated role ARN carries an ANSI "clear screen" sequence; the
+	// error must quote it instead of embedding the raw escape byte.
+	hostile := `arn:aws:iam::111111111111:role/\u001b[2J`
+	in := `{"RoleDetailList":[{"Arn":"` + hostile + `"},{"Arn":"` + hostile + `"}]}`
+	_, err := Load(strings.NewReader(in), Options{})
+	if err == nil || !strings.Contains(err.Error(), "appears twice") {
+		t.Fatalf("Load() error = %v, want the duplicate role error", err)
+	}
+	if strings.ContainsRune(err.Error(), '\x1b') {
+		t.Errorf("raw escape in error: %q", err)
+	}
+	if !strings.Contains(err.Error(), `\x1b[2J`) {
+		t.Errorf("error should show the escaped value, got %q", err)
+	}
+}
+
+func TestRegressionRepeatedGroupNameIsCountedOnce(t *testing.T) {
+	in := `{"GroupDetailList":[{"GroupName":"g","Arn":"arn:aws:iam::111111111111:group/g"}],
+		"UserDetailList":[{"Arn":"arn:aws:iam::111111111111:user/u","GroupList":["g","g"]}]}`
+	snap, err := Load(strings.NewReader(in), Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := len(snap.Accounts[0].Users[0].Groups); n != 1 {
+		t.Errorf("user has %d group entries, want 1", n)
+	}
+}
+
+func TestTopLevelNames(t *testing.T) {
+	names, err := topLevelNames([]byte(`{"a":{"deep":[1,2,3]},"b":null}`))
+	if err != nil || !names["a"] || !names["b"] || len(names) != 2 {
+		t.Fatalf("topLevelNames() = %v, %v", names, err)
+	}
+	for _, bad := range []string{`[]`, `"x"`, `{"a":`, ``} {
+		if _, err := topLevelNames([]byte(bad)); err == nil {
+			t.Errorf("topLevelNames(%q) error = nil", bad)
+		}
+	}
+}

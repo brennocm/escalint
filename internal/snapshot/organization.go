@@ -57,13 +57,13 @@ type Organization struct {
 func (o *Organization) PathTo(accountID string) ([]string, error) {
 	node, ok := o.nodeByID[accountID]
 	if !ok || node.Type != NodeAccount {
-		return nil, fmt.Errorf("account %s is not in the organization tree", accountID)
+		return nil, fmt.Errorf("account %q is not in the organization tree", accountID)
 	}
 	var path []string
 	for id := accountID; id != ""; id = o.nodeByID[id].Parent {
 		path = append(path, id)
 		if len(path) > len(o.nodeByID) {
-			return nil, fmt.Errorf("cycle in organization tree above %s", accountID)
+			return nil, fmt.Errorf("cycle in organization tree above %q", accountID)
 		}
 	}
 	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
@@ -105,20 +105,20 @@ func buildOrganization(w *wireOrganization, limits policy.Limits) (*Organization
 		case NodeRoot:
 			roots++
 			if node.Parent != "" {
-				return nil, nil, fmt.Errorf("organization root %s cannot have a parent", node.ID)
+				return nil, nil, fmt.Errorf("organization root %q cannot have a parent", node.ID)
 			}
 		case NodeOU, NodeAccount:
 			if node.Parent == "" {
-				return nil, nil, fmt.Errorf("organization node %s has no parent", node.ID)
+				return nil, nil, fmt.Errorf("organization node %q has no parent", node.ID)
 			}
 		default:
-			return nil, nil, fmt.Errorf("organization node %s has unknown type %q", node.ID, n.Type)
+			return nil, nil, fmt.Errorf("organization node %q has unknown type %q", node.ID, n.Type)
 		}
 		if node.ID == "" {
 			return nil, nil, fmt.Errorf("organization node with empty id")
 		}
 		if _, dup := org.nodeByID[node.ID]; dup {
-			return nil, nil, fmt.Errorf("organization node %s appears twice", node.ID)
+			return nil, nil, fmt.Errorf("organization node %q appears twice", node.ID)
 		}
 		org.nodeByID[node.ID] = node
 		org.Nodes = append(org.Nodes, node)
@@ -129,7 +129,7 @@ func buildOrganization(w *wireOrganization, limits policy.Limits) (*Organization
 	for _, node := range org.Nodes {
 		if node.Parent != "" {
 			if _, ok := org.nodeByID[node.Parent]; !ok {
-				return nil, nil, fmt.Errorf("organization node %s has unknown parent %s", node.ID, node.Parent)
+				return nil, nil, fmt.Errorf("organization node %q has unknown parent %q", node.ID, node.Parent)
 			}
 		}
 		if node.Type == NodeAccount {
@@ -149,11 +149,11 @@ func buildOrganization(w *wireOrganization, limits policy.Limits) (*Organization
 		case PolicyRCP:
 			kind = policy.KindRCP
 		default:
-			return nil, nil, fmt.Errorf("organization policy %s has unknown type %q", p.ID, p.Type)
+			return nil, nil, fmt.Errorf("organization policy %q has unknown type %q", p.ID, p.Type)
 		}
 		for _, target := range op.Targets {
 			if _, ok := org.nodeByID[target]; !ok {
-				return nil, nil, fmt.Errorf("organization policy %s targets unknown node %s", p.ID, target)
+				return nil, nil, fmt.Errorf("organization policy %q targets unknown node %q", p.ID, target)
 			}
 		}
 		sort.Strings(op.Targets)

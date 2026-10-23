@@ -1,10 +1,12 @@
 package snapshot
 
-import "encoding/json"
+import "encoding/json/jsontext"
 
 // Wire types mirror the JSON returned by the AWS CLI / SDK for
-// GetAccountAuthorizationDetails and the escalint envelope. Unknown fields
-// are ignored so new AWS fields do not break loading. Policy documents stay
+// GetAccountAuthorizationDetails and the escalint envelope. They are decoded
+// with encoding/json/v2, which matches field names case-sensitively (v1
+// would also accept "arn" for "Arn", and keep whichever comes last).
+// Unknown fields are ignored so new AWS fields do not break loading. Policy documents stay
 // raw because they arrive as objects (CLI), JSON strings or URL-encoded
 // strings (SDK).
 
@@ -16,8 +18,8 @@ type wireAuthorizationDetails struct {
 }
 
 type wirePolicyDetail struct {
-	PolicyName     string          `json:"PolicyName"`
-	PolicyDocument json.RawMessage `json:"PolicyDocument"`
+	PolicyName     string         `json:"PolicyName"`
+	PolicyDocument jsontext.Value `json:"PolicyDocument"`
 }
 
 type wireAttachedPolicy struct {
@@ -71,7 +73,7 @@ type wireRole struct {
 	RoleName                 string                `json:"RoleName"`
 	RoleID                   string                `json:"RoleId"`
 	Arn                      string                `json:"Arn"`
-	AssumeRolePolicyDocument json.RawMessage       `json:"AssumeRolePolicyDocument"`
+	AssumeRolePolicyDocument jsontext.Value        `json:"AssumeRolePolicyDocument"`
 	InstanceProfileList      []wireInstanceProfile `json:"InstanceProfileList"`
 	RolePolicyList           []wirePolicyDetail    `json:"RolePolicyList"`
 	AttachedManagedPolicies  []wireAttachedPolicy  `json:"AttachedManagedPolicies"`
@@ -81,9 +83,9 @@ type wireRole struct {
 }
 
 type wirePolicyVersion struct {
-	Document         json.RawMessage `json:"Document"`
-	VersionID        string          `json:"VersionId"`
-	IsDefaultVersion bool            `json:"IsDefaultVersion"`
+	Document         jsontext.Value `json:"Document"`
+	VersionID        string         `json:"VersionId"`
+	IsDefaultVersion bool           `json:"IsDefaultVersion"`
 }
 
 type wireManagedPolicy struct {
@@ -152,10 +154,10 @@ type wireOrganization struct {
 		Parent *string `json:"parent"`
 	} `json:"tree"`
 	Policies []struct {
-		ID       string          `json:"id"`
-		Type     string          `json:"type"`
-		Name     string          `json:"name"`
-		Document json.RawMessage `json:"document"`
-		Targets  []string        `json:"targets"`
+		ID       string         `json:"id"`
+		Type     string         `json:"type"`
+		Name     string         `json:"name"`
+		Document jsontext.Value `json:"document"`
+		Targets  []string       `json:"targets"`
 	} `json:"policies"`
 }

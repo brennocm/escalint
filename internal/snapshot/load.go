@@ -3,6 +3,8 @@ package snapshot
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/json/jsontext"
+	jsonv2 "encoding/json/v2"
 	"errors"
 	"fmt"
 	"io"
@@ -75,16 +77,16 @@ func Load(r io.Reader, opts Options) (*Snapshot, error) {
 		return nil, fmt.Errorf("snapshot: %w", err)
 	}
 
-	var probe map[string]json.RawMessage
-	if err := json.Unmarshal(data, &probe); err != nil {
-		return nil, fmt.Errorf("snapshot must be a JSON object: %w", err)
+	names, err := topLevelNames(data)
+	if err != nil {
+		return nil, err
 	}
 
 	var snap *Snapshot
 	switch {
-	case probe["escalint_snapshot"] != nil:
+	case names["escalint_snapshot"]:
 		snap, err = loadEnvelope(data, opts)
-	case isAuthorizationDetails(probe):
+	case isAuthorizationDetails(names):
 		snap, err = loadAuthorizationDetails(data, opts)
 	default:
 		return nil, errors.New("snapshot: unknown format: expected an escalint envelope " +
@@ -97,9 +99,31 @@ func Load(r io.Reader, opts Options) (*Snapshot, error) {
 	return snap, nil
 }
 
-func isAuthorizationDetails(probe map[string]json.RawMessage) bool {
+// topLevelNames returns the member names of the top-level object without
+// copying their values (a snapshot can be hundreds of megabytes).
+func topLevelNames(data []byte) (map[string]bool, error) {
+	dec := jsontext.NewDecoder(bytes.NewReader(data))
+	tok, err := dec.ReadToken()
+	if err != nil || tok.Kind() != '{' {
+		return nil, errors.New("snapshot must be a JSON object")
+	}
+	names := map[string]bool{}
+	for dec.PeekKind() != '}' {
+		name, err := dec.ReadToken()
+		if err != nil {
+			return nil, fmt.Errorf("snapshot: %w", err)
+		}
+		names[name.String()] = true
+		if err := dec.SkipValue(); err != nil {
+			return nil, fmt.Errorf("snapshot: %w", err)
+		}
+	}
+	return names, nil
+}
+
+func isAuthorizationDetails(names map[string]bool) bool {
 	for _, k := range []string{"UserDetailList", "GroupDetailList", "RoleDetailList", "Policies"} {
-		if probe[k] != nil {
+		if names[k] {
 			return true
 		}
 	}
@@ -108,7 +132,7 @@ func isAuthorizationDetails(probe map[string]json.RawMessage) bool {
 
 func loadEnvelope(data []byte, opts Options) (*Snapshot, error) {
 	var w wireEnvelope
-	if err := json.Unmarshal(data, &w); err != nil {
+	if err := jsonv2.Unmarshal(data, &w); err != nil {
 		return nil, fmt.Errorf("snapshot envelope: %w", err)
 	}
 	if w.Version != "1" {
@@ -134,7 +158,7 @@ func loadEnvelope(data []byte, opts Options) (*Snapshot, error) {
 			return nil, fmt.Errorf("snapshot account %d: %q is not a 12-digit account ID", i, wa.AccountID)
 		}
 		if seen[wa.AccountID] {
-			return nil, fmt.Errorf("snapshot account %s appears twice", wa.AccountID)
+			return nil, fmt.Errorf("snapshot account %q appears twice", wa.AccountID)
 		}
 		seen[wa.AccountID] = true
 		principals += countPrincipals(&wa.AuthorizationDetails)
@@ -170,7 +194,7 @@ func loadEnvelope(data []byte, opts Options) (*Snapshot, error) {
 
 func loadAuthorizationDetails(data []byte, opts Options) (*Snapshot, error) {
 	var w wireAuthorizationDetails
-	if err := json.Unmarshal(data, &w); err != nil {
+	if err := jsonv2.Unmarshal(data, &w); err != nil {
 		return nil, fmt.Errorf("authorization details: %w", err)
 	}
 	if countPrincipals(&w) > opts.MaxPrincipals {
@@ -246,10 +270,10 @@ func entityARN(s, accountID, kind string) (string, error) {
 		return "", fmt.Errorf("%s: %w", kind, err)
 	}
 	if a.Service != "iam" {
-		return "", fmt.Errorf("%s %s is not an IAM ARN", kind, s)
+		return "", fmt.Errorf("%s %q is not an IAM ARN", kind, s)
 	}
 	if a.Account != accountID {
-		return "", fmt.Errorf("%s %s does not belong to account %s", kind, s, accountID)
+		return "", fmt.Errorf("%s %q does not belong to account %s", kind, s, accountID)
 	}
 	return a.Partition, nil
 }
@@ -283,13 +307,13 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 		}
 		awsManaged := a.Account == "aws"
 		if !awsManaged && a.Account != accountID {
-			return nil, "", nil, fmt.Errorf("managed policy %s does not belong to account %s", wp.Arn, accountID)
+			return nil, "", nil, fmt.Errorf("managed policy %q does not belong to account %s", wp.Arn, accountID)
 		}
 		if err := notePartition(a.Partition); err != nil {
 			return nil, "", nil, err
 		}
 		if acct.policyByARN[wp.Arn] != nil {
-			return nil, "", nil, fmt.Errorf("managed policy %s appears twice", wp.Arn)
+			return nil, "", nil, fmt.Errorf("managed policy %q appears twice", wp.Arn)
 		}
 		mp := &ManagedPolicy{ARN: wp.Arn, Name: wp.PolicyName, Path: wp.Path, DefaultVersion: wp.DefaultVersionID, AWSManaged: awsManaged}
 		raw := defaultVersionDocument(&wp)
@@ -376,7 +400,7 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 			return nil, "", nil, err
 		}
 		if seenUsers[wu.Arn] {
-			return nil, "", nil, fmt.Errorf("user %s appears twice", wu.Arn)
+			return nil, "", nil, fmt.Errorf("user %q appears twice", wu.Arn)
 		}
 		seenUsers[wu.Arn] = true
 		u := &User{
@@ -386,7 +410,12 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 			PermissionsBoundary: boundary(wu.Arn, wu.PermissionsBoundary),
 			Tags:                tags(wu.Tags),
 		}
+		member := map[string]bool{}
 		for _, name := range wu.GroupList {
+			if member[name] {
+				continue // a repeated group name adds nothing
+			}
+			member[name] = true
 			g := acct.groupByName[name]
 			if g == nil {
 				diags = append(diags, Diagnostic{
@@ -412,7 +441,7 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 			return nil, "", nil, err
 		}
 		if seenRoles[wr.Arn] {
-			return nil, "", nil, fmt.Errorf("role %s appears twice", wr.Arn)
+			return nil, "", nil, fmt.Errorf("role %q appears twice", wr.Arn)
 		}
 		seenRoles[wr.Arn] = true
 		r := &Role{
@@ -433,7 +462,7 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 		if wr.RoleLastUsed != nil && wr.RoleLastUsed.LastUsedDate != "" {
 			t, err := time.Parse(time.RFC3339, wr.RoleLastUsed.LastUsedDate)
 			if err != nil {
-				return nil, "", nil, fmt.Errorf("role %s: RoleLastUsed.LastUsedDate: %w", wr.Arn, err)
+				return nil, "", nil, fmt.Errorf("role %q: RoleLastUsed.LastUsedDate: %w", wr.Arn, err)
 			}
 			t = t.UTC()
 			r.LastUsed = &t
@@ -444,14 +473,20 @@ func buildAccount(accountID string, w *wireAuthorizationDetails, limits policy.L
 	return acct, partition, diags, nil
 }
 
-func defaultVersionDocument(wp *wireManagedPolicy) json.RawMessage {
-	for _, v := range wp.PolicyVersionList {
-		if v.IsDefaultVersion {
-			return v.Document
+// defaultVersionDocument returns the document of the default version.
+// DefaultVersionId is authoritative; IsDefaultVersion is only a fallback
+// for inputs that omit the ID.
+func defaultVersionDocument(wp *wireManagedPolicy) []byte {
+	if wp.DefaultVersionID != "" {
+		for _, v := range wp.PolicyVersionList {
+			if v.VersionID == wp.DefaultVersionID {
+				return v.Document
+			}
 		}
+		return nil
 	}
 	for _, v := range wp.PolicyVersionList {
-		if v.VersionID == wp.DefaultVersionID {
+		if v.IsDefaultVersion {
 			return v.Document
 		}
 	}
@@ -510,7 +545,7 @@ func applyOptional(acct *Account, wa *wireAccount) {
 
 // parseDocument decodes a raw policy document and parses it. A nil Document
 // with a Diagnostic means the policy is kept but contributes nothing.
-func parseDocument(raw json.RawMessage, kind policy.Kind, limits policy.Limits) (*policy.Document, *Diagnostic) {
+func parseDocument(raw []byte, kind policy.Kind, limits policy.Limits) (*policy.Document, *Diagnostic) {
 	text, err := DecodeDocument(raw)
 	if err != nil {
 		return nil, &Diagnostic{Code: CodeParse, Message: err.Error()}
@@ -532,7 +567,7 @@ func parseDocument(raw json.RawMessage, kind policy.Kind, limits policy.Limits) 
 // JSON string holding the policy, or a URL-encoded string (RFC 3986, as the
 // API and SDKs return it). Percent-decoding uses url.PathUnescape, which,
 // unlike QueryUnescape, does not turn '+' into a space.
-func DecodeDocument(raw json.RawMessage) ([]byte, error) {
+func DecodeDocument(raw []byte) ([]byte, error) {
 	trimmed := bytes.TrimSpace(raw)
 	if len(trimmed) == 0 || bytes.Equal(trimmed, []byte("null")) {
 		return nil, errors.New("policy document is missing")
