@@ -38,6 +38,9 @@ linters:
       - path: _test\.go
         linters: [gosec]
         text: G304
+      # Preallocation hints add noise to table-driven tests.
+      - path: _test\.go
+        linters: [prealloc]
 
 formatters:
   enable:
