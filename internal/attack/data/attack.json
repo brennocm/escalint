@@ -1,0 +1,862 @@
+{
+ "version": "20.0",
+ "source": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-20.0.json",
+ "sha256": "81113ba98afa2928f3dcff62022539f7ce30c315c32e14422f11ff95ce534352",
+ "techniques": [
+  {
+   "id": "T1020.001",
+   "name": "Automated Exfiltration: Traffic Duplication",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1020/001"
+  },
+  {
+   "id": "T1021",
+   "name": "Remote Services",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1021"
+  },
+  {
+   "id": "T1021.007",
+   "name": "Remote Services: Cloud Services",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1021/007"
+  },
+  {
+   "id": "T1021.008",
+   "name": "Remote Services: Direct Cloud VM Connections",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1021/008"
+  },
+  {
+   "id": "T1036.010",
+   "name": "Masquerading: Masquerade Account Name",
+   "tactics": [
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1036/010"
+  },
+  {
+   "id": "T1040",
+   "name": "Network Sniffing",
+   "tactics": [
+    "Credential Access",
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1040"
+  },
+  {
+   "id": "T1046",
+   "name": "Network Service Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1046"
+  },
+  {
+   "id": "T1048",
+   "name": "Exfiltration Over Alternative Protocol",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1048"
+  },
+  {
+   "id": "T1049",
+   "name": "System Network Connections Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1049"
+  },
+  {
+   "id": "T1059",
+   "name": "Command and Scripting Interpreter",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1059"
+  },
+  {
+   "id": "T1059.009",
+   "name": "Command and Scripting Interpreter: Cloud API",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1059/009"
+  },
+  {
+   "id": "T1069",
+   "name": "Permission Groups Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1069"
+  },
+  {
+   "id": "T1069.003",
+   "name": "Permission Groups Discovery: Cloud Groups",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1069/003"
+  },
+  {
+   "id": "T1074",
+   "name": "Data Staged",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1074"
+  },
+  {
+   "id": "T1074.002",
+   "name": "Data Staged: Remote Data Staging",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1074/002"
+  },
+  {
+   "id": "T1078",
+   "name": "Valid Accounts",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Privilege Escalation",
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1078"
+  },
+  {
+   "id": "T1078.001",
+   "name": "Valid Accounts: Default Accounts",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Privilege Escalation",
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1078/001"
+  },
+  {
+   "id": "T1078.004",
+   "name": "Valid Accounts: Cloud Accounts",
+   "tactics": [
+    "Initial Access",
+    "Persistence",
+    "Privilege Escalation",
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1078/004"
+  },
+  {
+   "id": "T1082",
+   "name": "System Information Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1082"
+  },
+  {
+   "id": "T1087",
+   "name": "Account Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1087"
+  },
+  {
+   "id": "T1087.004",
+   "name": "Account Discovery: Cloud Account",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1087/004"
+  },
+  {
+   "id": "T1098",
+   "name": "Account Manipulation",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1098"
+  },
+  {
+   "id": "T1098.001",
+   "name": "Account Manipulation: Additional Cloud Credentials",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1098/001"
+  },
+  {
+   "id": "T1098.003",
+   "name": "Account Manipulation: Additional Cloud Roles",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1098/003"
+  },
+  {
+   "id": "T1098.004",
+   "name": "Account Manipulation: SSH Authorized Keys",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1098/004"
+  },
+  {
+   "id": "T1110",
+   "name": "Brute Force",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1110"
+  },
+  {
+   "id": "T1110.001",
+   "name": "Brute Force: Password Guessing",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1110/001"
+  },
+  {
+   "id": "T1110.003",
+   "name": "Brute Force: Password Spraying",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1110/003"
+  },
+  {
+   "id": "T1110.004",
+   "name": "Brute Force: Credential Stuffing",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1110/004"
+  },
+  {
+   "id": "T1119",
+   "name": "Automated Collection",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1119"
+  },
+  {
+   "id": "T1136",
+   "name": "Create Account",
+   "tactics": [
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1136"
+  },
+  {
+   "id": "T1136.003",
+   "name": "Create Account: Cloud Account",
+   "tactics": [
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1136/003"
+  },
+  {
+   "id": "T1190",
+   "name": "Exploit Public-Facing Application",
+   "tactics": [
+    "Initial Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1190"
+  },
+  {
+   "id": "T1199",
+   "name": "Trusted Relationship",
+   "tactics": [
+    "Initial Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1199"
+  },
+  {
+   "id": "T1201",
+   "name": "Password Policy Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1201"
+  },
+  {
+   "id": "T1204",
+   "name": "User Execution",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1204"
+  },
+  {
+   "id": "T1204.003",
+   "name": "User Execution: Malicious Image",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1204/003"
+  },
+  {
+   "id": "T1211",
+   "name": "Exploitation for Stealth",
+   "tactics": [
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1211"
+  },
+  {
+   "id": "T1213",
+   "name": "Data from Information Repositories",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1213"
+  },
+  {
+   "id": "T1213.006",
+   "name": "Data from Information Repositories: Databases",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1213/006"
+  },
+  {
+   "id": "T1485",
+   "name": "Data Destruction",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1485"
+  },
+  {
+   "id": "T1485.001",
+   "name": "Data Destruction: Lifecycle-Triggered Deletion",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1485/001"
+  },
+  {
+   "id": "T1486",
+   "name": "Data Encrypted for Impact",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1486"
+  },
+  {
+   "id": "T1489",
+   "name": "Service Stop",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1489"
+  },
+  {
+   "id": "T1490",
+   "name": "Inhibit System Recovery",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1490"
+  },
+  {
+   "id": "T1491",
+   "name": "Defacement",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1491"
+  },
+  {
+   "id": "T1491.002",
+   "name": "Defacement: External Defacement",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1491/002"
+  },
+  {
+   "id": "T1496",
+   "name": "Resource Hijacking",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1496"
+  },
+  {
+   "id": "T1496.001",
+   "name": "Resource Hijacking: Compute Hijacking",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1496/001"
+  },
+  {
+   "id": "T1496.002",
+   "name": "Resource Hijacking: Bandwidth Hijacking",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1496/002"
+  },
+  {
+   "id": "T1498",
+   "name": "Network Denial of Service",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1498"
+  },
+  {
+   "id": "T1498.001",
+   "name": "Network Denial of Service: Direct Network Flood",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1498/001"
+  },
+  {
+   "id": "T1498.002",
+   "name": "Network Denial of Service: Reflection Amplification",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1498/002"
+  },
+  {
+   "id": "T1499",
+   "name": "Endpoint Denial of Service",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1499"
+  },
+  {
+   "id": "T1499.002",
+   "name": "Endpoint Denial of Service: Service Exhaustion Flood",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1499/002"
+  },
+  {
+   "id": "T1499.003",
+   "name": "Endpoint Denial of Service: Application Exhaustion Flood",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1499/003"
+  },
+  {
+   "id": "T1499.004",
+   "name": "Endpoint Denial of Service: Application or System Exploitation",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1499/004"
+  },
+  {
+   "id": "T1518",
+   "name": "Software Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1518"
+  },
+  {
+   "id": "T1518.001",
+   "name": "Software Discovery: Security Software Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1518/001"
+  },
+  {
+   "id": "T1525",
+   "name": "Implant Internal Image",
+   "tactics": [
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1525"
+  },
+  {
+   "id": "T1526",
+   "name": "Cloud Service Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1526"
+  },
+  {
+   "id": "T1528",
+   "name": "Steal Application Access Token",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1528"
+  },
+  {
+   "id": "T1530",
+   "name": "Data from Cloud Storage",
+   "tactics": [
+    "Collection"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1530"
+  },
+  {
+   "id": "T1531",
+   "name": "Account Access Removal",
+   "tactics": [
+    "Impact"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1531"
+  },
+  {
+   "id": "T1535",
+   "name": "Unused/Unsupported Cloud Regions",
+   "tactics": [
+    "Stealth"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1535"
+  },
+  {
+   "id": "T1537",
+   "name": "Transfer Data to Cloud Account",
+   "tactics": [
+    "Exfiltration"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1537"
+  },
+  {
+   "id": "T1538",
+   "name": "Cloud Service Dashboard",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1538"
+  },
+  {
+   "id": "T1546",
+   "name": "Event Triggered Execution",
+   "tactics": [
+    "Persistence",
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1546"
+  },
+  {
+   "id": "T1548",
+   "name": "Abuse Elevation Control Mechanism",
+   "tactics": [
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1548"
+  },
+  {
+   "id": "T1548.005",
+   "name": "Abuse Elevation Control Mechanism: Temporary Elevated Cloud Access",
+   "tactics": [
+    "Privilege Escalation"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1548/005"
+  },
+  {
+   "id": "T1550",
+   "name": "Use Alternate Authentication Material",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1550"
+  },
+  {
+   "id": "T1550.001",
+   "name": "Use Alternate Authentication Material: Application Access Token",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1550/001"
+  },
+  {
+   "id": "T1550.004",
+   "name": "Use Alternate Authentication Material: Web Session Cookie",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1550/004"
+  },
+  {
+   "id": "T1552",
+   "name": "Unsecured Credentials",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1552"
+  },
+  {
+   "id": "T1552.001",
+   "name": "Unsecured Credentials: Credentials In Files",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1552/001"
+  },
+  {
+   "id": "T1552.005",
+   "name": "Unsecured Credentials: Cloud Instance Metadata API",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1552/005"
+  },
+  {
+   "id": "T1555",
+   "name": "Credentials from Password Stores",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1555"
+  },
+  {
+   "id": "T1555.006",
+   "name": "Credentials from Password Stores: Cloud Secrets Management Stores",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1555/006"
+  },
+  {
+   "id": "T1556",
+   "name": "Modify Authentication Process",
+   "tactics": [
+    "Credential Access",
+    "Defense Impairment",
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1556"
+  },
+  {
+   "id": "T1556.006",
+   "name": "Modify Authentication Process: Multi-Factor Authentication",
+   "tactics": [
+    "Credential Access",
+    "Defense Impairment",
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1556/006"
+  },
+  {
+   "id": "T1556.007",
+   "name": "Modify Authentication Process: Hybrid Identity",
+   "tactics": [
+    "Credential Access",
+    "Defense Impairment",
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1556/007"
+  },
+  {
+   "id": "T1556.009",
+   "name": "Modify Authentication Process: Conditional Access Policies",
+   "tactics": [
+    "Credential Access",
+    "Defense Impairment",
+    "Persistence"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1556/009"
+  },
+  {
+   "id": "T1578",
+   "name": "Modify Cloud Compute Infrastructure",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578"
+  },
+  {
+   "id": "T1578.001",
+   "name": "Modify Cloud Compute Infrastructure: Create Snapshot",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578/001"
+  },
+  {
+   "id": "T1578.002",
+   "name": "Modify Cloud Compute Infrastructure: Create Cloud Instance",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578/002"
+  },
+  {
+   "id": "T1578.003",
+   "name": "Modify Cloud Compute Infrastructure: Delete Cloud Instance",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578/003"
+  },
+  {
+   "id": "T1578.004",
+   "name": "Modify Cloud Compute Infrastructure: Revert Cloud Instance",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578/004"
+  },
+  {
+   "id": "T1578.005",
+   "name": "Modify Cloud Compute Infrastructure: Modify Cloud Compute Configurations",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1578/005"
+  },
+  {
+   "id": "T1580",
+   "name": "Cloud Infrastructure Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1580"
+  },
+  {
+   "id": "T1606",
+   "name": "Forge Web Credentials",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1606"
+  },
+  {
+   "id": "T1606.001",
+   "name": "Forge Web Credentials: Web Cookies",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1606/001"
+  },
+  {
+   "id": "T1606.002",
+   "name": "Forge Web Credentials: SAML Tokens",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1606/002"
+  },
+  {
+   "id": "T1614",
+   "name": "System Location Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1614"
+  },
+  {
+   "id": "T1619",
+   "name": "Cloud Storage Object Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1619"
+  },
+  {
+   "id": "T1621",
+   "name": "Multi-Factor Authentication Request Generation",
+   "tactics": [
+    "Credential Access"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1621"
+  },
+  {
+   "id": "T1648",
+   "name": "Serverless Execution",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1648"
+  },
+  {
+   "id": "T1651",
+   "name": "Cloud Administration Command",
+   "tactics": [
+    "Execution"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1651"
+  },
+  {
+   "id": "T1654",
+   "name": "Log Enumeration",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1654"
+  },
+  {
+   "id": "T1666",
+   "name": "Modify Cloud Resource Hierarchy",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1666"
+  },
+  {
+   "id": "T1680",
+   "name": "Local Storage Discovery",
+   "tactics": [
+    "Discovery"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1680"
+  },
+  {
+   "id": "T1685",
+   "name": "Disable or Modify Tools",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1685"
+  },
+  {
+   "id": "T1685.002",
+   "name": "Disable or Modify Tools: Disable or Modify Cloud Log",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1685/002"
+  },
+  {
+   "id": "T1686.001",
+   "name": "Disable or Modify System Firewall: Cloud Firewall",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1686/001"
+  },
+  {
+   "id": "T1687",
+   "name": "Exploitation for Defense Impairment",
+   "tactics": [
+    "Defense Impairment"
+   ],
+   "url": "https://attack.mitre.org/techniques/T1687"
+  }
+ ]
+}
