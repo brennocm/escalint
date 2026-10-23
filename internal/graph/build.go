@@ -222,7 +222,6 @@ func entryAccount(entry string) string {
 func addAssumeEdges(g *Graph, env *Env) {
 	byARN, byID := map[string]*Node{}, map[string]*Node{}
 	byAccount := map[string][]*Node{}
-	mayAssume := map[string]bool{}
 	var everyone []*Node
 	for _, n := range g.Nodes() {
 		if n.Kind != NodeUser && n.Kind != NodeRole {
@@ -234,6 +233,22 @@ func addAssumeEdges(g *Graph, env *Env) {
 		}
 		byAccount[n.Account] = append(byAccount[n.Account], n)
 		everyone = append(everyone, n)
+	}
+	// Trusting an account lets in only its principals that may call
+	// sts:AssumeRole at all; filtering once per account keeps roles that
+	// trust their own account root from scanning every principal.
+	assumers := map[string][]*Node{}
+	assumersOf := func(account string) []*Node {
+		list, ok := assumers[account]
+		if !ok {
+			for _, n := range byAccount[account] {
+				if MayAllow(env.Principal(n.ID), "sts:AssumeRole") {
+					list = append(list, n)
+				}
+			}
+			assumers[account] = list
+		}
+		return list
 	}
 
 	for _, role := range rolesOf(g) {
@@ -267,15 +282,8 @@ func addAssumeEdges(g *Graph, env *Env) {
 					if account == "" || strings.Contains(entry, ":user/") || strings.Contains(entry, ":role/") {
 						continue // a specific principal that is not in the snapshot
 					}
-					for _, n := range byAccount[account] {
-						may, ok := mayAssume[n.ID]
-						if !ok {
-							may = MayAllow(env.Principal(n.ID), "sts:AssumeRole")
-							mayAssume[n.ID] = may
-						}
-						if may {
-							candidates[n.ID] = n
-						}
+					for _, n := range assumersOf(account) {
+						candidates[n.ID] = n
 					}
 				}
 			}
