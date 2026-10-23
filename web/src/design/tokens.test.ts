@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyTheme,
+  capabilityLevels,
+  detectionStates,
   cssVarName,
   cssVariables,
   escalationEdgeKinds,
@@ -29,7 +31,9 @@ describe('cssVariables', () => {
         Object.keys(themes[theme].colors).length +
           tiers.length +
           escalationEdgeKinds.length +
-          severities.length,
+          severities.length +
+          capabilityLevels.length +
+          detectionStates.length,
       );
       expect(vars).toContainEqual([
         '--edge-modify-permissions',

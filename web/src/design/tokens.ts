@@ -40,6 +40,14 @@ export type Tier = (typeof tiers)[number];
 export const severities = ['critical', 'high', 'medium', 'low', 'info'] as const;
 export type Severity = (typeof severities)[number];
 
+/** Capability classes of the Exposure matrix, from weakest to strongest. */
+export const capabilityLevels = ['list', 'read', 'write', 'permission_management'] as const;
+export type CapabilityLevel = (typeof capabilityLevels)[number];
+
+/** CloudTrail visibility of one exploitation step (ADR 0022). */
+export const detectionStates = ['visible', 'partial', 'blind'] as const;
+export type DetectionState = (typeof detectionStates)[number];
+
 export interface ColorTokens {
   bg: string;
   surface: string;
@@ -62,6 +70,10 @@ export interface Theme {
   edge: Record<EscalationEdgeKind, string>;
   /** Severity text/badge colors: WCAG AA (4.5:1) on bg and surface. */
   severity: Record<Severity, string>;
+  /** Exposure matrix cells: single hue, monotonic lightness. */
+  intensity: Record<CapabilityLevel, string>;
+  /** Detection indicator colors (shape carries the meaning; color repeats it). */
+  detection: Record<DetectionState, string>;
 }
 
 export const themes: Record<ThemeName, Theme> = {
@@ -96,6 +108,13 @@ export const themes: Record<ThemeName, Theme> = {
       low: '#2d5a8c',
       info: '#555864',
     },
+    intensity: {
+      list: '#d5dafa',
+      read: '#9aa6ee',
+      write: '#5a6ddf',
+      permission_management: '#2a39b0',
+    },
+    detection: { visible: '#3f434d', partial: '#7a5a00', blind: '#a13c02' },
   },
   dark: {
     colors: {
@@ -128,6 +147,13 @@ export const themes: Record<ThemeName, Theme> = {
       low: '#8fb6ff',
       info: '#a3a7b3',
     },
+    intensity: {
+      list: '#2b3263',
+      read: '#46559f',
+      write: '#7385e3',
+      permission_management: '#b3bdff',
+    },
+    detection: { visible: '#c9ccd4', partial: '#e2c266', blind: '#f19f64' },
   },
 };
 
@@ -157,6 +183,19 @@ export const edgeLabels: Record<EdgeKind, string> = {
   update_code: 'Update running code',
   member_of: 'Member of group',
   admin: 'Effective admin',
+};
+
+export const capabilityLabels: Record<CapabilityLevel, string> = {
+  list: 'List',
+  read: 'Read',
+  write: 'Write',
+  permission_management: 'Permission management',
+};
+
+export const detectionLabels: Record<DetectionState, string> = {
+  visible: 'Visible in CloudTrail',
+  partial: 'Partially visible',
+  blind: 'Blind spot',
 };
 
 export const nodeLabels: Record<NodeKind, string> = {
@@ -228,6 +267,12 @@ export function cssVariables(theme: ThemeName): [string, string][] {
   }
   for (const severity of severities) {
     vars.push([`--severity-${severity}`, t.severity[severity]]);
+  }
+  for (const level of capabilityLevels) {
+    vars.push([`--intensity-${level.replace(/_/g, '-')}`, t.intensity[level]]);
+  }
+  for (const state of detectionStates) {
+    vars.push([`--detection-${state}`, t.detection[state]]);
   }
   return vars.sort(([a], [b]) => a.localeCompare(b));
 }

@@ -3,6 +3,8 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio, perceivedDistance, perceivedLightness, type Vision } from './color';
 import {
+  capabilityLevels,
+  detectionStates,
   escalationEdgeKinds,
   severities,
   themes,
@@ -56,7 +58,7 @@ describe.each(themeNames)('%s theme', (theme) => {
     }
   });
 
-  it.each(visions)('edge colors are >= %s CIEDE2000 apart under %s vision', (vision) => {
+  it.each(visions)('edge colors are >= 15 CIEDE2000 apart under %s vision', (vision) => {
     for (const [i, a] of escalationEdgeKinds.entries()) {
       for (const b of escalationEdgeKinds.slice(i + 1)) {
         const d = perceivedDistance(t.edge[a], t.edge[b], vision);
@@ -77,6 +79,25 @@ describe.each(themeNames)('%s theme', (theme) => {
       expect(perceivedDistance(lower, higher, vision)).toBeGreaterThanOrEqual(
         MIN_SEQUENTIAL_STEP_DE,
       );
+    }
+  });
+
+  it.each(visions)('exposure intensity ramp is monotonic under %s vision', (vision) => {
+    const direction = theme === 'light' ? -1 : 1;
+    for (let i = 0; i < capabilityLevels.length - 1; i++) {
+      const weaker = t.intensity[capabilityLevels[i] ?? 'list'];
+      const stronger = t.intensity[capabilityLevels[i + 1] ?? 'permission_management'];
+      const step = perceivedLightness(stronger, vision) - perceivedLightness(weaker, vision);
+      expect(direction * step).toBeGreaterThan(0);
+      expect(perceivedDistance(weaker, stronger, vision)).toBeGreaterThanOrEqual(
+        MIN_SEQUENTIAL_STEP_DE,
+      );
+    }
+  });
+
+  it.each(detectionStates)('detection color %s meets WCAG AA as text', (state) => {
+    for (const bg of backgrounds(theme)) {
+      expect(contrastRatio(t.detection[state], bg)).toBeGreaterThanOrEqual(AA_TEXT);
     }
   });
 });
