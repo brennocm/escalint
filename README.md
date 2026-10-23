@@ -345,6 +345,8 @@ cosign verify ghcr.io/brennocm/escalint:v0.1.0 \
   role to another compute service and follow the same template
   ([docs/coverage.md](docs/coverage.md)).
 - **A snapshot is a point in time.** Re-collect after changes.
+- **The resource inventory is regional:** resources in regions not passed to
+  `collect --regions` are not seen ([docs/collector.md](docs/collector.md)).
 - The fix plan is greedy: small, not guaranteed minimal
   ([ADR 0009](docs/adr/0009-fix-plan.md)).
 

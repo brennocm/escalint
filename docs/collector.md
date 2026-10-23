@@ -14,6 +14,11 @@ statement is enough for `escalint collect`; the optional statements enable
 `--org`, `--resources` and `--assume-roles`. A test keeps the policy in sync
 with the code.
 
+The resource inventory covers only the regions in `--regions` (default: the
+current region). escalint treats it as complete: a Lambda function, an
+instance or a CodeBuild project in a region that was not collected produces
+no `update_code` edge. List every region you use.
+
 Alternatively, without escalint on the machine that has credentials:
 
 ```sh

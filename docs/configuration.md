@@ -52,7 +52,9 @@ min_severity: info
 - Without a `reason` the entry has status `unjustified`, suppresses nothing,
   and produces an `EL-PARSE-003` finding.
 - After `expires` the entry has status `expired` and its findings are
-  reported again.
+  reported again. Expiry is judged against the current date, even with
+  `--deterministic`; set `ESCALINT_NOW=YYYY-MM-DD` to pin it (tests and
+  reproducible CI runs).
 
 ## Groupings
 

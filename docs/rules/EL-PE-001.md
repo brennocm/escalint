@@ -17,6 +17,12 @@ Prerequisites:
 
 - a customer managed policy is attached to the actor (directly or through a group)
 
+Not checked: a managed policy keeps at most five versions, so on a policy
+that already has five the actor also needs `iam:DeletePolicyVersion`. The
+snapshot lists the versions, but escalint v1 does not use the count; the
+finding may over-report in that case. A permissions boundary that would cap
+the new version makes the edge `conditional`.
+
 ## Why it matters
 
 Escalation paths turn a limited identity into an administrator. Attackers who obtain any credential look for exactly this permission combination; defenders rarely notice it in policy reviews because each statement looks reasonable on its own.
