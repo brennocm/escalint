@@ -1,0 +1,74 @@
+package rules
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
+// CoverageMarkdown renders docs/coverage.md: which pathfinding.cloud AWS
+// paths escalint detects, with which rule, and which it does not cover yet.
+func CoverageMarkdown() string {
+	byPath := map[string][]Metadata{}
+	for _, r := range All() {
+		m := r.Meta()
+		for _, id := range m.PathfindingIDs {
+			byPath[id] = append(byPath[id], m)
+		}
+	}
+	paths := Pathfinding()
+	ids := make([]string, 0, len(paths))
+	for id := range paths {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+
+	var b strings.Builder
+	covered := 0
+	for _, id := range ids {
+		if len(byPath[id]) > 0 {
+			covered++
+		}
+	}
+	fmt.Fprintf(&b, "# Coverage of pathfinding.cloud\n\n")
+	fmt.Fprintf(&b, "Generated from the rule registry by `make gen-docs`; a test fails when this file is stale.\n\n")
+	fmt.Fprintf(&b, "pathfinding.cloud (commit `%s`) lists **%d** AWS privilege escalation paths. escalint detects **%d** of them.\n\n", PathfindingCommit(), len(ids), covered)
+	b.WriteString("## Covered\n\n| pathfinding.cloud | Name | Rule | Status |\n| --- | --- | --- | --- |\n")
+	for _, id := range ids {
+		for _, m := range byPath[id] {
+			p := paths[id]
+			fmt.Fprintf(&b, "| [%s](%s) | %s | [%s](rules/%s.md) | %s |\n", id, p.URL, escapeCell(p.Name), m.ID, m.ID, m.Status)
+		}
+	}
+	b.WriteString("\n## Not covered yet\n\n")
+	byCategory := map[string][]string{}
+	for _, id := range ids {
+		if len(byPath[id]) == 0 {
+			byCategory[paths[id].Category] = append(byCategory[paths[id].Category], id)
+		}
+	}
+	cats := make([]string, 0, len(byCategory))
+	for c := range byCategory {
+		cats = append(cats, c)
+	}
+	sort.Strings(cats)
+	b.WriteString("| Category | Paths |\n| --- | --- |\n")
+	for _, c := range cats {
+		links := make([]string, 0, len(byCategory[c]))
+		for _, id := range byCategory[c] {
+			links = append(links, fmt.Sprintf("[%s](%s)", id, paths[id].URL))
+		}
+		fmt.Fprintf(&b, "| %s | %s |\n", c, strings.Join(links, ", "))
+	}
+	b.WriteString("\nMost uncovered paths pass a role to another compute service (new-passrole) or change an existing resource that runs as a role (existing-passrole). Each follows the same template as the covered ones; see CONTRIBUTING.md for how to add a rule.\n\n")
+	b.WriteString("## Trust and parse rules\n\nThese rules have no pathfinding.cloud counterpart.\n\n| Rule | Title | Severity | Status |\n| --- | --- | --- | --- |\n")
+	for _, r := range All() {
+		m := r.Meta()
+		if len(m.PathfindingIDs) == 0 {
+			fmt.Fprintf(&b, "| [%s](rules/%s.md) | %s | %s | %s |\n", m.ID, m.ID, escapeCell(m.Title), m.Severity, m.Status)
+		}
+	}
+	return b.String()
+}
+
+func escapeCell(s string) string { return strings.ReplaceAll(s, "|", `\|`) }

@@ -105,6 +105,10 @@ gen: ## Regenerate generated data (downloads the AWS service reference and ATT&C
 gen-check: gen-contract ## Fail if offline-generated files are stale
 	git diff --exit-code -- web/src/contract/
 
+.PHONY: gen-docs
+gen-docs: ## Regenerate docs/coverage.md from the rule registry
+	$(GO) test $(GO_TEST_FLAGS) ./internal/rules/ -run TestCoverageDocUpToDate -update-docs
+
 .PHONY: gen-contract
 gen-contract: ## Generate the TypeScript contract from the JSON Schema
 	$(GO) run ./tools/gen-contract-ts -schema schema/analysis.v1.schema.json -out web/src/contract/analysis.ts
