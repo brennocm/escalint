@@ -6,7 +6,6 @@
 [![Release](https://img.shields.io/github/v/release/brennocm/escalint?sort=semver)](https://github.com/brennocm/escalint/releases)
 [![License](https://img.shields.io/github/license/brennocm/escalint)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/brennocm/escalint/badge)](https://scorecard.dev/viewer/?uri=github.com/brennocm/escalint)
-[![Go Report Card](https://goreportcard.com/badge/github.com/brennocm/escalint)](https://goreportcard.com/report/github.com/brennocm/escalint)
 
 ![The escalint UI: Overview, a critical path in Trace, the policy explainer, the fix plan and the Atlas](docs/media/ui.gif)
 
