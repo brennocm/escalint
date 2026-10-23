@@ -81,19 +81,21 @@ func (s *Statement) HasCondition() bool {
 	return len(s.Condition) > 0
 }
 
-// ActionPatterns returns the Action or NotAction patterns in lower case.
-// Action names are case-insensitive in IAM; the original spelling stays in
-// Action/NotAction for display.
-func (s *Statement) ActionPatterns() []string {
+// ActionPatterns returns the Action or NotAction patterns in lower case and
+// whether they come from NotAction (negated). Action names are
+// case-insensitive in IAM; the original spelling stays in Action/NotAction
+// for display. The choice depends on which element is present, never on list
+// length, so a statement can never be misread as the opposite element.
+func (s *Statement) ActionPatterns() (patterns []string, negated bool) {
 	src := s.Action
-	if len(s.NotAction) > 0 {
-		src = s.NotAction
+	if s.NotAction != nil {
+		src, negated = s.NotAction, true
 	}
-	out := make([]string, len(src))
+	patterns = make([]string, len(src))
 	for i, a := range src {
-		out[i] = strings.ToLower(a)
+		patterns[i] = strings.ToLower(a)
 	}
-	return out
+	return patterns, negated
 }
 
 // Parse parses a policy document of the given kind. The zero Limits value
@@ -118,8 +120,8 @@ func Parse(data []byte, kind Kind, limits Limits) (*Document, error) {
 		return nil, &ParseError{Msg: "invalid JSON", Err: err}
 	}
 
-	var top map[string]json.RawMessage
-	if err := json.Unmarshal(data, &top); err != nil {
+	top, err := objectMembers(data)
+	if err != nil {
 		return nil, &ParseError{Msg: "document must be a JSON object", Err: err}
 	}
 	if err := onlyKeys(top, "", "Version", "Id", "Statement"); err != nil {
@@ -128,7 +130,7 @@ func Parse(data []byte, kind Kind, limits Limits) (*Document, error) {
 
 	doc := &Document{}
 	if raw, ok := top["Version"]; ok {
-		if err := json.Unmarshal(raw, &doc.Version); err != nil {
+		if err := decodeString(raw, &doc.Version); err != nil {
 			return nil, errorf("Version", "must be a string")
 		}
 		if doc.Version != Version2012 && doc.Version != Version2008 {
@@ -136,7 +138,7 @@ func Parse(data []byte, kind Kind, limits Limits) (*Document, error) {
 		}
 	}
 	if raw, ok := top["Id"]; ok {
-		if err := json.Unmarshal(raw, &doc.ID); err != nil {
+		if err := decodeString(raw, &doc.ID); err != nil {
 			return nil, errorf("Id", "must be a string")
 		}
 	}
@@ -191,8 +193,8 @@ var statementKeys = []string{
 
 func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, error) {
 	var st Statement
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	raw, err := objectMembers(data)
+	if err != nil {
 		return st, errorf(path, "statement must be an object")
 	}
 	if err := onlyKeys(raw, path, statementKeys...); err != nil {
@@ -200,7 +202,7 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 	}
 
 	if v, ok := raw["Sid"]; ok {
-		if err := json.Unmarshal(v, &st.Sid); err != nil {
+		if err := decodeString(v, &st.Sid); err != nil {
 			return st, errorf(jsonx.JoinPath(path, "Sid"), "must be a string")
 		}
 	}
@@ -209,7 +211,7 @@ func parseStatement(data json.RawMessage, path string, kind Kind) (Statement, er
 		return st, errorf(path, "missing Effect")
 	}
 	var effect string
-	if err := json.Unmarshal(rawEffect, &effect); err != nil {
+	if err := decodeString(rawEffect, &effect); err != nil {
 		return st, errorf(jsonx.JoinPath(path, "Effect"), "must be a string")
 	}
 	st.Effect = Effect(effect)
@@ -292,7 +294,19 @@ func validateStatement(st *Statement, raw map[string]json.RawMessage, path strin
 	return nil
 }
 
+// decodeString decodes a JSON string and rejects null, which json.Unmarshal
+// would accept as "leave the field empty".
+func decodeString(raw json.RawMessage, dst *string) error {
+	if isNull(raw) {
+		return errors.New("null")
+	}
+	return json.Unmarshal(raw, dst)
+}
+
 func statementItems(raw json.RawMessage) ([]json.RawMessage, error) {
+	if isNull(raw) {
+		return nil, errorf("Statement", "must be an object or a list of objects")
+	}
 	if isArray(raw) {
 		var items []json.RawMessage
 		if err := json.Unmarshal(raw, &items); err != nil {

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -59,7 +60,7 @@ func (p *Principal) UnmarshalJSON(data []byte) error {
 	for _, k := range keys {
 		var list StringList
 		if err := json.Unmarshal(raw[k], &list); err != nil {
-			return fmt.Errorf("%s: %w", k, err)
+			return fmt.Errorf("%s: %w", strconv.Quote(k), err)
 		}
 		switch k {
 		case "AWS":

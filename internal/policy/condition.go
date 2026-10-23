@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 )
 
 // Clause is one operator/key pair of a Condition block, for example
@@ -24,36 +25,60 @@ type Condition []Clause
 // UnmarshalJSON accepts {"Operator": {"key": value}} where value is a string,
 // boolean, number or a list of them. Booleans and numbers keep their JSON
 // text ("true", "10") because operators compare them as strings first.
+//
+// JSON null is rejected: treating "Condition": null as "no condition" would
+// turn a conditional statement into an unconditional one. Operators and keys
+// are visited in sorted order so the first error reported is deterministic.
 func (c *Condition) UnmarshalJSON(data []byte) error {
-	var ops map[string]json.RawMessage
-	if err := json.Unmarshal(data, &ops); err != nil {
+	ops, err := objectMembers(data)
+	if err != nil {
 		return errors.New("must be an object of condition operators")
 	}
 	var out Condition
-	for op, rawKeys := range ops {
-		var keys map[string]json.RawMessage
-		if err := json.Unmarshal(rawKeys, &keys); err != nil {
-			return fmt.Errorf("%s: must be an object of condition keys", op)
+	for _, op := range sortedKeys(ops) {
+		keys, err := objectMembers(ops[op])
+		if err != nil {
+			return fmt.Errorf("%s: must be an object of condition keys", strconv.Quote(op))
 		}
 		if len(keys) == 0 {
-			return fmt.Errorf("%s: must name at least one condition key", op)
+			return fmt.Errorf("%s: must name at least one condition key", strconv.Quote(op))
 		}
-		for key, rawValues := range keys {
-			values, err := conditionValues(rawValues)
+		for _, key := range sortedKeys(keys) {
+			values, err := conditionValues(keys[key])
 			if err != nil {
-				return fmt.Errorf("%s.%s: %w", op, key, err)
+				return fmt.Errorf("%s.%s: %w", strconv.Quote(op), strconv.Quote(key), err)
 			}
 			out = append(out, Clause{Operator: op, Key: key, Values: values})
 		}
 	}
-	sort.Slice(out, func(i, j int) bool {
-		if out[i].Operator != out[j].Operator {
-			return out[i].Operator < out[j].Operator
-		}
-		return out[i].Key < out[j].Key
-	})
 	*c = out
 	return nil
+}
+
+// objectMembers decodes a JSON object and rejects null, which
+// json.Unmarshal would silently turn into a nil map.
+func objectMembers(data []byte) (map[string]json.RawMessage, error) {
+	if isNull(data) {
+		return nil, errors.New("null")
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func sortedKeys(m map[string]json.RawMessage) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+func isNull(data []byte) bool {
+	return bytes.Equal(bytes.TrimSpace(data), []byte("null"))
 }
 
 func conditionValues(data []byte) ([]string, error) {

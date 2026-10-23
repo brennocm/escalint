@@ -11,7 +11,9 @@ import (
 // of the document is preserved for display.
 type StringList []string
 
-// UnmarshalJSON accepts "x" and ["x", "y"]. Anything else is an error.
+// UnmarshalJSON accepts "x" and ["x", "y"]. Anything else is an error,
+// including an empty list: "NotAction": [] would mean "every action", which
+// is too easy to misread as "no action", so it is rejected and reported.
 func (s *StringList) UnmarshalJSON(data []byte) error {
 	trimmed := bytes.TrimSpace(data)
 	if len(trimmed) > 0 && trimmed[0] == '"' {
@@ -26,6 +28,9 @@ func (s *StringList) UnmarshalJSON(data []byte) error {
 		var raw []json.RawMessage
 		if err := json.Unmarshal(trimmed, &raw); err != nil {
 			return err
+		}
+		if len(raw) == 0 {
+			return errors.New("list must not be empty")
 		}
 		out := make(StringList, 0, len(raw))
 		for _, item := range raw {

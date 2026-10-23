@@ -49,7 +49,6 @@ func TestParseStringListShapes(t *testing.T) {
 	}{
 		{"action string", `{"Statement":{"Effect":"Allow","Action":"iam:PassRole","Resource":"*"}}`, StringList{"iam:PassRole"}},
 		{"action list", `{"Statement":{"Effect":"Allow","Action":["iam:PassRole","IAM:getRole"],"Resource":"*"}}`, StringList{"iam:PassRole", "IAM:getRole"}},
-		{"empty list", `{"Statement":{"Effect":"Allow","Action":[],"Resource":"*"}}`, StringList{}},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -64,11 +63,73 @@ func TestParseStringListShapes(t *testing.T) {
 func TestActionPatternsLowercaseAndKeepOriginal(t *testing.T) {
 	d := mustParse(t, KindIdentity, `{"Statement":{"Effect":"Allow","NotAction":["IAM:Put*","S3:GetObject"],"Resource":"*"}}`)
 	st := d.Statements[0]
-	if got := st.ActionPatterns(); !reflect.DeepEqual(got, []string{"iam:put*", "s3:getobject"}) {
-		t.Errorf("ActionPatterns() = %v", got)
+	if got, negated := st.ActionPatterns(); !reflect.DeepEqual(got, []string{"iam:put*", "s3:getobject"}) || !negated {
+		t.Errorf("ActionPatterns() = %v, %v", got, negated)
 	}
 	if st.NotAction[0] != "IAM:Put*" {
 		t.Errorf("original spelling lost: %v", st.NotAction)
+	}
+}
+
+func TestActionPatternsForActionIsNotNegated(t *testing.T) {
+	d := mustParse(t, KindIdentity, `{"Statement":{"Effect":"Allow","Action":"S3:GetObject","Resource":"*"}}`)
+	if got, negated := d.Statements[0].ActionPatterns(); negated || !reflect.DeepEqual(got, []string{"s3:getobject"}) {
+		t.Errorf("ActionPatterns() = %v, %v", got, negated)
+	}
+}
+
+// Regression tests for the review of 2026-10-23: each case used to be
+// accepted with a meaning different from what AWS would apply.
+func TestRegressionAmbiguousShapesAreRejected(t *testing.T) {
+	stmt := func(body string) string { return `{"Statement":{` + body + `}}` }
+	tests := []struct {
+		name, doc, wantPath, wantMsg string
+	}{
+		{"null condition would drop the condition", stmt(`"Effect":"Allow","Action":"*","Resource":"*","Condition":null`), "Statement.Condition", "object of condition operators"},
+		{"null operator block", stmt(`"Effect":"Allow","Action":"*","Resource":"*","Condition":{"Bool":null}`), "Statement.Condition", "object of condition keys"},
+		{"empty NotAction would mean every action", stmt(`"Effect":"Allow","NotAction":[],"Resource":"*"`), "Statement.NotAction", "must not be empty"},
+		{"empty Action", stmt(`"Effect":"Deny","Action":[],"Resource":"*"`), "Statement.Action", "must not be empty"},
+		{"empty NotResource", stmt(`"Effect":"Allow","Action":"*","NotResource":[]`), "Statement.NotResource", "must not be empty"},
+		{"empty principal list", `{"Statement":{"Effect":"Allow","Principal":{"AWS":[]},"Action":"sts:AssumeRole"}}`, "Statement.Principal", "must not be empty"},
+		{"null statement", `{"Statement":null}`, "Statement", "must be an object or a list"},
+		{"null statement item", `{"Statement":[null]}`, "Statement[0]", "must be an object"},
+		{"null document", `null`, "", "must be a JSON object"},
+		{"null version", `{"Version":null,"Statement":{"Effect":"Allow","Action":"*","Resource":"*"}}`, "Version", "must be a string"},
+		{"null sid", stmt(`"Sid":null,"Effect":"Allow","Action":"*","Resource":"*"`), "Statement.Sid", "must be a string"},
+		{"null effect", stmt(`"Effect":null,"Action":"*","Resource":"*"`), "Statement.Effect", "must be a string"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := Parse([]byte(tc.doc), kindForPrincipal(tc.doc), Limits{})
+			var pe *ParseError
+			if !errors.As(err, &pe) {
+				t.Fatalf("Parse() error = %v, want *ParseError", err)
+			}
+			if pe.Path != tc.wantPath || !strings.Contains(err.Error(), tc.wantMsg) {
+				t.Errorf("got path %q error %q, want path %q containing %q", pe.Path, err, tc.wantPath, tc.wantMsg)
+			}
+		})
+	}
+}
+
+func kindForPrincipal(doc string) Kind {
+	if strings.Contains(doc, `"Principal"`) {
+		return KindResource
+	}
+	return KindIdentity
+}
+
+func TestRegressionErrorsAreDeterministic(t *testing.T) {
+	doc := []byte(`{"Statement":{"Effect":"Allow","Action":"*","Resource":"*","Condition":{"B":{"x":{}},"A":{"y":{}},"C":{"z":{}}}}}`)
+	_, first := Parse(doc, KindIdentity, Limits{})
+	for i := 0; i < 50; i++ {
+		_, err := Parse(doc, KindIdentity, Limits{})
+		if err.Error() != first.Error() {
+			t.Fatalf("run %d: %q != %q", i, err, first)
+		}
+	}
+	if !strings.Contains(first.Error(), `"A"."y"`) {
+		t.Errorf("first error should be the sorted first operator/key, got %q", first)
 	}
 }
 
