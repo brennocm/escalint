@@ -14,10 +14,17 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['src/test-setup.ts'],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.test.{ts,tsx}', 'src/main.tsx', 'src/contract/**'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/main.tsx',
+        'src/test-setup.ts',
+        'src/vite-env.d.ts',
+        'src/contract/**',
+      ],
       reporter: ['text', 'html', 'json-summary'],
     },
   },
