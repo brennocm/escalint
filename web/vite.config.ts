@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
           cssCodeSplit: false,
           modulePreload: false,
           assetsInlineLimit: 100_000_000,
-          rolldownOptions: { output: { inlineDynamicImports: true } },
+          rolldownOptions: { output: { codeSplitting: false } },
         }
       : { outDir: 'dist', emptyOutDir: true, sourcemap: false },
     test: {
