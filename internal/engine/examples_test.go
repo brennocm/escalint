@@ -8,7 +8,7 @@ import (
 )
 
 // examples/vulnerable-account fires every stable rule; examples/hardened-account
-// fires none. Both are permanent integration tests (project.md Phase 8).
+// fires none. Both are permanent integration tests.
 func TestExampleAccounts(t *testing.T) {
 	vulnerable := load(t, "../../examples/vulnerable-account/snapshot.json")
 	cfg := rules.Config{ThirdPartyAccounts: []string{"222222222222"}}

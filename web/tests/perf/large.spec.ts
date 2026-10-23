@@ -2,7 +2,7 @@ import { rmSync, writeFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { syntheticAnalysis } from './synthetic';
 
-// project.md §3.6: with 50,000 principals the Atlas stays usable through
+// docs/benchmarks.md: with 50,000 principals the Atlas stays usable through
 // semantic zoom and says how it degrades. The ~100 MB document is served by
 // the preview server from dist/ (route.fulfill cannot carry a body that
 // large) and removed afterwards.

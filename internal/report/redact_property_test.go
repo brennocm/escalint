@@ -13,7 +13,7 @@ import (
 )
 
 // With --redact, no identifier of the snapshot appears in any output
-// format (project.md Phase 7.3).
+// format.
 func TestPropertyRedactedReportsLeakNothing(t *testing.T) {
 	runs := 30
 	if raceEnabled || testing.Short() {

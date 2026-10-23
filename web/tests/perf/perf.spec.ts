@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { syntheticAnalysis } from './synthetic';
 
-// Budgets of project.md §3.6, measured on 10,000 principals / ~40,000 edges.
+// Budgets of docs/benchmarks.md, measured on 10,000 principals / ~40,000 edges.
 const body = syntheticAnalysis(10_000);
 
 test.beforeEach(async ({ page }) => {
@@ -68,7 +68,7 @@ test('Atlas pans with a median frame time under 33 ms and no long tasks while in
       { type: 'long-tasks-ms', description: long.join(',') },
     );
   expect(median).toBeLessThan(33);
-  // Informative on software GPUs; reported, not gated (project.md §3.6).
+  // Informative on software GPUs; reported, not gated (docs/benchmarks.md).
   console.log(
     `median frame ${median.toFixed(1)} ms; long tasks while panning: ${long.map((x) => x.toFixed(0)).join(', ') || 'none'}`,
   );

@@ -28,7 +28,7 @@ browser, by every web page the user visits (CSRF, DNS rebinding).
   interface address for a wildcard such as `0.0.0.0`) are accepted;
   anything else is 421, which defeats DNS rebinding.
 - **Read-only:** only `GET`; everything else is 405 with `Allow: GET`.
-- **Headers on every response:** the CSP of project.md §3.7
+- **Headers on every response:** a strict CSP
   (`default-src 'none'; script-src 'self'; …; frame-ancestors 'none'`),
   `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`,
   `Cross-Origin-Opener-Policy` and `Cross-Origin-Resource-Policy:

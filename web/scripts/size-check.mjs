@@ -1,4 +1,4 @@
-// Bundle budget (project.md §3.6): the JavaScript the first page needs,
+// Bundle budget (docs/benchmarks.md): the JavaScript the first page needs,
 // gzip-compressed, must stay under 300 KB; views load on demand.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

@@ -23,7 +23,7 @@ not drift apart.
 - Output is byte-for-byte deterministic: lists sorted, maps serialized with
   sorted keys, `stats.duration_ms` omitted with `--deterministic`.
 
-Changes from the skeleton of project.md §3.3, recorded in
+Changes from the original skeleton of the specification, recorded in
 docs/research.md §9: edges gain `latent`, `actor`, `prerequisites_unverified`
 and `detection`; nodes gain `tier_conditional` and `service_linked`;
 findings gain `edge_id`, `node_id`, `location`; `suppressed` is an object or

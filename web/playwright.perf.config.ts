@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Performance budgets with synthetic data (project.md §3.6).
+// Performance budgets with synthetic data (docs/benchmarks.md).
 const port = 4175;
 
 export default defineConfig({

@@ -21,7 +21,7 @@ import (
 	"time"
 )
 
-// CSP is the Content-Security-Policy of every response (project.md §3.7).
+// CSP is the Content-Security-Policy of every response (ADR 0017).
 const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; " +
 	"connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
 

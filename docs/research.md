@@ -52,7 +52,7 @@ The AWS documentation describes this order ([denyallow]):
 
 > Correction (Phase 4, 2026-10-23): the Phase 0 table said a `"*"` trust needs an identity allow in the same account. The Principal documentation says the opposite; the row above and edge case E37 follow the documentation.
 
-> Note on the order in the spec (§3.4 of `project.md`): it listed SCP before RCP and boundary before identity. Steps 2–6 are a logical **AND** (apart from the resource-policy shortcut in step 4), so the order only changes the *trace*, never the decision. The trace will follow the AWS order above.
+> Note on the order in the original specification: it listed SCP before RCP and boundary before identity. Steps 2–6 are a logical **AND** (apart from the resource-policy shortcut in step 4), so the order only changes the *trace*, never the decision. The trace will follow the AWS order above.
 
 The evaluator returns one of `Allow`, `ExplicitDeny`, `ImplicitDeny`, `Conditional` plus a trace: every policy/statement consulted, the step it belongs to, and which statement decided.
 
@@ -220,7 +220,7 @@ Rationale: controlling all of IAM's permission-management primitives on every en
 
 Edge semantics: **X → Y = "X can obtain Y's privileges (or more)"**.
 
-Adjustments proposed to the skeleton in `project.md` §3.4:
+Adjustments proposed to the original graph skeleton:
 
 - New edge kind **`admin`**: structural, from every Tier-0 principal to its account's `tier0_sink`. Paths end at the sink, so Tier-0 nodes and self-escalations share one target.
 - **Self-escalation** edges (`modify_permissions` on self, own group or an attached policy) go **directly to `tier0_sink`**.
@@ -344,7 +344,7 @@ Policy documents are accepted as **JSON object**, **JSON string** or **URL-encod
 
 ## 9. `analysis.json` skeleton (proposal, ADR 0003)
 
-As in `project.md` §3.3, with these changes:
+As in the original contract skeleton, with these changes:
 
 - `edges[].kind` adds `admin`; `edges[]` adds `latent` (bool), `prerequisites_unverified` (string[]), `actor` only for composites (the principal that performs the modification).
 - `nodes[]` adds `tier_conditional` (bool) and `service_linked` (bool).
