@@ -449,16 +449,18 @@ func (g *gen) accountData(id string, index int, vendor string) account {
 	adminRole := &az.RoleDetailList[0]
 	adminRole.RolePolicyList = append(adminRole.RolePolicyList, inline{PolicyName: g.adminName(), PolicyDocument: doc{Version: policyVersion, Statement: []stmt{admin}}})
 	adminRole.AssumeRolePolicyDocument = doc{Version: policyVersion, Statement: []stmt{{Effect: "Allow", Principal: map[string]any{"Service": "lambda.amazonaws.com"}, Action: []string{"sts:AssumeRole"}}}}
+	adminUser := adminRole.Arn
 	if len(az.UserDetailList) > 0 {
 		u := &az.UserDetailList[0]
 		u.UserPolicyList = append(u.UserPolicyList, inline{PolicyName: g.adminName(), PolicyDocument: doc{Version: policyVersion, Statement: []stmt{admin}}})
+		adminUser = u.Arn
 	}
 
 	// Planted escalations.
 	planted := int(float64(len(all)) * g.opts.EscalationRate)
 	for i := 0; i < planted && len(all) > 2; i++ {
 		p := all[1+g.rng.IntN(len(all)-1)]
-		st := g.escalation(id, adminRole.Arn, p.arn, policies)
+		st := g.escalation(id, adminRole.Arn, adminUser, p.arn, policies)
 		pol := inline{PolicyName: g.unique("escalation-" + g.pick(services)), PolicyDocument: doc{Version: policyVersion, Statement: st}}
 		if g.opts.RandomNames {
 			pol.PolicyName = g.unique("esc" + g.randomWord())
@@ -516,8 +518,10 @@ func (g *gen) trust(id string, index, i int, vendor, githubProvider string) doc 
 	return d
 }
 
-// escalation returns statements granting one escalation primitive.
-func (g *gen) escalation(id, adminRole, self string, policies []string) []stmt {
+// escalation returns statements granting one escalation primitive. Grants
+// on every user (`user/*`) are rare: each one adds an edge to every user of
+// the account, which real accounts seldom have at scale.
+func (g *gen) escalation(id, adminRole, adminUser, self string, policies []string) []stmt {
 	iam := "arn:aws:iam::" + id + ":"
 	switch g.rng.IntN(6) {
 	case 0:
@@ -532,7 +536,10 @@ func (g *gen) escalation(id, adminRole, self string, policies []string) []stmt {
 	case 3:
 		return []stmt{allow(g.sid(), []string{"iam:UpdateAssumeRolePolicy"}, adminRole), allow(g.sid(), []string{"sts:AssumeRole"}, adminRole)}
 	case 4:
-		return []stmt{allow(g.sid(), []string{"iam:CreateAccessKey"}, iam+"user/*")}
+		if g.rng.IntN(20) == 0 {
+			return []stmt{allow(g.sid(), []string{"iam:CreateAccessKey"}, iam+"user/*")}
+		}
+		return []stmt{allow(g.sid(), []string{"iam:CreateAccessKey"}, adminUser)}
 	default:
 		return []stmt{allow(g.sid(), []string{"iam:PutRolePolicy"}, iam+"role/*")}
 	}
