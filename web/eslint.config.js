@@ -76,6 +76,11 @@ export default tseslint.config(
     rules: { 'no-restricted-syntax': ['error', ...htmlInjectionSinks] },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    ...tseslint.configs.disableTypeChecked,
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
     files: ['eslint.config.js'],
     ...tseslint.configs.disableTypeChecked,
     rules: { ...tseslint.configs.disableTypeChecked.rules, 'no-restricted-syntax': 'off' },

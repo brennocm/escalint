@@ -102,12 +102,17 @@ gen: ## Regenerate generated data (downloads the AWS service reference and ATT&C
 # The catalog needs the network and changes with AWS, so it is not part of
 # gen-check; the monthly catalog workflow (Phase 14) proposes updates.
 .PHONY: gen-check
-gen-check: gen-contract ## Fail if offline-generated files are stale
-	git diff --exit-code -- web/src/contract/
+gen-check: gen-contract gen-web-fixtures gen-docs ## Fail if offline-generated files are stale
+	git diff --exit-code -- web/src/contract/ web/src/data/fixtures/ docs/coverage.md
 
 .PHONY: gen-docs
 gen-docs: ## Regenerate docs/coverage.md from the rule registry
 	$(GO) test $(GO_TEST_FLAGS) ./internal/rules/ -run TestCoverageDocUpToDate -update-docs
+
+.PHONY: gen-web-fixtures
+gen-web-fixtures: ## Regenerate the analysis.json fixtures of the web tests
+	$(GO) run -tags noui ./cmd/escalint analyze examples/vulnerable-account/snapshot.json --config-file examples/vulnerable-account/.escalint.yaml --deterministic -o web/src/data/fixtures/vulnerable.analysis.json
+	$(GO) run -tags noui ./cmd/escalint analyze examples/hardened-account/snapshot.json --config-file examples/hardened-account/.escalint.yaml --deterministic -o web/src/data/fixtures/hardened.analysis.json
 
 .PHONY: gen-contract
 gen-contract: ## Generate the TypeScript contract from the JSON Schema
@@ -153,7 +158,7 @@ web-perf: ## Performance budgets with synthetic data
 
 .PHONY: size
 size: ## Bundle size budget
-	$(call not_yet,size-limit arrives in Phase 11)
+	cd web && pnpm build && pnpm size
 
 ## ---- Distribution -------------------------------------------------------
 
