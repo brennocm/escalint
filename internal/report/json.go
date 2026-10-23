@@ -2,6 +2,9 @@ package report
 
 import (
 	"encoding/json"
+	"encoding/json/jsontext"
+	jsonv2 "encoding/json/v2"
+	"fmt"
 	"io"
 
 	"github.com/brennocm/escalint/internal/contract"
@@ -49,7 +52,16 @@ func Scan(a *contract.Analysis) ScanDocument {
 }
 
 func writeJSON(w io.Writer, a *contract.Analysis) error {
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
-	return enc.Encode(Scan(a))
+	return encodeIndented(w, Scan(a))
+}
+
+// encodeIndented streams v as indented JSON with the encoding/json (v1)
+// semantics. json.Encoder would marshal the whole document into memory and
+// then copy it to indent it: on 50,000 principals that doubled the peak.
+func encodeIndented(w io.Writer, v any) error {
+	enc := jsontext.NewEncoder(w, jsontext.WithIndent("  "))
+	if err := jsonv2.MarshalEncode(enc, v, json.DefaultOptionsV1()); err != nil {
+		return fmt.Errorf("encode json: %w", err)
+	}
+	return nil
 }

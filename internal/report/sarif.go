@@ -1,7 +1,6 @@
 package report
 
 import (
-	"encoding/json"
 	"io"
 	"strings"
 	"unicode"
@@ -233,7 +232,5 @@ func writeSARIF(w io.Writer, a *contract.Analysis, opts Options) error {
 		Results: results, ColumnKind: "utf16CodeUnits",
 		Properties: map[string]any{"redacted": a.Snapshot.Redacted, "paths": len(a.Paths)},
 	}}}
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
-	return enc.Encode(log)
+	return encodeIndented(w, log)
 }
