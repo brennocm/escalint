@@ -255,11 +255,11 @@ func TestFastAndSlowPathsAgree(t *testing.T) {
 		{"x?", "xé"},
 	}
 	for _, c := range cases {
-		slowGlob := glob([]rune(c.pattern), []rune(c.s))
+		slowGlob := glob([]rune(c.pattern), []rune(c.s), false)
 		if Glob(c.pattern, c.s) != slowGlob {
 			t.Errorf("Glob(%q, %q) disagrees with rune glob", c.pattern, c.s)
 		}
-		slowAction := glob([]rune(strings.ToLower(c.pattern)), []rune(strings.ToLower(c.s)))
+		slowAction := glob([]rune(c.pattern), []rune(c.s), true)
 		if Action(c.pattern, c.s) != slowAction {
 			t.Errorf("Action(%q, %q) disagrees", c.pattern, c.s)
 		}

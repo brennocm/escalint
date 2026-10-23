@@ -17,7 +17,10 @@
 // "*:*:*:*:*" cannot cause exponential backtracking.
 package match
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+)
 
 // Glob reports whether s matches pattern, where '*' matches any sequence of
 // characters and '?' one character. It is case-sensitive and treats ':' like
@@ -26,7 +29,7 @@ func Glob(pattern, s string) bool {
 	if isASCII(pattern) && isASCII(s) {
 		return globASCII(pattern, s, false)
 	}
-	return glob([]rune(pattern), []rune(s))
+	return glob([]rune(pattern), []rune(s), false)
 }
 
 // Action reports whether an IAM action pattern matches an action name,
@@ -35,7 +38,7 @@ func Action(pattern, action string) bool {
 	if isASCII(pattern) && isASCII(action) {
 		return globASCII(pattern, action, true)
 	}
-	return glob([]rune(strings.ToLower(pattern)), []rune(strings.ToLower(action)))
+	return glob([]rune(pattern), []rune(action), true)
 }
 
 func isASCII(s string) bool {
@@ -82,11 +85,26 @@ func globASCII(pattern, s string, fold bool) bool {
 	return p == len(pattern)
 }
 
-// glob matches s against pattern with '*' and '?'. It uses the classic
-// two-pointer algorithm: on a mismatch it backtracks only to the most recent
-// '*', which is enough for this pattern language and keeps the cost at
-// O(len(pattern) * len(s)).
-func glob(pattern, s []rune) bool {
+// foldEqual reports whether a and b are equal under simple Unicode case
+// folding, as strings.EqualFold compares them. strings.ToLower is not used:
+// it maps 'İ' (U+0130) to 'i', which folding does not.
+func foldEqual(a, b rune) bool {
+	if a == b {
+		return true
+	}
+	for r := unicode.SimpleFold(a); r != a; r = unicode.SimpleFold(r) {
+		if r == b {
+			return true
+		}
+	}
+	return false
+}
+
+// glob matches s against pattern with '*' and '?'; fold compares runes
+// case-insensitively. It uses the classic two-pointer algorithm: on a
+// mismatch it backtracks only to the most recent '*', which is enough for
+// this pattern language and keeps the cost at O(len(pattern) * len(s)).
+func glob(pattern, s []rune, fold bool) bool {
 	p, i := 0, 0
 	starP, starI := -1, 0
 	for i < len(s) {
@@ -94,7 +112,7 @@ func glob(pattern, s []rune) bool {
 		case p < len(pattern) && pattern[p] == '*':
 			starP, starI = p, i
 			p++
-		case p < len(pattern) && (pattern[p] == s[i] || pattern[p] == '?'):
+		case p < len(pattern) && (pattern[p] == s[i] || pattern[p] == '?' || fold && foldEqual(pattern[p], s[i])):
 			p++
 			i++
 		case starP >= 0:
@@ -145,9 +163,9 @@ func ARN(pattern, arn string) bool {
 				// '*' then takes the rest of parts[j] and any number of the
 				// following parts. Parts never contain ':', so glob on the
 				// single part checks the head.
-				cur[j] = tail && glob(seg, parts[j])
+				cur[j] = tail && glob(seg, parts[j], false)
 			} else {
-				cur[j] = next[j+1] && glob(seg, parts[j])
+				cur[j] = next[j+1] && glob(seg, parts[j], false)
 			}
 		}
 		next, cur = cur, next
