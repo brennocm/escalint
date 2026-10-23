@@ -1,0 +1,179 @@
+{
+  "UserDetailList": [
+    {
+      "Path": "/",
+      "UserName": "alice",
+      "UserId": "AIDAAAAAAAAAAAAAAAAAA",
+      "Arn": "arn:aws:iam::111111111111:user/alice",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "UserPolicyList": [
+        {
+          "PolicyName": "keys",
+          "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22iam%3ACreateAccessKey%22%2C%22Resource%22%3A%22arn%3Aaws%3Aiam%3A%3A111111111111%3Auser%2F%2A%22%7D%7D"
+        }
+      ],
+      "GroupList": [
+        "developers"
+      ],
+      "AttachedManagedPolicies": [],
+      "Tags": [
+        {
+          "Key": "team",
+          "Value": "platform"
+        },
+        {
+          "Key": "env",
+          "Value": "dev"
+        }
+      ]
+    },
+    {
+      "Path": "/ci/",
+      "UserName": "ci-deployer",
+      "UserId": "AIDABBBBBBBBBBBBBBBBB",
+      "Arn": "arn:aws:iam::111111111111:user/ci/ci-deployer",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "UserPolicyList": [],
+      "GroupList": [],
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "DevLambda",
+          "PolicyArn": "arn:aws:iam::111111111111:policy/DevLambda"
+        }
+      ],
+      "PermissionsBoundary": {
+        "PermissionsBoundaryType": "Policy",
+        "PermissionsBoundaryArn": "arn:aws:iam::111111111111:policy/NoIAM"
+      }
+    }
+  ],
+  "GroupDetailList": [
+    {
+      "Path": "/",
+      "GroupName": "developers",
+      "GroupId": "AGPAAAAAAAAAAAAAAAAAA",
+      "Arn": "arn:aws:iam::111111111111:group/developers",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "GroupPolicyList": [
+        {
+          "PolicyName": "update-code",
+          "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22lambda%3AUpdateFunctionCode%22%5D%2C%22Resource%22%3A%22%2A%22%7D%5D%7D"
+        }
+      ],
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "DevLambda",
+          "PolicyArn": "arn:aws:iam::111111111111:policy/DevLambda"
+        }
+      ]
+    }
+  ],
+  "RoleDetailList": [
+    {
+      "Path": "/",
+      "RoleName": "LambdaExecAdmin",
+      "RoleId": "AROAAAAAAAAAAAAAAAAAA",
+      "Arn": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Service%22%3A%22lambda.amazonaws.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D",
+      "InstanceProfileList": [],
+      "RolePolicyList": [],
+      "AttachedManagedPolicies": [
+        {
+          "PolicyName": "AdministratorAccess",
+          "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      ],
+      "Tags": [],
+      "RoleLastUsed": {
+        "LastUsedDate": "2026-09-30T10:00:00Z",
+        "Region": "us-east-1"
+      }
+    },
+    {
+      "Path": "/",
+      "RoleName": "AppDeployRole",
+      "RoleId": "AROABBBBBBBBBBBBBBBBB",
+      "Arn": "arn:aws:iam::111111111111:role/AppDeployRole",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Federated%22%3A%22arn%3Aaws%3Aiam%3A%3A111111111111%3Aoidc-provider%2Ftoken.actions.githubusercontent.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRoleWithWebIdentity%22%2C%22Condition%22%3A%7B%22StringEquals%22%3A%7B%22token.actions.githubusercontent.com%3Aaud%22%3A%22sts.amazonaws.com%22%7D%2C%22StringLike%22%3A%7B%22token.actions.githubusercontent.com%3Asub%22%3A%22repo%3Aexample-org%2F%2A%22%7D%7D%7D%5D%7D",
+      "InstanceProfileList": [
+        {
+          "InstanceProfileName": "AppDeploy",
+          "Arn": "arn:aws:iam::111111111111:instance-profile/AppDeploy",
+          "Roles": []
+        }
+      ],
+      "RolePolicyList": [],
+      "AttachedManagedPolicies": [],
+      "RoleLastUsed": {}
+    },
+    {
+      "Path": "/aws-service-role/autoscaling.amazonaws.com/",
+      "RoleName": "AWSServiceRoleForAutoScaling",
+      "RoleId": "AROACCCCCCCCCCCCCCCCC",
+      "Arn": "arn:aws:iam::111111111111:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+      "CreateDate": "2024-01-02T03:04:05Z",
+      "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Service%22%3A%22autoscaling.amazonaws.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D",
+      "InstanceProfileList": [],
+      "RolePolicyList": [],
+      "AttachedManagedPolicies": []
+    }
+  ],
+  "Policies": [
+    {
+      "PolicyName": "AdministratorAccess",
+      "PolicyId": "ANPAAAAAAAAAAAAAAAAAA",
+      "Arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+      "Path": "/",
+      "DefaultVersionId": "v1",
+      "AttachmentCount": 1,
+      "IsAttachable": true,
+      "PolicyVersionList": [
+        {
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22%2A%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D",
+          "VersionId": "v1",
+          "IsDefaultVersion": true,
+          "CreateDate": "2015-02-06T18:39:46Z"
+        }
+      ]
+    },
+    {
+      "PolicyName": "DevLambda",
+      "PolicyId": "ANPABBBBBBBBBBBBBBBBB",
+      "Arn": "arn:aws:iam::111111111111:policy/DevLambda",
+      "Path": "/",
+      "DefaultVersionId": "v2",
+      "AttachmentCount": 2,
+      "IsAttachable": true,
+      "PolicyVersionList": [
+        {
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22lambda%3AListFunctions%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D",
+          "VersionId": "v1",
+          "IsDefaultVersion": false
+        },
+        {
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Sid%22%3A%22AllowPassRole%22%2C%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22iam%3APassRole%22%2C%22lambda%3ACreateFunction%22%2C%22lambda%3AInvokeFunction%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22s3%3AGetObject%22%2C%22Resource%22%3A%22arn%3Aaws%3As3%3A%3A%3Aexample-bucket%2Fa%2Bb%2F%2A%22%7D%5D%7D",
+          "VersionId": "v2",
+          "IsDefaultVersion": true
+        }
+      ]
+    },
+    {
+      "PolicyName": "NoIAM",
+      "PolicyId": "ANPACCCCCCCCCCCCCCCCC",
+      "Arn": "arn:aws:iam::111111111111:policy/NoIAM",
+      "Path": "/",
+      "DefaultVersionId": "v1",
+      "AttachmentCount": 0,
+      "IsAttachable": true,
+      "PolicyVersionList": [
+        {
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22NotAction%22%3A%22iam%3A%2A%22%2C%22Resource%22%3A%22%2A%22%7D%5D%7D",
+          "VersionId": "v1",
+          "IsDefaultVersion": true
+        }
+      ]
+    }
+  ]
+}

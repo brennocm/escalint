@@ -1,0 +1,417 @@
+{
+  "escalint_snapshot": "1",
+  "collected_at": "2026-10-23T12:00:00Z",
+  "collector": {
+    "name": "escalint",
+    "version": "0.0.0-test"
+  },
+  "partition": "aws",
+  "accounts": [
+    {
+      "account_id": "111111111111",
+      "authorization_details": {
+        "UserDetailList": [
+          {
+            "Path": "/",
+            "UserName": "alice",
+            "UserId": "AIDAAAAAAAAAAAAAAAAAA",
+            "Arn": "arn:aws:iam::111111111111:user/alice",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "UserPolicyList": [
+              {
+                "PolicyName": "keys",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": {
+                    "Effect": "Allow",
+                    "Action": "iam:CreateAccessKey",
+                    "Resource": "arn:aws:iam::111111111111:user/*"
+                  }
+                }
+              }
+            ],
+            "GroupList": [
+              "developers"
+            ],
+            "AttachedManagedPolicies": [],
+            "Tags": [
+              {
+                "Key": "team",
+                "Value": "platform"
+              },
+              {
+                "Key": "env",
+                "Value": "dev"
+              }
+            ]
+          },
+          {
+            "Path": "/ci/",
+            "UserName": "ci-deployer",
+            "UserId": "AIDABBBBBBBBBBBBBBBBB",
+            "Arn": "arn:aws:iam::111111111111:user/ci/ci-deployer",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "UserPolicyList": [],
+            "GroupList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "DevLambda",
+                "PolicyArn": "arn:aws:iam::111111111111:policy/DevLambda"
+              }
+            ],
+            "PermissionsBoundary": {
+              "PermissionsBoundaryType": "Policy",
+              "PermissionsBoundaryArn": "arn:aws:iam::111111111111:policy/NoIAM"
+            }
+          }
+        ],
+        "GroupDetailList": [
+          {
+            "Path": "/",
+            "GroupName": "developers",
+            "GroupId": "AGPAAAAAAAAAAAAAAAAAA",
+            "Arn": "arn:aws:iam::111111111111:group/developers",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "GroupPolicyList": [
+              {
+                "PolicyName": "update-code",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "lambda:UpdateFunctionCode"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                }
+              }
+            ],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "DevLambda",
+                "PolicyArn": "arn:aws:iam::111111111111:policy/DevLambda"
+              }
+            ]
+          }
+        ],
+        "RoleDetailList": [
+          {
+            "Path": "/",
+            "RoleName": "LambdaExecAdmin",
+            "RoleId": "AROAAAAAAAAAAAAAAAAAA",
+            "Arn": "arn:aws:iam::111111111111:role/LambdaExecAdmin",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "InstanceProfileList": [],
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [
+              {
+                "PolicyName": "AdministratorAccess",
+                "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+              }
+            ],
+            "Tags": [],
+            "RoleLastUsed": {
+              "LastUsedDate": "2026-09-30T10:00:00Z",
+              "Region": "us-east-1"
+            }
+          },
+          {
+            "Path": "/",
+            "RoleName": "AppDeployRole",
+            "RoleId": "AROABBBBBBBBBBBBBBBBB",
+            "Arn": "arn:aws:iam::111111111111:role/AppDeployRole",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com"
+                  },
+                  "Action": "sts:AssumeRoleWithWebIdentity",
+                  "Condition": {
+                    "StringEquals": {
+                      "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                    },
+                    "StringLike": {
+                      "token.actions.githubusercontent.com:sub": "repo:example-org/*"
+                    }
+                  }
+                }
+              ]
+            },
+            "InstanceProfileList": [
+              {
+                "InstanceProfileName": "AppDeploy",
+                "Arn": "arn:aws:iam::111111111111:instance-profile/AppDeploy",
+                "Roles": []
+              }
+            ],
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": [],
+            "RoleLastUsed": {}
+          },
+          {
+            "Path": "/aws-service-role/autoscaling.amazonaws.com/",
+            "RoleName": "AWSServiceRoleForAutoScaling",
+            "RoleId": "AROACCCCCCCCCCCCCCCCC",
+            "Arn": "arn:aws:iam::111111111111:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            "CreateDate": "2024-01-02T03:04:05Z",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "autoscaling.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "InstanceProfileList": [],
+            "RolePolicyList": [],
+            "AttachedManagedPolicies": []
+          }
+        ],
+        "Policies": [
+          {
+            "PolicyName": "AdministratorAccess",
+            "PolicyId": "ANPAAAAAAAAAAAAAAAAAA",
+            "Arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 1,
+            "IsAttachable": true,
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": "*",
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true,
+                "CreateDate": "2015-02-06T18:39:46Z"
+              }
+            ]
+          },
+          {
+            "PolicyName": "DevLambda",
+            "PolicyId": "ANPABBBBBBBBBBBBBBBBB",
+            "Arn": "arn:aws:iam::111111111111:policy/DevLambda",
+            "Path": "/",
+            "DefaultVersionId": "v2",
+            "AttachmentCount": 2,
+            "IsAttachable": true,
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": "lambda:ListFunctions",
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": false
+              },
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid": "AllowPassRole",
+                      "Effect": "Allow",
+                      "Action": [
+                        "iam:PassRole",
+                        "lambda:CreateFunction",
+                        "lambda:InvokeFunction"
+                      ],
+                      "Resource": "*"
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": "s3:GetObject",
+                      "Resource": "arn:aws:s3:::example-bucket/a+b/*"
+                    }
+                  ]
+                },
+                "VersionId": "v2",
+                "IsDefaultVersion": true
+              }
+            ]
+          },
+          {
+            "PolicyName": "NoIAM",
+            "PolicyId": "ANPACCCCCCCCCCCCCCCCC",
+            "Arn": "arn:aws:iam::111111111111:policy/NoIAM",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "IsAttachable": true,
+            "PolicyVersionList": [
+              {
+                "Document": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "NotAction": "iam:*",
+                      "Resource": "*"
+                    }
+                  ]
+                },
+                "VersionId": "v1",
+                "IsDefaultVersion": true
+              }
+            ]
+          }
+        ]
+      },
+      "identity_providers": {
+        "oidc": [
+          {
+            "arn": "arn:aws:iam::111111111111:oidc-provider/token.actions.githubusercontent.com",
+            "url": "https://token.actions.githubusercontent.com",
+            "client_ids": [
+              "sts.amazonaws.com"
+            ]
+          }
+        ],
+        "saml": []
+      },
+      "extras": {
+        "access_keys": {
+          "arn:aws:iam::111111111111:user/alice": [
+            {
+              "status": "Active"
+            }
+          ],
+          "arn:aws:iam::111111111111:user/ci/ci-deployer": [
+            {
+              "status": "Active"
+            },
+            {
+              "status": "Inactive"
+            }
+          ]
+        },
+        "login_profiles": {
+          "arn:aws:iam::111111111111:user/alice": true
+        }
+      },
+      "resources": {
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:111111111111:function:admin-task",
+            "role": "arn:aws:iam::111111111111:role/LambdaExecAdmin"
+          }
+        ],
+        "ec2": [],
+        "codebuild": []
+      }
+    }
+  ],
+  "organization": {
+    "id": "o-exampleorg1",
+    "management_account_id": "222222222222",
+    "tree": [
+      {
+        "id": "r-ab12",
+        "type": "ROOT",
+        "parent": null
+      },
+      {
+        "id": "ou-ab12-workloads",
+        "type": "ORGANIZATIONAL_UNIT",
+        "parent": "r-ab12"
+      },
+      {
+        "id": "111111111111",
+        "type": "ACCOUNT",
+        "parent": "ou-ab12-workloads"
+      },
+      {
+        "id": "222222222222",
+        "type": "ACCOUNT",
+        "parent": "r-ab12"
+      }
+    ],
+    "policies": [
+      {
+        "id": "p-FullAWSAccess",
+        "type": "SERVICE_CONTROL_POLICY",
+        "name": "FullAWSAccess",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        },
+        "targets": [
+          "r-ab12",
+          "ou-ab12-workloads",
+          "111111111111",
+          "222222222222"
+        ]
+      },
+      {
+        "id": "p-denyleave",
+        "type": "SERVICE_CONTROL_POLICY",
+        "name": "DenyLeaveOrg",
+        "document": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Deny\",\"Action\":\"organizations:LeaveOrganization\",\"Resource\":\"*\"}]}",
+        "targets": [
+          "ou-ab12-workloads"
+        ]
+      },
+      {
+        "id": "p-RCPFullAWSAccess",
+        "type": "RESOURCE_CONTROL_POLICY",
+        "name": "RCPFullAWSAccess",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        },
+        "targets": [
+          "r-ab12"
+        ]
+      }
+    ]
+  }
+}
