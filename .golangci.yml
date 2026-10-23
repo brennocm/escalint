@@ -1,0 +1,38 @@
+version: "2"
+
+run:
+  # Tests and CI build without the frontend; see ADR 0002.
+  build-tags:
+    - noui
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - bodyclose
+    - exhaustive
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - prealloc
+    - revive
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: false
+    misspell:
+      locale: US
+    revive:
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: var-naming
+        - name: error-strings
+        - name: indent-error-flow
+        - name: unused-parameter
+  exclusions:
+    presets:
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofumpt
