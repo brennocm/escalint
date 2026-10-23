@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -157,7 +158,11 @@ func (f *analysisFlags) load(cmd *cobra.Command, path string) (*loaded, error) {
 		if l.analysis, err = decodeAnalysis(data); err != nil {
 			return nil, err
 		}
-		f.debug(cmd, "input is an analysis.json: rule and path options are ignored")
+		if ignored := changedFlags(cmd, analysisOnlyFlags...); len(ignored) > 0 {
+			f.note(cmd, "input is an analysis.json: ignoring "+strings.Join(ignored, ", ")+" (only used when analyzing a snapshot)")
+		} else {
+			f.debug(cmd, "input is an analysis.json: rule and path options are ignored")
+		}
 		return l, nil
 	}
 	start := time.Now()
@@ -190,6 +195,21 @@ func (f *analysisFlags) load(cmd *cobra.Command, path string) (*loaded, error) {
 		f.debug(cmd, fmt.Sprintf("analyzed %d nodes and %d edges in %d ms", l.analysis.Stats.Nodes, l.analysis.Stats.Edges, *l.analysis.Stats.DurationMS))
 	}
 	return l, nil
+}
+
+// analysisOnlyFlags take effect only when a snapshot is analyzed; an
+// analysis.json already carries their outcome.
+var analysisOnlyFlags = []string{"config-file", "enable", "disable", "experimental", "min-severity", "max-depth", "k-paths"}
+
+// changedFlags returns the --names among names that were set explicitly.
+func changedFlags(cmd *cobra.Command, names ...string) []string {
+	var out []string
+	for _, n := range names {
+		if fl := cmd.Flags().Lookup(n); fl != nil && fl.Changed {
+			out = append(out, "--"+n)
+		}
+	}
+	return out
 }
 
 func (f *analysisFlags) engineOptions(cfg *config.File) (engine.Options, error) {

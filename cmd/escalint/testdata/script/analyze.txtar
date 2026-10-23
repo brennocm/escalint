@@ -20,6 +20,11 @@ stdout '"redacted": true'
 stdout 'CRITICAL'
 exec escalint graph a1.json --format mermaid --paths-only
 stdout '^flowchart LR'
+! stderr 'ignoring'
+
+# Snapshot-only options are reported as ignored for an analysis.json.
+! exec escalint scan a1.json --min-severity critical --enable 'EL-*'
+stderr 'input is an analysis.json: ignoring --enable, --min-severity'
 
 # Unknown schema versions are refused.
 ! exec escalint scan future.json
