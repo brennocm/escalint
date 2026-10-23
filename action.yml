@@ -1,0 +1,126 @@
+name: escalint
+description: Find AWS IAM privilege escalation paths in a snapshot and report them as SARIF, JSON or text.
+author: brennocm
+branding:
+  icon: shield
+  color: purple
+
+# Composite action that builds escalint from the action's own source (without
+# the web UI, which CI does not need). The source is pinned by the ref the
+# caller uses (`brennocm/escalint@<sha>`), so no unsigned binary is downloaded.
+inputs:
+  snapshot:
+    description: Snapshot to analyze (escalint collect output or aws iam get-account-authorization-details).
+    required: true
+  baseline:
+    description: >-
+      Optional baseline snapshot. When set, the gate fails only on findings added
+      since the baseline (escalint diff); the report still lists every finding.
+    required: false
+    default: ""
+  format:
+    description: "Report format: sarif, json or text."
+    required: false
+    default: sarif
+  output:
+    description: Path of the report file.
+    required: false
+    default: escalint.sarif
+  fail-on:
+    description: Fail when an unsuppressed finding is at or above this severity (critical, high, medium, low, info) or "none".
+    required: false
+    default: high
+  min-severity:
+    description: Drop findings below this severity.
+    required: false
+    default: ""
+  experimental:
+    description: Enable every experimental rule ("true" or "false").
+    required: false
+    default: "false"
+  redact:
+    description: Replace account IDs, names and ARNs with per-run pseudonyms in the report ("true" or "false").
+    required: false
+    default: "false"
+  config-file:
+    description: Configuration file (default .escalint.yaml in the working directory, if present).
+    required: false
+    default: ""
+
+outputs:
+  report:
+    description: Path of the report file.
+    value: ${{ steps.report.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      with:
+        go-version-file: ${{ github.action_path }}/go.mod
+        cache: false
+
+    - name: Build escalint
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        BIN: ${{ runner.temp }}/escalint-bin/escalint
+      run: |
+        CGO_ENABLED=0 go build -trimpath -tags noui -o "$BIN" ./cmd/escalint
+        "$BIN" version
+
+    - name: Report
+      id: report
+      shell: bash
+      env:
+        BIN: ${{ runner.temp }}/escalint-bin/escalint
+        SNAPSHOT: ${{ inputs.snapshot }}
+        FORMAT: ${{ inputs.format }}
+        OUTPUT: ${{ inputs.output }}
+        MIN_SEVERITY: ${{ inputs.min-severity }}
+        EXPERIMENTAL: ${{ inputs.experimental }}
+        REDACT: ${{ inputs.redact }}
+        CONFIG_FILE: ${{ inputs.config-file }}
+      run: |
+        set -euo pipefail
+        args=(scan "$SNAPSHOT" --format "$FORMAT" --output "$OUTPUT" --fail-on none --quiet)
+        [[ -n "$MIN_SEVERITY" ]] && args+=(--min-severity "$MIN_SEVERITY")
+        [[ "$EXPERIMENTAL" == "true" ]] && args+=(--experimental)
+        [[ "$REDACT" == "true" ]] && args+=(--redact)
+        [[ -n "$CONFIG_FILE" ]] && args+=(--config-file "$CONFIG_FILE")
+        "$BIN" "${args[@]}"
+        echo "report=$OUTPUT" >> "$GITHUB_OUTPUT"
+
+    - name: Gate
+      shell: bash
+      env:
+        BIN: ${{ runner.temp }}/escalint-bin/escalint
+        SNAPSHOT: ${{ inputs.snapshot }}
+        BASELINE: ${{ inputs.baseline }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        MIN_SEVERITY: ${{ inputs.min-severity }}
+        EXPERIMENTAL: ${{ inputs.experimental }}
+        REDACT: ${{ inputs.redact }}
+        CONFIG_FILE: ${{ inputs.config-file }}
+      run: |
+        set -euo pipefail
+        if [[ -n "$BASELINE" ]]; then
+          args=(diff "$BASELINE" "$SNAPSHOT")
+        else
+          args=(scan "$SNAPSHOT" --no-color)
+        fi
+        args+=(--fail-on "$FAIL_ON")
+        [[ -n "$MIN_SEVERITY" ]] && args+=(--min-severity "$MIN_SEVERITY")
+        [[ "$EXPERIMENTAL" == "true" ]] && args+=(--experimental)
+        # The gate prints to the job log and summary: redact it as well.
+        [[ "$REDACT" == "true" ]] && args+=(--redact)
+        [[ -n "$CONFIG_FILE" ]] && args+=(--config-file "$CONFIG_FILE")
+        status=0
+        "$BIN" "${args[@]}" | tee "$RUNNER_TEMP/escalint-gate.txt" || status=$?
+        {
+          echo '### escalint'
+          echo '```'
+          head -c 60000 "$RUNNER_TEMP/escalint-gate.txt"
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+        exit "$status"

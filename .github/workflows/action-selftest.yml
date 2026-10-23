@@ -1,0 +1,108 @@
+name: action-selftest
+
+# Runs the repository's own GitHub Action (action.yml) on the example accounts
+# and checks the SARIF it writes and the exit status of the gate.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# The local action is referenced as ./ rather than the self-repository syntax
+# ($/) until actionlint supports it; zizmor findings are ignored inline.
+jobs:
+  vulnerable:
+    name: Vulnerable account (SARIF, gate fails)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run the action
+        id: escalint
+        continue-on-error: true
+        uses: ./ # zizmor: ignore[self-repository] actionlint 1.7.12 rejects $/
+        with:
+          snapshot: examples/vulnerable-account/snapshot.json
+          config-file: examples/vulnerable-account/.escalint.yaml
+          format: sarif
+          output: escalint.sarif
+          fail-on: high
+      - name: The gate failed on high findings
+        env:
+          OUTCOME: ${{ steps.escalint.outcome }}
+        run: test "$OUTCOME" = failure
+      - name: The SARIF is 2.1.0 with results for the stable rules
+        env:
+          REPORT: ${{ steps.escalint.outputs.report }}
+        run: |
+          set -euo pipefail
+          test "$REPORT" = escalint.sarif
+          jq -e '.version == "2.1.0"' escalint.sarif
+          jq -e '.runs[0].tool.driver.name == "escalint"' escalint.sarif
+          jq -e '[.runs[0].results[].ruleId] | unique | length >= 30' escalint.sarif
+          jq -e '[.runs[0].results[] | select(.level == "error")] | length > 0' escalint.sarif
+          jq -e '[.runs[0].results[] | select((.locations // []) | length == 0)] | length == 0' escalint.sarif
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: selftest-sarif
+          path: escalint.sarif
+          if-no-files-found: error
+
+  hardened:
+    name: Hardened account (gate passes)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./ # zizmor: ignore[self-repository] actionlint 1.7.12 rejects $/
+        with:
+          snapshot: examples/hardened-account/snapshot.json
+          config-file: examples/hardened-account/.escalint.yaml
+          fail-on: low
+          redact: "true"
+      - name: The SARIF has no results
+        run: jq -e '.runs[0].results | length == 0' escalint.sarif
+
+  baseline:
+    name: Baseline diff (only added findings fail)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Same snapshot as the baseline passes
+        uses: ./ # zizmor: ignore[self-repository] actionlint 1.7.12 rejects $/
+        with:
+          snapshot: examples/vulnerable-account/snapshot.json
+          baseline: examples/vulnerable-account/snapshot.json
+          config-file: examples/vulnerable-account/.escalint.yaml
+          format: json
+          output: same.json
+      - name: Vulnerable after hardened fails
+        id: regression
+        continue-on-error: true
+        uses: ./ # zizmor: ignore[self-repository] actionlint 1.7.12 rejects $/
+        with:
+          snapshot: examples/vulnerable-account/snapshot.json
+          baseline: examples/hardened-account/snapshot.json
+          config-file: examples/vulnerable-account/.escalint.yaml
+          format: text
+          output: regression.txt
+      - name: The regression was caught
+        env:
+          OUTCOME: ${{ steps.regression.outcome }}
+        run: |
+          test "$OUTCOME" = failure
+          jq -e '.findings | length > 0' same.json
