@@ -68,15 +68,15 @@ embedded:
 
 ```sh
 # pick your platform at https://github.com/brennocm/escalint/releases
-curl -sSLO https://github.com/brennocm/escalint/releases/download/v0.1.0/escalint_0.1.0_linux_amd64.tar.gz
-tar xzf escalint_0.1.0_linux_amd64.tar.gz escalint
+curl -sSLO https://github.com/brennocm/escalint/releases/download/v0.1.1/escalint_0.1.1_linux_amd64.tar.gz
+tar xzf escalint_0.1.1_linux_amd64.tar.gz escalint
 ./escalint version
 ```
 
 Container image (distroless, nonroot):
 
 ```sh
-docker run --rm -v "$PWD:/work" ghcr.io/brennocm/escalint:v0.1.0 scan /work/snapshot.json
+docker run --rm -v "$PWD:/work" ghcr.io/brennocm/escalint:v0.1.1 scan /work/snapshot.json
 ```
 
 From source with Go (no web UI: `serve` and `report` need a release binary
@@ -192,9 +192,9 @@ jobs:
           restore-keys: escalint-baseline-
       - name: Collect
         run: |
-          go run -tags noui github.com/brennocm/escalint/cmd/escalint@v0.1.0 collect -o snapshot.json
+          go run -tags noui github.com/brennocm/escalint/cmd/escalint@v0.1.1 collect -o snapshot.json
           test -f baseline.json || cp snapshot.json baseline.json
-      - uses: brennocm/escalint@<commit-sha> # v0.1.0
+      - uses: brennocm/escalint@<commit-sha> # v0.1.1
         with:
           snapshot: snapshot.json
           baseline: baseline.json
@@ -322,10 +322,10 @@ cosign verify-blob checksums.txt \
   --bundle checksums.txt.sigstore.json \
   --certificate-identity-regexp '^https://github.com/brennocm/escalint/\.github/workflows/release\.yml@refs/tags/v' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
-gh attestation verify escalint_0.1.0_linux_amd64.tar.gz --repo brennocm/escalint
+gh attestation verify escalint_0.1.1_linux_amd64.tar.gz --repo brennocm/escalint
 sha256sum --ignore-missing -c checksums.txt
 
-cosign verify ghcr.io/brennocm/escalint:v0.1.0 \
+cosign verify ghcr.io/brennocm/escalint:v0.1.1 \
   --certificate-identity-regexp '^https://github.com/brennocm/escalint/' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```

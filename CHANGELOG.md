@@ -6,6 +6,15 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-23
+
+### Fixed
+
+- Release build: GoReleaser built through the Go module proxy, which has no
+  `web/dist` (generated, not committed), so `go:embed` failed and v0.1.0 was
+  never published. Binaries and the container image now build from the
+  checkout.
+
 ## [0.1.0] - 2026-10-23
 
 ### Added
@@ -79,5 +88,6 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Hostile-data tests for `serve` and for the HTML report opened from
   `file://`: no script execution, no CSP violation, no external request.
 
-[Unreleased]: https://github.com/brennocm/escalint/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/brennocm/escalint/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/brennocm/escalint/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/brennocm/escalint/releases/tag/v0.1.0
