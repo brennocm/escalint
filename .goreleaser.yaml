@@ -11,8 +11,8 @@ before:
       sh -c 'test -f web/dist/index.html && test -f web/dist/report/index.html
       || { echo "web/dist missing: run make web-build" >&2; exit 1; }'
 
-gomod:
-  proxy: true
+# No gomod.proxy: a build through the module proxy has no web/dist (it is
+# generated, not committed), and go:embed fails. Build from the checkout.
 
 builds:
   - id: escalint
